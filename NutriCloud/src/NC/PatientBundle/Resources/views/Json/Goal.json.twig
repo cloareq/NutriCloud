@@ -1,0 +1,14 @@
+[
+    {% for goal in goals %}
+    {
+        "id": "{{ goal.id }}",
+        "goal": "{{ goal.text }}",
+        "percentage": "{{ goal.percentage }}",
+        "date": "{{ goal.date }}",
+        "created_at": "{{ goal.createdAt|date("Y/m/d.h:m") }}"
+    }
+    {% if loop.last == false %}
+,
+    {% endif %}
+    {% endfor %}
+]

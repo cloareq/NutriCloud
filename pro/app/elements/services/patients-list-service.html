@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!-- Import my-component -->
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="patients-list-service">
+
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+
+   <my-ajax id="ajax"
+      url="/NutriCloud/web/app_dev.php/pro/patient/list"
+      method="GET"
+      on-response="patientsLoaded"
+      handleAs="json">
+    </my-ajax>
+
+  </template>
+
+  <script>
+  Polymer({ is:'patients-list-service',
+    properties: {
+      /**
+      * "upward property" permet de récupérer la list de patients chargé via l'attribut.
+      * La valeur ne peut être modifier que depuis cet élément
+      */
+      patients: {
+        type: Array,
+        notify: true,
+        readOnly: true
+      }
+    },
+    patientsLoaded: function(event) {
+      var list = this.$.ajax.data;
+      for (var i=0; i<list.length; i++)
+        list[i].fullName = list[i].lastName + " " + list[i].firstName;
+      //trie la liste dans par ordre alphabetique
+      list = list.sort(function(a, b) {
+        var x = a.fullName.toLowerCase();
+        var y = b.fullName.toLowerCase();
+        return x < y ? -1 : x > y ? 1 : 0;
+        //return (a.fullName.toLowerCase() > b.fullName.toLowerCase());
+      });
+      //Setter d'une propertie 'readOnly' => _setPropertyName(value)
+      this._setPatients(list);
+      this.fire("list-loaded");
+    },
+    refresh: function() {
+/*      this.$.ajax._setData([{"id": "4","firstName": "patient1", "lastName": "patient1", "phone": "0296556565", "mail": "patient1@mail.com", "city": "", "postcode": "", "address": "", "mail": "patient1@mail.com"},
+        {"id": "5","firstName": "patient2", "lastName": "patient2", "phone": "0245665544", "mail": "patient2@mail.com", "city": "", "postcode": "", "address": "", "mail": "patient2@mail.com"},
+        {"id": "6","firstName": "patient3", "lastName": "patient2", "phone": "0245665544", "mail": "patient2@mail.com", "city": "", "postcode": "", "address": "", "mail": "patient2@mail.com"}
+        ]);
+      this.patientsLoaded(null);*/
+      this.$.ajax.go();
+    }
+  });
+  </script>
+</dom-module>

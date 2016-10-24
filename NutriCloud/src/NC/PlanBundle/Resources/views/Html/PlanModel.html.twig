@@ -1,0 +1,92 @@
+<TABLE BORDER="1">
+<CAPTION>Plan alimentaire</CAPTION>
+<TR>
+  <TH> Monday </TH>
+  <TH> Tuesday </TH>
+  <TH> Wednesday </TH>
+  <TH> Thursday </TH>
+  <TH> Friday </TH>
+  <TH> Saturday </TH>
+  <TH> Sunday </TH>
+</TR>
+<TR>
+  <TH> Aliment </TH>
+  <TD> {% for aliment in Monday %}
+      "hour": "{{ aliment.hour }}",
+      "aliment": "{{ aliment.name }}",
+      "quantity": "{{ aliment.quantity }}",
+      "is_eaten": "{{ aliment.iseaten }}"
+      {% if loop.last == false %}
+        ,
+      {% endif %}
+    {% endfor %}
+  </TD>
+
+  <TD> {% for aliment in Tuesday %}
+      "hour": "{{ aliment.hour }}",
+      "aliment": "{{ aliment.name }}",
+      "quantity": "{{ aliment.quantity }}",
+      "is_eaten": "{{ aliment.iseaten }}"
+      {% if loop.last == false %}
+        ,
+      {% endif %}
+    {% endfor %}
+  </TD>
+
+  <TD> {% for aliment in Wednesday %}
+      "hour": "{{ aliment.hour }}",
+      "aliment": "{{ aliment.name }}",
+      "quantity": "{{ aliment.quantity }}",
+      "is_eaten": "{{ aliment.iseaten }}"
+      {% if loop.last == false %}
+        ,
+      {% endif %}
+    {% endfor %}
+  </TD>
+
+  <TD>
+    {% for aliment in Thursday %}
+      "hour": "{{ aliment.hour }}",
+      "aliment": "{{ aliment.name }}",
+      "quantity": "{{ aliment.quantity }}",
+      "is_eaten": "{{ aliment.iseaten }}"
+      {% if loop.last == false %}
+        ,
+      {% endif %}
+    {% endfor %}
+  </TD>
+
+  <TD> {% for aliment in Friday %}
+      "hour": "{{ aliment.hour }}",
+      "aliment": "{{ aliment.name }}",
+      "quantity": "{{ aliment.quantity }}",
+      "is_eaten": "{{ aliment.iseaten }}"
+      {% if loop.last == false %}
+        ,
+      {% endif %}
+    {% endfor %}
+  </TD>
+
+  <TD> {% for aliment in Saturday %}
+      "hour": "{{ aliment.hour }}",
+      "aliment": "{{ aliment.name }}",
+      "quantity": "{{ aliment.quantity }}",
+      "is_eaten": "{{ aliment.iseaten }}"
+      {% if loop.last == false %}
+        ,
+      {% endif %}
+    {% endfor %}
+  </TD>
+
+  <TD> {% for aliment in Sunday %}
+      "hour": "{{ aliment.hour }}",
+      "aliment": "{{ aliment.name }}",
+      "quantity": "{{ aliment.quantity }}",
+      "is_eaten": "{{ aliment.iseaten }}"
+      {% if loop.last == false %}
+        ,
+      {% endif %}
+    {% endfor %}
+  </TD>
+</TR>
+</TABLE>

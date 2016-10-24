@@ -1,0 +1,167 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+
+<!-- Styling sheet -->
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<!-- Service (data provider) -->
+<link rel="import" href="../services/resume-patient-service.html">
+<link rel="import" href="../services/suivi-service.html">
+
+<!-- Internal component -->
+<link rel="import" href="list-appointment-patient.html">
+<link rel="import" href="lastnote-element.html">
+<link rel="import" href="courbe-poid.html">
+<link rel="import" href="suivi-element.html">
+<link rel="import" href="indicateurs-all.html">
+
+<dom-module id="resume-patient" >
+  <template>
+  	<style>
+
+    #homeContent {
+      @apply(--layout-horizontal);
+      @apply(--layout-top);
+      @apply(--layout-top-top);
+      @apply(--layout-wrap); /* for responsive */
+    }
+    /**
+    * class element représente un component plus son label ! (soit le 'post-it' en entier)
+    */
+    .element {
+      width: 50%;
+      @apply(--layout-vertical);
+      @apply(--layout-flex);
+      box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14);
+
+      margin-top: 20px;
+      margin-left: 5px;
+    }
+
+    .label {
+      text-align: center;
+      background-color: var(--color-nutricloud-background);
+      @apply(--layout-flex);
+    }
+    .component {
+      padding:1%;
+      background-color: var(--color-nutricloud-white);
+    }
+
+    /*
+    .indicateur {
+      max-width: 25%;
+      background-color: var(--color-nutricloud-white);
+      @apply(--layout-center);
+      @apply(--layout-center-center);
+    }*/
+
+    paper-toolbar {
+      --paper-toolbar-background: var(--color-nutricloud-green);
+      --paper-toolbar-color: var(--color-nutricloud-white);
+      text-align: center;
+    }
+
+    .title {
+      position: absolute;
+      top: 22px;
+      margin: auto !important;
+      left: 0;
+      right: 0;
+    }
+
+    /* Small */
+    @media (max-width: 600px) {
+    }
+
+    /* Tablet */
+    @media (min-width: 601px) {
+      #courbe {
+        min-width: 45%;
+      }
+      .element {
+        min-width: 45%;
+        width: 50%;
+      }
+    }
+
+    /* Large screen */
+    @media (min-width: 801px) {
+    }
+
+  	</style>
+
+  <resume-patient-service id="resumeService" last-note="{{lastNote}}" appointments="{{appointments}}" notes="{{notes}}" poids="{{poids}}"></resume-patient-service>
+  <suivi-service on-suivi-saved="suiviSaved" id="suiviService"></suivi-service>
+
+  <!-- Element permettant de rentrer les données pour le suivi -->
+  <suivi-element last-note="[[lastNote]]" on-save-suivi="saveSuivi" id="suivi"></suivi-element>
+
+	<div id="homeContent">
+
+    <div id="indicateurs" class="element">
+      <paper-toolbar> <span class="title">Dernière mesure</span></paper-toolbar>
+      <div>
+        <indicateurs-all last-note="[[lastNote]]"></indicateurs-all>
+      </div>
+    </div>
+
+    <div id="courbe" class="element">
+      <paper-toolbar> <span class="title">Courbe du poids</span></paper-toolbar>
+      <div>
+        <courbe-poid data="[[notes]]"></courbe-poid>
+      </div>
+    </div>
+
+<!--
+  VOIR pour rajouter une courbe de taille plus indicateur a gauche sur toute la longueur ! UNIQUEMENT pour les enfants !
+    <div id="courbe" class="element">
+      <paper-toolbar> <span class="title">Courbe du poids</span></paper-toolbar>
+      <div>
+        <courbe-poid data="[[notes]]"></courbe-poid>
+      </div>
+    </div>
+-->
+
+    <div id="list" class="element">
+      <paper-toolbar> <span class="title">Prochain rendez-vous avec ce patient</span></paper-toolbar>
+      <div class="component">
+        <list-appointment-patient data="[[appointments]]"></list-appointment-patient>
+      </div>
+    </div>
+
+    <div id="autre" class="element">
+      <paper-toolbar> <span class="title">Dernier commentaire</span></paper-toolbar>
+      <div class="component">
+        <lastnote-element data="[[notes]]"></lastnote-element>
+      </div>
+    </div>
+	</div>
+  </template>
+
+  <script>
+  	Polymer({ is:'resume-patient',
+      properties: {
+        notes: Array,
+        appointments: Array,
+        poids: Array,
+        lastNote: Object
+      },
+      refresh: function() {
+        this.$.resumeService.getNotes(app.patientId);
+        this.$.resumeService.getAppointments(app.patientId);
+//        this.$.resumeService.getPoids(app.patientId);
+
+//        this.$.suiviService.getSuivi(app.patientId);
+      },
+      suiviSaved: function() {
+        this.$.suivi.suiviSaved();
+        this.refresh();
+      },
+      //hook for event save-suivi of suivi-element
+      saveSuivi: function(event) {
+        this.$.suiviService.saveSuivi(event.detail.patientId, event.detail.poids, event.detail.taille, event.detail.note);
+      }
+    });
+  </script>
+</dom-module>

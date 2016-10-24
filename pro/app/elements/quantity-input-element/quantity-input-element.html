@@ -1,0 +1,182 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input-behavior.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input-error.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../../bower_components/iron-form-element-behavior/iron-form-element-behavior.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="quantity-input-element">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      /* TODO: This should be a dropdown */
+      span {
+        @apply(--paper-font-subhead);
+        @apply(--paper-input-container-input);
+        width: 40px;
+      }
+
+      /* TODO(notwaldorf): The style applied by paper-input-container is more
+       * specific, and we need the important to override it. This will go away
+       * once we can refactor this element to use the paper-input suffix */
+      label {
+        left: 40px !important;
+      }
+
+      input {
+        @apply(--layout-flex);
+      }
+      #container {
+        width: 100%;
+      }
+      .container {
+        @apply(--layout-horizontal)
+      }
+      #unit {
+        width: 30vh;
+      }
+    </style>
+    <div class="container">
+      <paper-input-container id="container"
+        disabled$="[[disabled]]"
+        no-label-float="[[noLabelFloat]]"
+        always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]"
+        invalid="[[invalid]]">
+
+      <label hidden$="[[!label]]">[[label]]</label>
+
+      <div class="container">
+        <input is="iron-input" id="input"
+          aria-labelledby$="[[_ariaLabelledBy]]"
+          aria-describedby$="[[_ariaDescribedBy]]"
+          required$="[[required]]"
+          bind-value="{{value}}"
+          name$="[[name]]"
+          allowed-pattern="[0-9]"
+          autocomplete="tel"
+          type="tel"
+          prevent-invalid-input
+          disabled$="[[disabled]]"
+          invalid="{{invalid}}"
+          autofocus$="[[autofocus]]"
+          inputmode$="[[inputmode]]"
+          placeholder$="[[placeholder]]"
+          readonly$="[[readonly]]"
+          maxlength$="[[maxlength]]"
+          size$="[[size]]">
+      </div>
+
+      <template is="dom-if" if="[[errorMessage]]">
+        <paper-input-error id="error">[[errorMessage]]</paper-input-error>
+      </template>
+
+      </paper-input-container>
+      <paper-dropdown-menu id="unit" horizontal-align="left" label="unité">
+       <paper-listbox selected="0" class="dropdown-content">
+          <paper-item></paper-item>
+          <paper-item>gr</paper-item>
+          <paper-item>mg</paper-item>
+          <paper-item>cl</paper-item>
+          <paper-item>ml</paper-item>
+          <paper-item>L</paper-item>
+          <paper-item>cuillère à soupe</paper-item>
+          <paper-item>cuillère à café</paper-item>
+          <paper-item>verre</paper-item>
+          <paper-item>tasse</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
+    </div>
+  </template>
+
+  <script>
+  Polymer({
+
+    is: 'quantity-input-element',
+
+    behaviors: [
+/*      Polymer.PaperInputBehavior,*/
+      Polymer.IronFormElementBehavior
+    ],
+
+    properties: {
+      /**
+       * The label for this input.
+       */
+      label: {
+        type: String,
+        value: 'Quantité'
+      },
+
+      value: {
+        type: String,
+        observer: '_onValueChanged'
+      }
+    },
+
+    observers: [
+      '_onFocusedChanged(focused)'
+    ],
+
+    ready: function() {
+      // If there's an initial input, validate it.
+//      if (this.value)
+//        this._handleAutoValidate();
+    },
+
+    /**
+     * A handler that is called on input
+     */
+    _onValueChanged: function(value, oldValue) {
+      // The initial property assignment is handled by `ready`.
+      if (oldValue == undefined || value === oldValue)
+        return;
+
+      //Ensure value is a string
+      value = value ? value.toString() : '';
+//      this._handleAutoValidate();
+    },
+
+    /**
+     * Overidden from Polymer.PaperInputBehavior.
+     */
+    validate: function() {
+      // Update the container and its addons (i.e. the custom error-message).
+      var valid = this.$.input.validate()
+      this.$.container.invalid = !valid;
+      this.$.container.updateAddons({
+        inputElement: this.$.input,
+        value: this.value,
+        invalid: !valid
+      });
+
+      return valid;
+    },
+
+    /**
+     * Overidden from Polymer.IronControlState.
+     */
+    _onFocusedChanged: function(focused) {
+//      if (!focused) {
+//        this._handleAutoValidate();
+//      }
+    },
+
+    /**
+    * Return the value with the unit (example : "45gr")
+    */
+    getFullValue: function() {
+      return this.value + this.$.unit.value;
+    }
+  });
+
+  </script>
+
+</dom-module>

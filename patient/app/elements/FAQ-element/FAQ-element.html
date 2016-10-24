@@ -1,0 +1,133 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../services/FAQ-service.html">
+
+<!-- internal component -->
+<link rel="import" href="question-reponse-element.html">
+
+<dom-module id="FAQ-element">
+  <template>
+
+  <style>
+      :host {
+        box-sizing: border-box;
+      }
+      #searchInput {
+        @apply(--paper-font-title);
+        @apply(--layout-flex);
+      }
+      #content {
+        @apply(--layout-vertical-center);
+        width: 100%;
+        text-align: center;
+      }
+    </style>
+
+    <FAQ-service id="faqService" faq-data="{{data}}"></FAQ-service>
+
+    <div id="content">
+      <paper-input id="searchInput" label="Question ?" on-value-changed="searchChanged" value="{{search}}">
+        <iron-icon icon="search" prefix></iron-icon>
+      </paper-input>
+      <template is="dom-repeat" items="[[data]]">
+        <question-reponse-element class="QR" qr="[[item]]"></question-reponse-element>
+      </template>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'FAQ-element',
+      properties:{
+        data: {
+          type: Array,
+          observer: 'dataChanged'
+        },
+        search:String
+      },
+      searchChanged: function() {
+        var list = this.$.content.children;
+        var patt = new RegExp("^" + this.search + ".*")
+        for (var i=0; i<list.length; i++) {
+          var itemlist = list[i];
+          if (itemlist.tagName === "QUESTION-REPONSE-ELEMENT") {
+/*            console.log("similarity(" + itemlist.qr.question + ", " + this.search + ")");
+            console.log(this.similarity(itemlist.qr.question, this.search))*/
+            if (this.search === "")
+              itemlist.removeAttribute("hidden");
+            else if (itemlist.qr.question.toLowerCase().match(patt) || itemlist.qr.response.toLowerCase().match(patt) || itemlist.qr.category.toLowerCase().match(patt) || this.similarity(itemlist.qr.question, this.search) > 0.6 || this.similarity(itemlist.qr.response, this.search) > 0.6)
+              itemlist.removeAttribute("hidden");
+            else
+              itemlist.setAttribute("hidden", true);
+          }
+        }
+      },
+      similarity: function (s1, s2) {
+        var longer = s1;
+        var shorter = s2;
+        if (s1.length < s2.length) {
+          longer = s2;
+          shorter = s1;
+        }
+        var longerLength = longer.length;
+        if (longerLength == 0)
+          return 1.0;
+        return (longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength);
+      },
+      editDistance: function(s1, s2) {
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+
+        var costs = new Array();
+        for (var i = 0; i <= s1.length; i++) {
+          var lastValue = i;
+          for (var j = 0; j <= s2.length; j++) {
+            if (i == 0)
+              costs[j] = j;
+            else {
+              if (j > 0) {
+                var newValue = costs[j - 1];
+                if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                  newValue = Math.min(Math.min(newValue, lastValue),
+                costs[j]) + 1;
+                costs[j - 1] = lastValue;
+                lastValue = newValue;
+              }
+            }
+          }
+          if (i > 0)
+            costs[s2.length] = lastValue;
+        }
+        return costs[s2.length];
+      },
+      dataChanged: function() {
+        if (this.data) {
+          for (var i=0; i<this.data.length; i++) {
+            var item = this.data[i];
+            item.question = unescape(item.question);
+            item.response = unescape(item.response);
+          }
+        }
+      },
+      refresh: function() {
+        this.$.faqService.getFAQ();
+      }
+    });
+  })();
+  </script>
+</dom-module>

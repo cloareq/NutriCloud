@@ -1,0 +1,118 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="my-ajax">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax
+    id="ajax"
+    headers="{{headers}}"
+    url="{{url}}"
+    method="{{method}}"
+    handleAs="{{handleAs}}"
+    lastResponse="{{lastResponse}}"
+    on-response="_handleSuccess"
+    on-error="_handleError"
+    ></iron-ajax>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    /**
+    * Fire event 'response' (extension of the iron-ajax response)
+    */
+
+    Polymer({
+      is: 'my-ajax',
+
+      properties: {
+
+        /**
+        * Forwarding properties iron-ajax
+        */
+
+        headers: Object,
+        url: String,
+        method: {
+          type: String,
+          value: 'GET',
+        },
+        handleAs: {
+          type: String,
+          value: 'json'
+        },
+
+        /**
+        * Data property for upward binding, changed when iron-ajax response is fired
+        */
+
+        data: {
+          type: Object,
+          readOnly: true,
+          notify: true
+        }
+      },
+      go: function() {
+        app.activateSpinner();
+        this.$.ajax.generateRequest();
+      },
+      setBody: function(body) {
+        this.$.ajax.body = body;
+      },
+      _handleSuccess: function(event, detail) {
+        app.desactivateSpinner();
+
+        this._setData(this.$.ajax.lastResponse);
+        this.set('lastResponse', this.$.ajax.lastResponse);
+        this.fire('response', {response: this.$.ajax.lastResponse});
+      },
+      _handleError: function(error) {
+        app.desactivateSpinner();
+
+        var code = error.detail.request.xhr.status;
+        console.log("error my-ajax " + code);
+        //302 suggest a redirection send by the server. Always send after a logout action or when i'm not login!
+        //403 means unauthorized access so i redirect
+        var method = this["_" + code.toString()];
+        if (method)
+          method.bind(this)(error);
+      },
+
+      // redirection error
+      _302: function(error) {
+          this._redirectConnection();
+      },
+      _401: function(error) {
+          this._redirectConnection();
+      },
+      _403: function(error) {
+          this._redirectConnection();
+      },
+      _404: function(error) {
+        console.log("404");
+        if (error.detail.request.xhr.responseURL.match("/NutriCloud/web/app_dev.php/login"))
+          this._redirectConnection();
+      },
+      //redirection to connection page
+      _redirectConnection: function() {
+        document.location.href = "/connection";
+      }
+    });
+  })();
+  </script>
+</dom-module>

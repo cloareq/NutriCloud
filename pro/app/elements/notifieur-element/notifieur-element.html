@@ -1,0 +1,28 @@
+<link rel="import" src="../../bower_components/polymer/polymer.html">
+
+<dom-module id="notifieur-element">
+  <template>
+    <style>
+    </style>
+  </template>
+  <script>
+  Polymer({
+    is:"notifieur-element",
+    ready: function() {
+      if (!Notification)
+        console.log('Desktop notifications not available in your browser. Try Chrome/Mozilla/Opera/Safari.'); 
+      else if (Notification.permission !== "granted")
+        Notification.requestPermission();
+    },
+    notifier: function(title, body, callback) {
+      if (Notification.permission === "granted") {
+        var notification = new Notification(title, {
+          icon: 'http://nutricloud.eu/fav.ico',
+          body: body
+        });
+        notification.onclick = callback;
+      }
+    }
+  });
+  </script>
+</dom-module>

@@ -1,0 +1,140 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+
+<dom-module id="question-reponse-element">
+  <template>
+  <style>
+    :host {
+      color: rgb(255, 255, 255);
+      background-color: rgb(69, 70, 70);
+      text-align: center;
+      max-height: 40px;
+      max-width: 40px;
+    }
+    .question {
+      position: relative;
+      padding: 15px;
+      color: #454646;
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .question:hover {
+      cursor: pointer;
+      background-color: rgb(231, 232, 232);
+    }
+    .reponse_collapse {
+      position:relative;
+      padding: 0 10px;
+    }
+    .reponse {
+      width: 100%;
+      padding: 2px;
+      color: #454646;
+      border-bottom: 1px solid #0A98CF;
+      margin-right: 10px;
+    }
+    .edit {
+      margin-right: 10px;
+      padding: 3px;
+      background-color: rgb(69, 70, 70);
+      border-radius: 5px;
+    }
+    .edit:hover {
+      background-color: #0A98CF;
+    }
+    .QR_wrap {
+      @apply(--layout-horizontal-center);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      padding: 2px 10px;
+      font-family: "RobotoDraft", sans-serif;
+    }
+    .QR_wrap:hover {
+      background-color: rgb(231, 232, 232);;
+    }
+    .removeResp {
+      padding: 3px;
+      background-color: rgb(69, 70, 70);
+      border-radius: 5px;
+    }
+    .removeResp:hover {
+      background-color: red;
+    }
+    .flex1child {
+      @apply(--layout-flex-1);
+    }
+    .QR {
+      @apply(--layout-vertical-center-flex-11);
+      padding: 0px 10px;
+    }
+    .container {
+      @apply(--layout-horizontal);
+    }
+    p {
+      text-align: justify;
+    }
+  </style>
+
+    <div class="QR_wrap">
+      <div class="QR">
+        <p id="questionArea" on-click="toggleResponse" class="question"><span>• </span><span>{{qr.question}}</span></p>
+        <iron-collapse id="response" class="reponse_collapse">
+          <div class="container">
+            <p id="responseArea" class="reponse flex10child">{{qr.response}}</p>
+            <iron-icon id="edit" on-click="toggleUpdateForm" icon="create" class="edit flex1child"></iron-icon>
+            <iron-icon id="remove" on-click="removeQuest" icon="delete" class="removeResp flex1child" theme="core-light-theme"></iron-icon>
+          </div>
+
+          <!-- dialog de modification -->
+          <paper-dialog id="updateQR" style=" width: 40%; max-width: 50%; max-height: 500px;">
+            <div id="overlay">
+              <h3 style="color: rgb(69, 70, 70); font-family: 'RobotoDraft', sans-serif; text-align: center; margin: 0;">Modification</h3>
+                <form vertical layout center id="updForm" on-submit="sendChange">
+                  <paper-input id="updateQ" label="Question" value="{{qr.question}}" floatingLabel></paper-input>
+                  <paper-input id="updateR" label="Réponse" value="{{qr.response}}" floatingLabel></paper-input>
+                  <paper-input id="updateC" label="Catégorie" value="{{qr.category}}" floatingLabel></paper-input>
+                  <paper-button raised type="submit" on-click="sendChange" style="color: rgb(255, 255, 255);background-color: rgb(69, 70, 70); margin-top: 10px; padding: 10px 15px;">Valider</paper-button>
+                </form>
+              </div>
+            </paper-dialog>
+          </iron-collapse>
+        </div>
+      </div>
+  </template>
+
+  <script>
+  	Polymer({is:'question-reponse-element',
+  		properties: {
+        qr: Object
+      },
+      ready: function() {
+        console.log("QR element ready");
+      },
+      sendChange: function() {
+        this.fire('qr-update', {
+          id: this.qr.id,
+          question:unescape(this.qr.question),
+          response:unescape(this.qr.response),
+          category:this.qr.category
+        });
+        this.$.updateQR.close();
+      },
+      removeQuest: function() {
+        this.fire('qr-remove', {
+          id: this.qr.id
+        });
+      },
+      toggleResponse: function(event) {
+        this.$.response.toggle()
+      },
+      toggleUpdateForm: function(event) {
+        this.$.updateQR.toggle()
+      }
+  	});
+  </script>
+</dom-module>

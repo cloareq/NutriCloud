@@ -1,0 +1,1 @@
+[{% for patient in PatientList %}{"id": "{{ patient.id }}","firstName": "{{ patient.firstName }}", "lastName": "{{ patient.lastName }}", "phone": "{{ patient.phone }}", "mail": "{{ patient.mail }}", "city": "{{ patient.city }}", "postcode": "{{ patient.postcode }}", "address": "{{ patient.address }}", "mail": "{{ patient.mail }}"}{% if loop.last ==false%},{% endif %}{% endfor %}]

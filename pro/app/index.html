@@ -1,0 +1,210 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Nutricloud">
+  <title>NutriCloud</title>
+
+  <!-- Place favicon.ico in the `app/` directory -->
+
+  <!-- Chrome for Android theme color -->
+  <meta name="theme-color" content="#2E3AA1">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Tile color for Win8 -->
+  <meta name="msapplication-TileColor" content="#3372DF">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="PSK">
+  <link rel="icon" sizes="192x192" href="favicon.ico">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Nutricloud">
+  <link rel="apple-touch-icon" href="favicon.ico">
+
+  <!-- Tile icon for Win8 (144x144) -->
+  <meta name="msapplication-TileImage" content="favicon.ico">
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild-->
+
+  <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <!-- endbuild -->
+
+  <!-- Because this project uses vulcanize this should be your only html import
+       in this file. All other imports should go in elements.html -->
+  <link rel="import" href="elements/elements.html">
+  <link rel="import" href="styles/color-nutricloud.html">
+  <!-- For shared styles, shared-styles.html import in elements.html -->
+  <style is="custom-style" include="shared-styles">
+      button.no-style {
+        -webkit-appearance: none;
+        border: 0;
+        padding: 0;
+        background: transparent;
+      }
+    .menu-name {
+      margin-right: 20px;
+    }
+  </style>
+</head>
+
+<body unresolved>
+  <span id="browser-sync-binding"></span>
+  <template is="dom-bind" id="app">
+
+    <!-- Tools to know if large or small media is used by the user -->
+    <iron-media-query
+        on-query-matches-changed="mediaSizeChanged"
+        query-matches="{{isLarge}}"
+        query="(min-width: 601px)">
+    </iron-media-query>
+
+    <notifieur-element id="notifieur"></notifieur-element>
+
+    <!-- dialog form to create a new patient -->
+    <create-patient on-patient-created="refreshPatientList" id="patientForm" on-create-patient="createPatient"></create-patient>
+
+    <!--  Get patients list from API-->
+    <patients-list-service id="patientsListService" patients="{{patients}}" on-list-loaded="updateCurrentRoute"></patients-list-service>
+
+    <!-- responsive-width="800px" change in app.js because not working in attribute.... -->
+    <paper-drawer-panel id="paperDrawerPanel">
+
+      <!-- Drawer Scroll Header Panel -->
+      <paper-scroll-header-panel id="headerPanel" drawer fixed>
+
+        <!-- Drawer Toolbar -->
+        <paper-toolbar id="drawerToolbar">
+          <paper-input id="searchInput" class="menu-name" label="Rechercher un patient" on-value-changed="searchChanged" value="{{search}}"></paper-input>
+          <iron-icon icon="add-circle-outline" id="icon_button" theme="core-light-theme" on-click="toggleForm"></iron-icon>
+        </paper-toolbar>
+
+        <!-- Drawer Content -->
+        <div id="drawerContent">
+          <paper-menu id="listPatients" attr-for-selected="patient-id" selected="[[patientId]]">
+            <template is="dom-repeat" items="[[patients]]">
+              <a patient-id="[[item.id]]" href$="[[baseUrl]]patient/[[item.id]]">
+                <span>{{item.fullName}}</span>
+              </a>
+            </template>
+          </paper-menu>
+
+          <!-- Logout button -->
+          <logout-element id="logout"></logout-element>
+        </div>
+
+      </paper-scroll-header-panel>
+
+      <!-- Main Area -->
+      <paper-header-panel main id="headerPanelMain">
+        <!-- Main Toolbar -->
+        <paper-toolbar id="mainToolbar">
+          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+
+          <!-- Application menu => toolbar|tabs menu -->
+          <paper-tabs class="bottom self-end greenbar" scrollable hideScrollButtons id="menuToolbar" attr-for-selected="data-route" selected="[[route]]">
+            <paper-tab data-route="home" on-click="updateContent" link>
+              <a href="{{baseUrl}}home">
+                <iron-icon class="logo" src="images/logo/LogoQuentin.png" ></iron-icon>
+              </a>
+            </paper-tab>
+
+              <paper-tab data-route="planning" on-click="updateContent" link>
+                <a href="{{baseUrl}}planning">
+                  <iron-icon icon="today"></iron-icon>
+                  <span>Planning</span>
+              </a>
+            </paper-tab>
+
+              <paper-tab data-route="FAQ" on-click="updateContent" link>
+                <a href="{{baseUrl}}FAQ">
+                  <iron-icon icon="help"></iron-icon>
+                  <span>F.A.Q</span>
+              </a>
+            </paper-tab>
+
+           <paper-tab data-route="infos" on-click="updateContent" link>
+              <a href="{{baseUrl}}infos">
+                <iron-icon icon="account-circle"></iron-icon>
+                <span>Informations</span>
+              </a>
+            </paper-tab>
+          </paper-tabs>
+
+        </paper-toolbar>
+
+        <!-- Main Content -->
+        <div class="content">
+          <div hidden id="spinnerBox" class="spinner-box">
+            <paper-spinner></paper-spinner>
+          </div>
+
+          <iron-pages id="contentPages" attr-for-selected="data-route" selected="{{route}}">
+            <section data-route="home">
+              <home-pro></home-pro>
+            </section>
+            <section data-route="planning">
+              <planning-element id="planning" patientslist="[[patients]]"></planning-element>
+            </section>
+            <section data-route="FAQ">
+              <FAQ-element></FAQ-element>
+            </section>
+            <section data-route="infos">
+              <info-medecin></info-medecin>
+            </section>
+          </iron-pages>
+        </div>
+      </paper-header-panel>
+    </paper-drawer-panel>
+
+    <paper-toast-top id="toast">
+      <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">X</span>
+    </paper-toast-top>
+
+    <!-- Uncomment next block to enable Service Worker support (1/2) -->
+    <!--
+    <paper-toast id="caching-complete"
+                 duration="6000"
+                 text="Caching complete! This app will work offline.">
+    </paper-toast>
+
+    <platinum-sw-register auto-register
+                          clients-claim
+                          skip-waiting
+                          base-uri="bower_components/platinum-sw/bootstrap"
+                          on-service-worker-installed="displayInstalledToast">
+      <platinum-sw-cache default-cache-strategy="fastest"
+                         cache-config-file="cache-config.json">
+      </platinum-sw-cache>
+    </platinum-sw-register>
+    -->
+
+  </template>
+
+  <!-- build:js scripts/app.js -->
+  <script src="scripts/app.js"></script>
+  <!-- endbuild-->
+</body>
+
+</html>

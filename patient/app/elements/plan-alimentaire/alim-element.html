@@ -1,0 +1,50 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
+<dom-module id="alim-element">
+  <template>
+  	<style>
+	 	 .quantite {
+		    font-family: 'RobotoDraft', 'RobotoDraft', sans-serif;
+           font-weight:bold;
+           display: inline-block;
+             text-align: left;
+		  }
+         .desc {
+           display: inline-block;
+           text-align: right;
+         }
+         .my-inline {
+             display: inline-block;
+         }
+		  .remove {
+              margin-left: 5px;
+			  float:right;
+  		}
+          .info {
+              display: block;
+          }
+  	</style>
+  	<div class="info">
+		<div>
+          <div class="quantite">{{data.quantity}}</div>
+          <div class="desc">
+              <div class="my-inline">{{data.aliment}}</div>
+          </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+  </template>
+
+  <script>
+  Polymer({ is:'alim-element',
+    properties: {
+      jour: String,
+      data: Object
+    },
+    ready: function() {
+      console.log("alim ready");
+    }
+  });
+  </script>
+</dom-module>

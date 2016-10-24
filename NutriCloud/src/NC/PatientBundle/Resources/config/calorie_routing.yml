@@ -1,0 +1,45 @@
+##### CALORIES #####
+
+# DELETE
+nc_calorie_deleteCalorie_pro:
+    path:     /pro/calorie/delete/{id}
+    defaults: { _controller: NCPatientBundle:Calorie:deleteCalorie}
+    methods:  [DELETE]
+
+nc_calorie_deleteCalorie_patient:
+    path:     /patient/calorie/delete/{id}
+    defaults: { _controller: NCPatientBundle:Calorie:deleteCalorie}
+    methods:  [DELETE]
+
+## UPDATE
+nc_calorie_updateCalorie_pro:
+    path:     /pro/calorie/update/{id}
+    defaults: { _controller: NCPatientBundle:Calorie:updateCalorie}
+    methods:  [PUT]
+
+nc_calorie_updateCalorie_patient:
+    path:     /patient/calorie/update/{id}
+    defaults: { _controller: NCPatientBundle:Calorie:updateCalorie}
+    methods:  [PUT]
+
+## CREATE
+nc_calorie_createCalorie_pro:
+    path:	/pro/calorie/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Calorie:createCalorie }
+    methods:  [POST]
+
+nc_calorie_createCalorie_patient:
+    path:	/patient/calorie/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Calorie:createCalorie }
+    methods:  [POST]
+
+## GET
+nc_calorie_getCalorie_pro:
+    path:     /pro/calorie/{patientId}
+    defaults: { _controller: NCPatientBundle:Calorie:getCalories }
+    methods:  [GET]
+
+nc_calorie_getCalorie_patient:
+    path:     /patient/calorie/{patientId}
+    defaults: { _controller: NCPatientBundle:Calorie:getCalories }
+    methods:  [GET]

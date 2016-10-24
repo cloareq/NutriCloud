@@ -1,0 +1,79 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
+
+<!-- Styling sheet -->
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<dom-module id="indicateur-element">
+  <template>
+  	<style>
+      google-chart {
+        height: initial;
+        width: inherit;
+      }
+  	</style>
+
+	<google-chart id="chart" type='gauge' data='[[dataChart]]' options='[[options]]'>
+	</google-chart>
+
+  </template>
+
+  <script>
+  	Polymer({
+  		is:'indicateur-element',
+  		properties: {
+  			data: Object,
+  			value: Number,
+  			label: String,
+
+  			//color extremity of the gauge
+        color:String,
+
+        //should be the best weight value
+  			greenBegin: Number,
+  			greenEnd: Number,
+  			min: Number,
+  			max: Number,
+
+  			options: {
+          type: Object,
+          value: function() {
+            return {};
+          }
+        }
+  		},
+  		refresh: function(value) {
+        this.value = value;
+        if (this.value.toFixed)
+          this.dataChart = [['Label', 'Value'], [this.label, parseFloat(this.value.toFixed(1))]];
+        else
+          this.dataChart = [['Label', 'Value'], [this.label, parseInt(this.value)]];
+
+        var opt = {};
+  			opt.greenFrom = this.greenBegin;
+  			opt.greenTo = this.greenEnd;
+
+        //yellow is red in fact to complete the red color from the min to the begin of the green area
+        opt.yellowColor = this.color;
+        opt.redColor = this.color;
+
+
+        //fixed min and max value to 1 decimal
+        this.min = parseInt(this.min);
+        this.max = parseInt(this.max);
+
+  			opt.yellowFrom = this.min;
+  			opt.yellowTo = this.greenBegin;
+
+  			opt.redFrom = this.greenEnd;
+  			opt.redTo = this.max;
+
+  			opt.min = this.min;
+  			opt.max = this.max;
+
+        this.options = opt;
+//  			opt.minorTicks = (this.max - this.min) / 20;
+  		}
+  	});
+  </script>
+</dom-module>

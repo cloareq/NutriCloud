@@ -1,0 +1,72 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../services/FAQ-service.html">
+
+<!-- internal component -->
+<link rel="import" href="addquestion-element.html">
+<link rel="import" href="question-reponse-element.html">
+
+<dom-module id="FAQ-element">
+  <template>
+
+  <style>
+      :host {
+        box-sizing: border-box;
+      }
+      #addBlock {
+        margin: 1% 2% 1% 1%;
+      }
+      #content {
+        @apply(--layout-vertical-center);
+        width: 100%;
+        text-align: center;
+      }
+    </style>
+
+    <FAQ-service id="faqService" on-qr-modified="refresh" faq-data="{{data}}"></FAQ-service>
+
+    <div id="content">
+      <div id="addBlock">
+        <addquestion-element on-add-qr="addQR"></addquestion-element>
+      </div>
+
+      <template is="dom-repeat" items="[[data]]">
+        <question-reponse-element on-qr-update="updateQR" on-qr-remove="removeQR" qr="[[item]]"></question-reponse-element>
+      </template>
+    </div>
+  </template>
+
+  <script>
+  Polymer({is:'FAQ-element',
+    properties:{
+      data: {
+        type: Array,
+        observer: 'dataChanged'
+      }
+    },
+    addQR: function(event) {
+      this.$.faqService.addQR(escape(event.detail.question), escape(event.detail.response), escape(event.detail.category));
+    },
+    updateQR: function(event) {
+      this.$.faqService.updateQR(event.detail.id, escape(event.detail.question), escape(event.detail.response), escape(event.detail.category));
+    },
+    removeQR: function(event) {
+      this.$.faqService.removeQR(event.detail.id);
+    },
+    dataChanged: function() {
+      if (this.data) {
+        for (var i=0; i<this.data.length; i++) {
+          var item = this.data[i];
+          item.question = unescape(item.question);
+          item.response = unescape(item.response);
+        }
+      }
+    },
+    refresh: function() {
+      this.$.faqService.getFAQ();
+    }
+  });
+  </script>
+</dom-module>

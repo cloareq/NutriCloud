@@ -1,0 +1,56 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="id-service">
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+  <template>
+    <my-ajax id="ajax"
+      handleAs="json"
+      on-response="ajaxSuccess"
+      >
+    </my-ajax>
+  </template>
+  <script>
+  	Polymer({
+  		is: 'id-service',
+  		properties: {
+        userId: {
+          type: Number,
+          notify: true,
+          readOnly: true
+        },
+        proId: {
+          type: Number,
+          notify: true,
+          readOnly: true
+        }
+  		},
+      getUserId: function() {
+        this.$.ajax.method="GET";
+        this.$.ajax.headers = {};
+        this.$.ajax.setBody ({});
+        this.$.ajax.url="/NutriCloud/web/app_dev.php/patient/info";
+        this.$.ajax.go();
+      },
+/*
+      getProId: function() {
+        this.$.ajax.method="GET";
+        this.$.ajax.headers = {};
+        this.$.ajax.setBody ({});
+        this.$.ajax.url="/NutriCloud/web/app_dev.php/patient/faq/";
+        this.$.ajax.go();
+      },
+*/
+      ajaxSuccess: function() {
+  			this._setUserId(this.$.ajax.data.id);
+        this.fire('response', {response: this.$.ajax.data.id});
+  		}
+  	});
+  </script>
+
+</dom-module>

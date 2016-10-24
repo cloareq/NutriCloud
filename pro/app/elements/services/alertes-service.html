@@ -1,0 +1,70 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="alertes-service" >
+  <template>
+  	<style>
+  	</style>
+
+   <my-ajax id="ajax"
+      on-response="ajaxSuccess"
+      handleAs="json">
+    </my-ajax>
+
+  </template>
+
+  <script>
+  	Polymer({ is:'alertes-service',
+      properties: {
+        alertes: {
+          type: Array,
+          notify: true,
+          readOnly: true
+        }
+      },
+      getAlertes: function() {
+        this.lastRequest = "getAlertes";
+        this.$.ajax.setBody({});
+        this.$.ajax.headers = {};
+        this.$.ajax.method = 'GET';
+        this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/alert/get/all';
+        this.$.ajax.go();
+      },
+      getAlerteType: function(alertName) {
+        this.lastRequest = "getAlerteType";
+        this.$.ajax.setBody({});
+        this.$.ajax.headers = {};
+        this.$.ajax.method = 'GET';
+        this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/alert/get/name/' + alertName;
+        this.$.ajax.go();
+      },
+      getAlertePatient: function(patientId) {
+        this.lastRequest = "getAlertePatient";
+        this.$.ajax.setBody({});
+        this.$.ajax.headers = {};
+        this.$.ajax.method = 'GET';
+        this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/alert/get/' + patientId;
+        this.$.ajax.go();
+      },
+      getAlerteTypePatient: function(alertName, patientId) {
+        this.lastRequest = "getAlerteTypePatient";
+        this.$.ajax.setBody({});
+        this.$.ajax.headers = {};
+        this.$.ajax.method = 'GET';
+        this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/alert/get/id/' + patientId + '/name/' + alertName;
+        this.$.ajax.go();
+      },
+      removeAlerte: function(alertId) {
+        this.lastRequest = "removeAlerte";
+        this.$.ajax.setBody({});
+        this.$.ajax.headers = {};
+        this.$.ajax.method = 'DELETE';
+        this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/alert/delete/' + alertId;
+        this.$.ajax.go();
+      },
+      ajaxSuccess: function() {
+        if (this.lastRequest == "getAlertes")
+          this._setAlertes(this.$.ajax.data);
+      }
+    });
+  </script>
+</dom-module>

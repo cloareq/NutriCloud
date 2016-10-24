@@ -1,0 +1,54 @@
+nc_patient_getPatientList:
+    path:     /pro/patient/list
+    defaults: { _controller: NCPatientBundle:Patient:listPatient }
+    methods:  [GET]
+
+nc_patient_newPatient:
+    path:     /pro/patient/new
+    defaults: { _controller: NCPatientBundle:Patient:newPatient }
+    methods:  [POST]
+
+nc_get_patient_id:
+    path:   /patient/id
+    defaults: { _controller: NCPatientBundle:Patient:getConnectedUserId}
+
+nc_patient_updatePatient:
+    path:     /patient/update/{patientId}
+    defaults: { _controller: NCPatientBundle:Patient:updatePatient }
+    methods:  [POST]
+
+nc_pro_updatePatient:
+    path:     /pro/update/{patientId}
+    defaults: { _controller: NCPatientBundle:Patient:updatePatient }
+    methods:  [POST]
+
+nc_patient_removePatient:
+    path:     /patient/remove
+    defaults: { _controller: NCPatientBundle:Patient:removePatient}
+    methods:  [GET]
+
+nc_patient_PatientInfoPro:
+    path:     /pro/patient/{patientId}
+    defaults: { _controller: NCPatientBundle:Patient:getPatientInfo}
+    methods:  [GET]
+
+nc_patient_PatientInfo:
+    path:     /patient/info
+    defaults: { _controller: NCPatientBundle:Patient:getInfo}
+    methods:  [GET]
+
+##### LOGIN ######
+
+patient_login_check:
+    pattern:   /patient/login_check
+
+patient_logout:
+    pattern:   /patient/logout
+
+patient_connected:
+    path:     /patient/connected
+    defaults: { _controller: NCPatientBundle:Patient:connected }
+
+patient_notconnected:
+    path:     /patient/notconnected
+    defaults: { _controller: NCPatientBundle:Patient:notconnected }

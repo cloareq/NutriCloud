@@ -1,0 +1,244 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<link rel="import" href="../../styles/app-theme.html">
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<dom-module id="lastnote-element">
+	<template>
+		<style>
+			#navdiv {
+				padding: 2%;
+				@apply(--layout-horizontal);
+				@apply(--layout-flex);
+			}
+			#navdiv paper-item {
+				@apply(--layout-flex);
+				@apply(--layout-center);
+				@apply(--layout-center-center);
+			}
+			.nav {
+				background-color: var(--color-nutricloud-black);
+			}
+			section {
+				text-align: center;
+			}
+		</style>
+
+		<div id="content">
+	      <div id="navdiv">
+			<paper-fab on-click="prev" id="prev" class="nav" icon="arrow-back" title="arrow-back" role="button" tabindex="0" aria-label="arrow-back"></paper-fab>
+			<paper-item id="datecontent">{{label}}</paper-item>
+			<paper-fab on-click="next" id="next" class="nav" icon="arrow-forward" title="arrow-forward" role="button" tabindex="0" aria-label="arrow-forward"></paper-fab>
+		  </div>
+		  <iron-pages id="msg" selected="{{selected}}">
+			<template is="dom-repeat" items="{{data}}">
+				<section class="content">
+					<p>{{item.note}}</p>
+				</section>
+			</template>
+		  </iron-pages>
+		</div>
+	</template>
+
+	<script>
+		Polymer({is: 'lastnote-element',
+			properties: {
+				selected: {
+					type: Number,
+					notify: true,
+					value: 0,
+					observer: 'dataChanged'
+				},
+				data: {
+					type:Array,
+					observer: 'dataChanged'
+				},
+				label: String
+			},
+			dataChanged: function() {
+				if (this.data && this.data.length > 0) {
+					//unescape commentaire
+					this.data.forEach(function(el) {el.note = unescape(el.note);});
+					this.label = moment(this.data[this.selected].date).format("DD MMMM YYYY");
+				}
+				else
+					this.label = "Vous n'avez aucun commentaire sur ce patient.";
+			},
+			prev: function() {
+				this.$.msg.selectPrevious();
+			},
+			next: function() {
+				this.$.msg.selectNext();
+			}
+		});
+	</script>
+</dom-module>
+
+<!--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
+<dom-module id="lastnote-element">
+	<template>
+		<style>
+			:host {
+				padding-bottom: 3%;
+			}
+			#preview {
+				position: fixed;
+				width: 60%;
+				height: 60%;
+				color: white;
+				top: 0;
+				left: 0;
+				z-index: 99999;
+				zoom: 4;
+				padding-left:25%;
+				padding-right:15%;
+				padding-top:10%;
+				padding-bottom:30%;
+				background: rgba(0,0,0,0.8);
+			}
+			#textcontent {
+				height: 90%;
+			}
+			#content {
+				height: inherit;
+  				background-color: #0A98CF;
+				padding: 2%;
+  			}
+			#datecontent {
+				color:white;
+				font-family: 'RobotoDraft', sans-serif;
+				text-align: center;
+				padding: 15px 0;
+			}
+			.core-selected {
+				height: 65%;
+  				padding: 0% 5% 0% 5%;
+    		}
+  			.nav {
+				background: rgb(69, 70, 70);
+     		}
+  			.nav:hover {
+				background: #0AC45E;
+     		}
+     		#navdiv {
+				position: relative;
+     			@apply(--layout-horizontal);
+				margin-bottom: 2%;
+     		}
+			#next {
+			}
+		</style>
+
+		<iron-ajax id="ajax"
+			on-response="updateData"
+			handleAs="json"
+			method="GET">
+		</iron-ajax>
+		<div id="content">
+			<div id="navdiv">
+				<paper-fab on-click="prev" id="prev" class="nav" icon="arrow-back" title="arrow-back" role="button" tabindex="0" aria-label="arrow-back"></paper-fab>
+				<div id="datecontent" class="flex">{{currentdate}}</div>
+				<paper-fab on-click="next" id="next" class="nav" icon="arrow-forward" title="arrow-forward" role="button" tabindex="0" aria-label="arrow-forward"></paper-fab>				this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/note/" + patientId;
+				this.currentdate = "loading";
+				this.$.ajax.generateRequest()
+
+			</div>
+			<iron-pages id="msg" selected="{{selected}}">
+				<template is="dom-repeat" items="{{data}}">
+					<paper-textarea style="text-align: vertical; overflow-x: hidden; color:#FFF !important;" on-click="fullScreen" value="{{item.note::input}}" readonly id="textcontent"></paper-textarea>
+				</template>
+			</iron-pages>
+			<div id="preview" hidden on-click="togglePreview"><p id="previewContent"></p></div>
+		</div>
+	</template>
+
+	<script>
+		Polymer({ is:'lastnote-element',
+			properties: {
+		        selected: {
+		        	type:Number,
+		        	value: 0,
+        		  	observer: 'selectedChanged'
+		        },
+				currentdate: String,
+				data: Array
+			},
+ 			ready: function() {
+ 				this.style.height = (window.screen.height * 0.18).toString() + "px";
+				this.currentdate = "Pas de précédent suivi.";
+			},
+			update: function(patientId) {
+				this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/note/" + patientId;
+				this.currentdate = "loading";
+				this.$.ajax.generateRequest()
+			},
+			selectedChanged: function() {
+				if (this.data)
+					this.currentdate = this.data[this.selected].date;
+			},
+			prev: function() {
+				this.$.msg.selectPrevious();
+			},
+			next: function() {
+				this.$.msg.selectNext();
+			},
+			updateData: function() {
+				var i = 0;
+				var idx = [];
+				this.data = [];
+				if (this.$.ajax.lastResponse) {
+					this.data = this.$.ajax.lastResponse;
+					while (i < this.data.length) {
+						if (this.data[i].note == "")
+							this.data.splice(i, 1);
+						else {
+							this.data[i].note = unescape(this.data[i].note);
+							i++;
+						}
+					}
+					if (this.data.length > 0)
+						this.data.reverse();
+				}
+				if (this.data.length == 0)
+					this.data.push({"note": "Aucune note disponible", "date": "Pas de précédent suivi."});
+				this.selected = 0;
+				this.currentdate = this.data[this.selected].date;
+			},
+			togglePreview: function() {
+				this.$.preview.hidden = !this.$.preview.hidden;
+			},
+			fullScreen: function(event) {
+				this.$.previewContent.textContent = event.currentTarget.textContent;
+				this.$.preview.hidden = false;
+			}
+		});
+	</script>
+</dom-module>
+-->

@@ -1,0 +1,19 @@
+nc_pro_new_msg:
+    path:     /pro/message/new
+    defaults: { _controller: NCMessageBundle:Message:newMessage }
+    methods:  [POST]
+
+nc_patient_new_msg:
+    path:     /patient/message/new
+    defaults: { _controller: NCMessageBundle:Message:newMessage }
+    methods:  [POST]
+
+nc_message_get_patient:
+    path:     /patient/message/get/{patientId}
+    defaults: { _controller: NCMessageBundle:Message:getMessage }
+    methods:  [GET]
+
+nc_message_get_pro:
+    path:     /pro/message/get/{patientId}
+    defaults: { _controller: NCMessageBundle:Message:getMessage }
+    methods:  [GET]

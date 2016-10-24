@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script type="text/javascript">
+            function WebSocketTest(){
+	            if (!"WebSocket" in window){
+	               alert("WebSocket is supported by your Browser!"); // To DO un truc
+	            }
+	            
+	            var ws = new WebSocket("ws://localhost:3000");
+				console.log("Connection send")
+
+	            ws.onopen = function(){
+	                  ws.send('{"username": "jeremy"}');
+	                  console.log("Username sent.")
+	            };
+		 
+	            ws.onmessage = function (evt){ 
+	                console.log("Message received " + evt.data);
+	            };
+		 
+	            ws.onclose = function(){ 
+	            	console.log("Connection is closed..."); 
+	            };
+	        }
+	    </script>
+    </head>
+    <body>
+        <div id="sse">
+            <a href="javascript:WebSocketTest()">Initialise WebSocket</a>
+        </div>
+   </body>
+</html>

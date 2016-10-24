@@ -1,0 +1,43 @@
+## DELETE
+nc_allergy_deleteAllergy_pro:
+    path:     /pro/allergy/delete/{id}
+    defaults: { _controller: NCPatientBundle:Allergy:deleteAllergy}
+    methods:  [DELETE]
+
+nc_allergy_deleteAllergy_patient:
+    path:     /patient/allergy/delete/{id}
+    defaults: { _controller: NCPatientBundle:Allergy:deleteAllergy}
+    methods:  [DELETE]
+
+## UPDATE
+nc_allergy_updateAllergy_pro:
+    path:     /pro/allergy/update/{id}
+    defaults: { _controller: NCPatientBundle:Allergy:updateAllergy}
+    methods:  [PUT]
+
+nc_allergy_updateAllergy_patient:
+    path:     /patient/allergy/update/{id}
+    defaults: { _controller: NCPatientBundle:Allergy:updateAllergy}
+    methods:  [PUT]
+
+## CREATE
+nc_allergy_createAllergy_pro:
+    path:	/pro/allergy/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Allergy:createAllergy }
+    methods:  [POST]
+
+nc_allergy_createAllergy_patient:
+    path:	/patient/allergy/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Allergy:createAllergy }
+    methods:  [POST]
+
+## GET
+nc_allergy_getAllergy_pro:
+    path:     /pro/allergy/{patientId}
+    defaults: { _controller: NCPatientBundle:Allergy:getAllergys }
+    methods:  [GET]
+
+nc_allergy_getallergy_patient:
+    path:     /patient/allergy/{patientId}
+    defaults: { _controller: NCPatientBundle:Allergy:getAllergys }
+    methods:  [GET]

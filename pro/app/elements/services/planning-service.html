@@ -1,0 +1,106 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!-- Import my-component -->
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="planning-service">
+
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+
+   <my-ajax id="ajax"
+      url="/NutriCloud/web/app_dev.php/pro/patient/list"
+      method="GET"
+      on-response="ajaxSuccess"
+      handleAs="json">
+    </my-ajax>
+
+  </template>
+
+  <script>
+  Polymer({ is:'planning-service',
+    properties: {
+      /**
+      * "upward property" permet de récupérer la list de patients chargé via l'attribut.
+      * La valeur ne peut être modifier que depuis cet élément
+      */
+      appointments: {
+        type: Array,
+        notify: true,
+        readOnly: true
+      },
+      lastRequest: String
+    },
+
+    ready: function() {
+/*
+        this._setAppointments([{"title": "lalalala", "start": "10h", "end": "11h"},
+          {"title": "lalalala", "start": "11h", "end": "12h"},
+          {"title": "lalalala", "start": "12h", "end": "13h"},
+          {"title": "lalalala", "start": "15h", "end": "16h"},
+          {"title": "lalalala", "start": "16h", "end": "18h"}
+        ]);
+*/
+    },
+    createAppointment: function(patientId, start, end, title) {
+      this.lastRequest = "createAppointment";
+      this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/appointment/create/' + patientId;
+      this.$.ajax.method ='POST';
+      this.$.ajax.headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+      };
+      this.$.ajax.setBody({
+        start: start.toISOString(),
+        end: end.toISOString(),
+        comment: title
+      });
+      this.$.ajax.go();
+    },
+
+    /* call ajax to update an appointment */
+    updateAppointment: function(id, start, end, title) {
+      this.lastRequest = "updateAppointment";
+      this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/appointment/update/' + id;
+      this.$.ajax.method ='POST';
+      this.$.ajax.headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+      };
+      this.$.ajax.setBody({
+        start: start.toISOString(),
+        end: end.toISOString(),
+        comment: title
+      });
+      this.$.ajax.go();
+    },
+
+    getAppointments: function(start, end) {
+      this.lastRequest = "getAppointments";
+      this.$.ajax.method ='GET';
+      this.$.ajax.headers = {};
+      this.$.ajax.setBody({});
+      this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/appointment/get/' + start._d.toISOString() + '/' + end._d.toISOString();
+      this.$.ajax.go();
+    },
+
+    removeAppointment: function(id) {
+      this.lastRequest = "removeAppointment";
+      this.$.ajax.method ='DELETE';
+      this.$.ajax.headers = {};
+      this.$.ajax.setBody({});
+      this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/appointment/remove/' + id
+      this.$.ajax.go();
+    },
+
+    ajaxSuccess: function() {
+      if (this.lastRequest === "getAppointments")
+        this._setAppointments(this.$.ajax.data);
+      else if (this.lastRequest === "createAppointment")
+        this.fire('appointment-created');
+    }
+  });
+  </script>
+</dom-module>

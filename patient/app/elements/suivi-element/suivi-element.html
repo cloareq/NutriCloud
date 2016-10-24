@@ -1,0 +1,190 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/moment-element/moment-with-locales-import.html">
+
+<!-- data provider -->
+<link rel="import" href="../services/suivi-service.html">
+
+<!-- constant colors -->
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<link rel="import" href="plan-moment.html">
+
+<dom-module id="suivi-element">
+  <template>
+	  	<style>
+	  	#content {
+	        @apply(--layout-center-center);
+	        @apply(--layout-center);
+	  		text-align: center;
+	  	}
+	  	#header {
+	        @apply(--layout-horizontal);
+    	    @apply(--layout-flex);
+	        @apply(--layout-center);
+	        @apply(--layout-center-center);
+	  	}
+	    #header .nav {
+        	background-color: var(--color-nutricloud-black);
+    	}
+     	#dateButton {
+        width: 25%;
+      }
+      #sendButton {
+        width: 10%;
+      }
+      paper-button {
+       	margin-top:1%;
+       	margin-bottom:1%;
+       	margin-left:2%;
+       	margin-right:2%;
+       	height: 100%;
+       	color: white;
+       	background-color: var(--color-nutricloud-grey);
+      }
+  		</style>
+  		<suivi-service id="suiviService" suivi="{{suivi}}"></suivi-service>
+
+  		<div id="content">
+  		  <div id="header">
+    	    <!-- arrow left -->
+    	    <paper-fab on-click="prevDate" id="prev" class="nav" icon="arrow-back" role="button"></paper-fab>
+    	    <!-- button toggle date picker -->
+	        <paper-button on-click="togglePicker" id="dateButton"></paper-button>
+    	    <!-- arrow right -->
+	        <paper-fab on-click="nextDate" id="next" class="nav" icon="arrow-forward" role="button"></paper-fab>
+    	    <!-- date picker -->
+    	    <paper-dialog id="dialogPicker" role="dialog" class="paper-date-picker-dialog" on-iron-overlay-closed="setDatePick">
+        	  <paper-date-picker id="datePicker" locale="fr"></paper-date-picker>
+        	</paper-dialog>
+          </div>
+           <div id="plan">
+          	<iron-pages id="contentPages" attr-for-selected="data-moment" selected="{{currentMoment}}">
+          	  <section data-moment="morning">
+          	  	<plan-moment suivi="{{currentSuivi}}" on-prev="prev" on-next="next" moment="morning"></plan-moment>
+          	  </section>
+          	  <section data-moment="lunch">
+          	  	<plan-moment suivi="{{currentSuivi}}" on-prev="prev" on-next="next" moment="lunch"></plan-moment>
+          	  </section>
+          	  <section data-moment="diner">
+          	  	<plan-moment suivi="{{currentSuivi}}" on-prev="prev" on-next="next" moment="diner"></plan-moment>
+          	  </section>
+	        </iron-pages>
+	       </div>
+        <paper-button on-click="savePlan" id="sendButton">Envoyer</paper-button>
+        </div>
+	</template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'suivi-element',
+        properties: {
+          currentDate: Date,
+          currentMoment: String,
+          //Moment of the day (breakfast, lunch, diner)
+          moment: {
+            type: Array,
+            value: ["morning", "lunch", "diner"]
+          },
+          suivi: {
+            type: Object,
+            observer: 'suiviChanged'
+          }
+        },
+        ready: function() {
+          moment.locale("fr");
+          this._setCurrentMoment();
+/*
+          this.suivi = {
+            "2016-10-06": [{
+              "hour": "09:00",
+              "aliment": "Kiwi",
+              "quantity": "1",
+              "is_eaten": "true",
+              "is_model": "false"
+            }, {
+              "hour": "12:00",
+              "aliment": "Pain",
+              "quantity": "100gr",
+              "is_eaten": "false",
+              "is_model": "true"
+            }, {
+              "hour": "12:00",
+              "aliment": "Pomme",
+              "quantity": "1",
+              "is_eaten": "true",
+              "is_model": "false"
+            }, {
+              "hour": "19:00",
+              "aliment": "Soupe",
+              "quantity": "1",
+              "is_eaten": "false",
+              "is_model": "true"
+            }]
+          };
+*/
+        },
+        _setCurrentMoment: function() {
+          this.currentDate = this.currentDate || moment();
+          if (this.currentDate.hours() < 12)
+            this.currentMoment = "morning";
+          else if (this.currentDate.hours() < 16)
+            this.currentMoment = "lunch";
+          this.currentMoment = "diner";
+        },
+        suiviChanged: function() {
+          if (this.suivi) {
+            for (var d in this.suivi)
+              this.suivi[d].forEach(function(alim) {
+                alim.is_eaten = alim.is_eaten == "true" ? true : false;
+                if (!alim.is_model)
+                  alim.is_model = "true";
+                alim.is_model = alim.is_model == "true" ? true : false;
+              });
+            console.log(this.suivi);
+            this.currentSuivi = this.suivi[this.currentDate.format("YYYY-MM-DD")];
+          }
+        },
+        togglePicker: function() {
+          this.$.dialogPicker.toggle();
+        },
+        refresh: function() {
+          this.$.suiviService.getSuiviDate(app.userId, this.currentDate.format('YYYY-MM-DD'))
+          this.$.datePicker.set('date', this.currentDate.toDate());
+          this.setDatePick()
+        },
+        setDatePick: function() {
+          this.$.dateButton.set('textContent', this.currentDate.format('dddd DD MMMM YYYY'));
+        },
+        prev: function() {
+          var idx = this.moment.indexOf(this.currentMoment);
+          idx = (idx - 1 < 0) ? this.moment.length - 1 : idx - 1;
+          this.currentMoment = this.moment[idx];
+        },
+        next: function() {
+          var idx = this.moment.indexOf(this.currentMoment);
+          idx = (idx + 1 > this.moment.length - 1) ? 0 : idx + 1;
+          this.currentMoment = this.moment[idx];
+        },
+        prevDate: function() {
+          this.currentDate.day(this.currentDate.day() - 1);
+          this.refresh();
+        },
+        nextDate: function() {
+          this.currentDate.day(this.currentDate.day() + 1);
+          this.refresh();
+        },
+        savePlan: function() {
+          this.$.suiviService.saveSuiviDate(app.userId, this.currentDate.format('YYYY-MM-DD'), this.currentSuivi);
+        }
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,122 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="resume-patient-service">
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+    <my-ajax id="ajax"
+      on-response="ajaxSuccess"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxAp"
+      on-response="ajaxApSuccess"
+      handleAs="json">
+    </my-ajax>
+  </template>
+  <script>
+  Polymer({ is:'resume-patient-service',
+    properties: {
+      lastRequest: String,
+      notes: {
+        type: Array,
+        notify: true,
+        readOnly: true,
+        observer: "notesChanged"
+      },
+      lastNote: {
+        type: Object,
+        notify: true,
+        readOnly: true
+      },
+      appointments: {
+        type: Array,
+        notify: true,
+        readOnly: true
+      },
+      poids: {
+        type: Array,
+        notify: true,
+        readOnly: true
+      }
+    },
+    //set last note when notes changed
+    notesChanged: function() {
+      var val = (this.notes && this.notes[0]) ? this.notes[0] : {};
+      this._setLastNote(val);
+    },
+    ready: function() {
+/*
+      setTimeout(
+          function() {
+            this._setPoids([ ["2016-01-15" , 130] , ["2016-02-15" , 110] , ["2016-03-15" , 95] , ["2016-04-15" , 90] ]);
+            this._setNotes([
+              {"note": "Bien", "weight": "130", "height": "180", "writer": "pro", "date": "2016-01-15"},
+              {"note": "Bien", "weight": "110", "height": "180", "writer": "pro", "date": "2016-02-15"},
+              {"note": "Bien", "weight": "95", "height": "180", "writer": "pro", "date": "2016-03-15"},
+              {"note": "Bien", "weight": "90", "height": "180", "writer": "pro", "date": "2016-04-15"}
+            ]);
+          }.bind(this),
+          300);
+*/
+/*
+      this._setAppointments([{"title": "lalalala", "start": "10h", "end": "11h"},
+          {"title": "lalalala", "start": "11h", "end": "12h"},
+          {"title": "lalalala", "start": "12h", "end": "13h"},
+          {"title": "lalalala", "start": "15h", "end": "16h"},
+          {"title": "lalalala", "start": "16h", "end": "18h"}]
+      });
+*/
+    },
+/*    getPoids: function(patientId) {
+      /* example data receive =>  [ ["2016-04-10" , 100] , ["2016-04-10" , 100] , ["2016-04-25" , 130] , ["2016-04-25" , 130] ] */
+/*      this.lastRequest = "getPoids";
+      this.$.ajax.method = 'GET';
+      this.$.ajax.setBody({});
+      this.$.ajax.headers = {};
+      this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/note/weight/" + app.patientId;
+      this.$.ajax.go();
+    },
+*/
+    getAppointments: function(patientId) {
+      /*
+      example data receive =>
+          [
+            {"id": "9","title": "patient1 patient1","start": "2016-04-25T15:00:00.000Z","end": "2016-04-25T16:00:00.000Z"},
+            {"id": "8","title": "patient1 patient1","start": "2016-04-25T05:00:00.000Z","end": "2016-04-25T06:00:00.000Z"}
+          ]
+      */
+      this.lastRequest = "getAppointments";
+      this.$.ajaxAp.method = 'GET';
+      this.$.ajaxAp.setBody({});
+      this.$.ajaxAp.headers = {};
+      this.$.ajaxAp.url = "/NutriCloud/web/app_dev.php/pro/appointment/get/patient/" + patientId;
+      this.$.ajaxAp.go();
+    },
+    getNotes: function(patientId) {
+      this.lastRequest = "getNotes";
+      this.$.ajax.method = 'GET';
+      this.$.ajax.setBody({});
+      this.$.ajax.headers = {};
+      this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/note/" + patientId;
+      this.$.ajax.go();
+    },
+    ajaxApSuccess: function() {
+      var dataToSort = this.$.ajaxAp.data;
+      var data = [];
+      var n = Date.now();
+      dataToSort.forEach(function(d) {
+        if (new Date(d.end) > n)
+          data.push(d);
+      });
+      this._setAppointments(data);
+    },
+    ajaxSuccess: function() {
+      this._setNotes(this.$.ajax.data.reverse());
+    }
+  });
+  </script>
+</dom-module>

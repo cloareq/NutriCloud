@@ -1,0 +1,95 @@
+	<link rel="import" href="../bower_components/polymer/polymer.html">
+	<link rel="import" href="../bower_components/paper-input/paper-input.html">
+	<link rel="import" href="../bower_components/paper-button/paper-button.html">
+	<link rel="import" href="../bower_components/iron-form/iron-form.html">
+	<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+	<dom-module id="login-element">
+		<template>
+			<style>
+				#loginForm {
+					font-family: "RobotoDraft", sans-serif;
+					text-align: center;
+				}
+				#loginForm paper-input::shadow paper-input-decorator::shadow .focused-underline, .inputPwd::shadow .focused-underline {
+					background-color: #0A98CF;
+				}
+				#valid {
+					color: white;
+					background-color: #0A98CF;
+					font-family: "RobotoDraft", sans-serif;
+					font-size: 16px;
+				}
+				.msgError {
+					font-family: "RobotoDraft", sans-serif;
+					font-size: 75%;
+					margin-top: 3%;
+					color: red;
+				}
+				.inputPwd {
+					margin-top: 5%;
+				}
+				h3 {
+					color: #0A98CF;
+					text-align: center;
+					font-family: "RobotoDraft", sans-serif;
+				}
+				#n_username,
+				#n_password {
+					text-align: left;
+				}
+			    button.no-style {
+    	  			-webkit-appearance: none;
+			    	border: 0;
+	    			padding: 0;
+      				background: transparent;
+			    }
+			</style>
+			<iron-ajax id="ajax"
+				on-response="checkLogin"
+				url="/NutriCloud/web/app_dev.php/login_check"
+				headers='{"Content-Type": "application/x-www-form-urlencoded"}'
+				handleAs="json"
+				method="POST">
+			</iron-ajax>
+			<form id="loginForm" is="iron-form" on-submit="sendLogin">
+				<p class="msgError" id="errorAuthentification" hidden></p>
+				<paper-input id="n_username" label="Nom d'utilisateur" floatingLabel></paper-input>
+				<p class="msgError" id="errorUser" style="display: none">Champ requis</p>
+				<paper-input id="n_password" type="password" label="Mot de passe" floatingLabel></paper-input>
+				<p class="msgError" id="errorPassword" style="display: none">Champ requis</p>
+				<button class="no-style" type="submit"><paper-button raised id="valid">Valider</paper-button></button>
+			</form>
+		</template>
+		<script>
+			Polymer({ is:'login-element',
+				sendLogin: function() {
+					this.$.errorUser.style.display = "none";
+					this.$.errorPassword.style.display = "none";
+					this.$.errorAuthentification.hidden = true;
+					if (this.$.n_username.value == "")
+						this.$.errorUser.style.display = "block";
+					else if (this.$.n_password.value == "")
+						this.$.errorPassword.style.display = "block";
+					else {
+						this.$.ajax.body = {"_username":this.$.n_username.value, "_password":this.$.n_password.value};
+						this.fire('show-spinner');
+						this.$.ajax.generateRequest();
+					}
+				},
+				checkLogin: function() {
+					if (this.$.ajax.lastResponse.state === "success") {
+						this.fire('show-spinner');
+						if (this.$.ajax.lastResponse.desc.match(/professionnel/))
+							document.location.href = "/pro/app/#!/home";
+						else
+							document.location.href = "/patient/app/#!/home";
+					} else {
+						this.fire('hide-spinner');
+						this.$.errorAuthentification.hidden = false;
+						this.$.errorAuthentification.textContent = this.$.ajax.lastResponse.desc;
+					}
+				}
+			});
+		</script>
+	</dom-module>

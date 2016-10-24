@@ -1,0 +1,111 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../../bower_components/moment-element/moment-with-locales-import.html">
+
+<dom-module id="courbe-poid">
+  <template>
+    <style>
+      google-chart {
+        height: initial;
+        width: inherit;
+      }
+      #errorData {
+        color: red;
+        text-align: center;
+      }
+    </style>
+
+    <google-chart
+      hidden
+      id="chart"
+      type="line"
+      data="[[dataChart]]"
+      options="[[options]]"
+      on-google-chart-select="selectEvent"
+     >
+    </google-chart>
+    <p id="errorData">Aucune donnée</p>
+
+  </template>
+  <script>
+  	Polymer({
+  		is:'courbe-poid',
+/*
+      behaviors: [Polymer.IronResizableBehavior],
+      listeners: {
+        'iron-resize': '_onIronResize'
+      },
+*/
+    	properties: {
+        dataChart: Array,
+        data: {
+          type: Array,
+          observer: '_dataChanged'
+        },
+        options: {
+          type: Object,
+          value: {
+            title:"Courbe du poids",
+            series: {
+              // Gives each series an axis name that matches the Y-axis below.
+              0: {targetAxisIndex: 0},
+              1: {targetAxisIndex: 1}
+            },
+
+            vAxes: {
+              0: {title: "Poids", logScale: false, maxValue: 1},
+              1: {title: "IMC", logScale: false, maxValue: 1}
+            }
+
+          }
+        }
+  		},
+/*      _onIronResize: function() {
+        this.$.chart.drawChart();
+      },*/
+      showEmptyData: function() {
+        this.$.chart.setAttribute("hidden", true);
+        this.$.errorData.removeAttribute("hidden");
+      },
+      hideEmptyData: function() {
+        this.$.chart.removeAttribute("hidden");
+        this.$.errorData.setAttribute("hidden", true);
+
+      },
+  		_dataChanged: function() {
+        var d = [];
+        this.showEmptyData();
+  			if (this.data[0] && this.data[0][0] != "Date") {
+  				d.push(["Date", "Poids", "IMC"]);
+  				for (var i=0; i<this.data.length; i++) {
+  					//date (format example => 2012-12-25)
+            var el = [];
+            //height in meter help to calculate IMC
+            var heightM = parseFloat(this.data[i].height) / 100;
+
+            //push date
+            el.push(this._convertDate(this.data[i].date));
+            //push weight
+            el.push(parseInt(this.data[i].weight));
+            //push IMC
+            el.push(this.data[i].weight/(heightM * heightM));
+            d.push(el);
+  				}
+          if (d.length > 1) {
+            this.hideEmptyData();
+            this.dataChart = d;
+//            this.$.chart.drawChart();
+          }
+  			}
+  		},
+      selectEvent: function(event) {
+        console.log("select event gogole-chart");
+//        console.log(event);
+      },
+  		_convertDate: function(d) {
+  			moment.locale('fr');
+  			return moment(d).format("Do MMMM YYYY");
+  		}
+  	});
+  </script>
+</dom-module>

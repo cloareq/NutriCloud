@@ -1,0 +1,80 @@
+# PLAN_TRACE
+
+#must be first update
+nc_pro_update_daily_plan:
+    path:     /pro/plan/daily/update/{patientId}/{date}
+    defaults: { _controller: NCPlanBundle:PlanTrace:updateDailyPlan }
+    methods:  [PUT]
+
+nc_patient_update_daily_plan:
+    path:     /patient/plan/daily/update/{patientId}/{date}
+    defaults: { _controller: NCPlanBundle:PlanTrace:updateDailyPlan }
+    methods:  [PUT]
+
+nc_pro_get_daily_plan:
+    path:     /pro/plan/daily/get/{patientId}
+    defaults: { _controller: NCPlanBundle:PlanTrace:getTodayPlan }
+    methods:  [GET]
+
+nc_patient_get_daily_plan:
+    path:     /patient/plan/daily/get/{patientId}
+    defaults: { _controller: NCPlanBundle:PlanTrace:getTodayPlan }
+    methods:  [GET]
+
+nc_pro_get_plan_date:
+    path:     /pro/plan/daily/get/{patientId}/{date}
+    defaults: { _controller: NCPlanBundle:PlanTrace:getPlanDate }
+    methods:  [GET]
+
+nc_patient_get_plan_date:
+    path:     /patient/plan/daily/get/{patientId}/{date}
+    defaults: { _controller: NCPlanBundle:PlanTrace:getPlanDate }
+    methods:  [GET]
+
+nc_pro_get_plan_between_two_dates:
+    path:     /pro/plan/daily/get/{patientId}/{from}/{to}
+    defaults: { _controller: NCPlanBundle:PlanTrace:getPlanBetweenDate }
+    methods:  [GET]
+
+nc_patient_get_plan_between_two_dates:
+    path:     /patient/plan/daily/get/{patientId}/{from}/{to}
+    defaults: { _controller: NCPlanBundle:PlanTrace:getPlanBetweenDate }
+    methods:  [GET]
+
+
+# PLAN_MODEL
+nc_pro_get_plan_model:
+    path:     /pro/plan/model/{patientId}
+    defaults: { _controller: NCPlanBundle:PlanModel:getPlanModel }
+    methods:  [GET]
+
+nc_pro_get_plan_model_pdf:
+    path:     /pro/plan/model/pdf/{patientId}
+    defaults: { _controller: NCPlanBundle:PlanModel:getPlanModelPdf }
+    methods:  [GET]
+
+nc_patient_get_plan_model_pdf:
+    path:     /patient/plan/model/pdf/{patientId}
+    defaults: { _controller: NCPlanBundle:PlanModel:getPlanModelPdf }
+    methods:  [GET]
+
+nc_patient_get_plan_model:
+    path:     /patient/plan/model/{patientId}
+    defaults: { _controller: NCPlanBundle:PlanModel:getPlanModel }
+    methods:  [GET]
+
+nc_pro_update_plan_model:
+    path:     /pro/plan/update/{patientId}
+    defaults: { _controller: NCPlanBundle:PlanModel:updatePlanModel }
+    methods:  [POST]
+
+# ALIMENT
+nc_pro_new_aliment:
+    path:     /pro/aliment/new
+    defaults: { _controller: NCPlanBundle:Aliment:newAliment }
+    methods:  [POST]
+
+nc_pro_get_aliment:
+    path:     /pro/aliment/get
+    defaults: { _controller: NCPlanBundle:Aliment:getAliment }
+    methods:  [GET]

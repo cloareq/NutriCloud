@@ -1,0 +1,24 @@
+nc_faq_removeFaq:
+    path:     /pro/faq/remove/{id}
+    defaults: { _controller: NCFaqBundle:Faq:removeFaq}
+    methods:  [GET]
+
+nc_faq_updateFaq:
+    path:     /pro/faq/update/{id}
+    defaults: { _controller: NCFaqBundle:Faq:updateFaq}
+    methods:  [POST]
+
+nc_faq_newElem:
+    path:	/pro/faq/new
+    defaults: { _controller: NCFaqBundle:Faq:new }
+    methods:  [POST]
+
+nc_faq_getFaq_pro:
+    path:     /pro/faq/
+    defaults: { _controller: NCFaqBundle:Faq:getFaq }
+    methods:  [GET]
+
+nc_faq_getFaq_patient:
+    path:     /patient/faq/
+    defaults: { _controller: NCFaqBundle:Faq:getFaq }
+    methods:  [GET]

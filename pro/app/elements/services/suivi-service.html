@@ -1,0 +1,63 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!-- Import my-component -->
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="suivi-service">
+
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+
+   <my-ajax id="ajax"
+      on-response="ajaxSuccess"
+      handleAs="json">
+    </my-ajax>
+
+  </template>
+
+  <script>
+  Polymer({ is:'suivi-service',
+    properties: {
+      /**
+      * "upward property" permet de récupérer le suivi chargé via l'attribut.
+      * La valeur ne peut être modifier que depuis cet élément
+      */
+      suivi: {
+        type: Array,
+        notify: true,
+        readOnly: true,
+      }
+    },
+    ready: function() {
+    },
+    getSuivi: function(patientId) {
+      this.lastRequest = "getSuivi";
+      this.$.ajax.setBody({});
+      this.$.ajax.headers = {};
+      this.$.ajax.method = 'GET';
+      this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/note/last/" + patientId;
+      this.$.ajax.go();
+    },
+    saveSuivi: function(patientId, poids, taille, note) {
+      this.lastRequest = "saveSuivi";
+      this.$.ajax.setBody ({"weight": poids, "height": taille, "text": escape(note)});
+      this.$.ajax.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+      this.$.ajax.method = 'POST';
+      this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/note/new/" + patientId;
+      this.$.ajax.go();
+    },
+    ajaxSuccess: function() {
+      if (this.lastRequest == "getSuivi") {
+        if (this.$.ajax.data && this.$.ajax.data.note)
+          this.$.ajax.data.note = unescape(this.$.ajax.data.note);
+        this._setSuivi(this.$.ajax.data);
+      } else if (this.lastRequest == "saveSuivi")
+        this.fire("suivi-saved");
+    }
+  });
+  </script>
+</dom-module>

@@ -1,0 +1,1 @@
+[{% for alert in alerts %}{"id": "{{ alert.id }}","name": "{{ alert.name }}","level": "{{ alert.level }}","is_saw": "{{ alert.IsSaw }}","pro": "{{ alert.Pro.id }}","patient": "{{ alert.Patient.id}}","target": "{{ alert.target }}"}{% if loop.last ==false%},{% endif %}{% endfor %}]

@@ -1,0 +1,113 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<!-- service -->
+<link rel="import" href="../services/alertes-service.html">
+
+<!-- styling sheet -->
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<dom-module id="alertes-element" >
+  <template>
+  	<style>
+      #navdiv {
+        padding: 2%;
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+      }
+      #navdiv paper-item {
+        @apply(--layout-flex);
+        @apply(--layout-center);
+        @apply(--layout-center-center);
+      }
+      .nav {
+        background-color: var(--color-nutricloud-black);
+      }
+      #content {
+        text-align: center;
+      }
+    </style>
+
+  <alertes-service id="alertesService" alertes="{{alertes}}"></alertes-service>
+
+    <div id="content">
+      <div id="navdiv">
+        <paper-fab on-click="prev" id="prev" class="nav" icon="arrow-back" title="arrow-back" role="button" tabindex="0" aria-label="arrow-back"></paper-fab>
+        <paper-item id="datecontent">{{label}}</paper-item>
+        <paper-fab on-click="next" id="next" class="nav" icon="arrow-forward" title="arrow-forward" role="button" tabindex="0" aria-label="arrow-forward"></paper-fab>
+      </div>
+      <iron-pages id="msg" selected="{{selected}}">
+      <template is="dom-repeat" items="[[alertes]]">
+        <template is="dom-if" if="{{_isAlert(item.name)}}">
+          <section class="content">
+            <a href$="[[_createLink(item)]]">
+              <p>[[_getPatientName(item.patient)]]</p>
+            </a>
+          </template>
+        </section>
+      </template>
+      </iron-pages>
+    </div>
+
+  </template>
+
+  <script>
+  	Polymer({ is:'alertes-element',
+      properties: {
+        selected: {
+          type: Number,
+          notify: true,
+          value: 0,
+          observer: 'selectedChanged'
+        },
+        typeLabel: {
+          type: Object,
+          readOnly: true,
+          value: {
+            "APPOINTMENT_NEEDED": "Rendez-vous requis"
+          }
+        },
+        alertes: {
+          type: Array,
+/*          value:[{"id": "50","name": "NEW_MESSAGE","level": "1","is_saw": "","pro": "1","patient": "5","target": "3"},{"id": "58","name": "APPOINTMENT_NEEDED","level": "2","is_saw": "","pro": "1","patient": "9","target": "2"},{"id": "64","name": "NEW_MESSAGE","level": "1","is_saw": "","pro": "1","patient": "13","target": "1"},{"id": "65","name": "NEW_MESSAGE","level": "1","is_saw": "","pro": "1","patient": "13","target": "1"},{"id": "66","name": "NEW_MESSAGE","level": "1","is_saw": "","pro": "1","patient": "13","target": "1"}],*/
+          observer: 'selectedChanged'
+        }
+      },
+      _createLink: function(item) {
+        var routeParam = "";
+        if (item.name == "APPOINTMENT_NEEDED")
+          routeParam = "/planning";
+        return routeParam;
+      },
+      _getPatientName: function(patientId) {
+        for (var i=0; i < app.patients.length; i++)
+          if (app.patients[i].id === patientId)
+            return app.patients[i].fullName;
+        return "unknow";
+      },
+      _isAlert: function(alertName) {
+        if (alertName == "APPOINTMENT_NEEDED")
+          return true;
+        return false;
+      },
+      selectedChanged: function() {
+        if (this.alertes && this.alertes.length > 0)
+          this.label = this.typeLabel[this.alertes[this.selected].name];
+        else
+          this.label = "Vous n'avez pas d'alerte.";
+      },
+      prev: function() {
+        this.$.msg.selectPrevious();
+      },
+      next: function() {
+        this.$.msg.selectNext();
+      },
+      update: function() {
+        this.$.alertesService.getAlertes();
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,104 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<!-- styling sheet -->
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<dom-module id="list-appointment-patient">
+	<template>
+		<style>
+			#navdiv {
+				padding: 2%;
+				@apply(--layout-horizontal);
+				@apply(--layout-flex);
+			}
+			#navdiv paper-item {
+				@apply(--layout-flex);
+				@apply(--layout-center);
+				@apply(--layout-center-center);
+			}
+			.nav {
+				background-color: var(--color-nutricloud-black);
+			}
+			#content {
+				text-align: center;
+			}
+		</style>
+
+		<div id="content">
+	      <div id="navdiv">
+			<paper-fab on-click="prev" id="prev" class="nav" icon="arrow-back" title="arrow-back" role="button" tabindex="0" aria-label="arrow-back"></paper-fab>
+			<paper-item id="datecontent">{{label}}</paper-item>
+			<paper-fab on-click="next" id="next" class="nav" icon="arrow-forward" title="arrow-forward" role="button" tabindex="0" aria-label="arrow-forward"></paper-fab>
+		  </div>
+		  <iron-pages id="msg" selected="{{selected}}">
+			<template is="dom-repeat" items="[[data]]">
+				<section class="content">
+					<p>[[_getPatientName(item.patientid)]]</p>
+<!--					<p>[[item.title]]</p>-->
+					<p><span>[[_formatDate(item.start)]]</span> - <span>[[_formatDate(item.end)]]</span></p>
+				</section>
+			</template>
+		  </iron-pages>
+		</div>
+	</template>
+
+	<script>
+		Polymer({is: 'list-appointment-patient',
+			properties: {
+				selected: {
+					type: Number,
+					notify: true,
+					value: 0,
+					observer: 'selectedChanged'
+				},
+				data: {
+					type:Array,
+					observer: 'dataChanged'
+				},
+				label: String
+			},
+      		_getPatientName: function(patientId) {
+        		for (var i=0; i < app.patients.length; i++)
+          			if (app.patients[i].id === patientId)
+            			return app.patients[i].fullName;
+        		return "unknow";
+		    },
+			_formatDate: function(d) {
+				return moment(d).format("HH:mm");
+			},
+			selectedChanged: function() {
+				if (this.data && this.data.length > 0)
+					this.label = moment(this.data[this.selected].start).format("dddd Do MMMM YYYY");
+				else
+					this.label = "Vous n'avez pas de rendez-vous prévu.";
+			},
+			dataChanged: function() {
+		      moment.locale('fr');
+				if (this.data) {
+					this.data.reverse();
+					var i = 0;
+					var now = moment();
+					//remove all appointment before now
+					while (i < this.data.length) {
+						if (moment(this.data[i].start) < now) {
+							this.data.splice(i, 1);
+							i--;
+						}
+						i++;
+					}
+				}
+				this.selectedChanged();
+			},
+			prev: function() {
+				this.$.msg.selectPrevious();
+			},
+			next: function() {
+				this.$.msg.selectNext();
+			}
+		});
+	</script>
+</dom-module>

@@ -1,0 +1,22 @@
+{
+  "name": "nutricloud",
+  "private": true,
+  "dependencies": {
+    "moment-element": "bendavis78/moment-element",
+    "paper-date-picker": "bendavis78/paper-date-picker",
+    "gold-email-input": "PolymerElements/gold-email-input",
+    "gold-zip-input": "PolymerElements/gold-zip-input",
+    "gold-phone-input": "PolymerElements/gold-phone-input",
+    "iron-elements": "PolymerElements/iron-elements#^1.0.0",
+    "neon-elements": "PolymerElements/neon-elements#^1.0.0",
+    "page": "visionmedia/page.js#~1.6.4",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.1",
+    "platinum-elements": "PolymerElements/platinum-elements#^1.1.0",
+    "polymer": "Polymer/polymer#^1.2.0",
+    "paper-toast-top": "sukso96100/paper-toast-top"
+  },
+  "devDependencies": {
+    "web-component-tester": "^4.0.0"
+  },
+  "ignore": []
+}

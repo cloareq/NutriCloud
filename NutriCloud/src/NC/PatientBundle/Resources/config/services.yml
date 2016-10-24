@@ -1,0 +1,3 @@
+#services:
+#    authentication_patient_handler:
+#         class: NC\PatientBundle\Handler\AuthenticationHandler

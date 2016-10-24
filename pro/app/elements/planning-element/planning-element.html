@@ -1,0 +1,350 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../../bower_components/paper-input-autocomplete/paper-input-autocomplete.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/md-timepicker/md-timepicker.html">
+
+<!-- personal components-->
+<link rel="import" href="../services/planning-service.html">
+
+<dom-module id='planning-element'>
+
+		<script src="../../bower_components/moment/min/moment-with-locales.js"></script>
+		<script src="./jquery/lib/jquery.min.js"></script>
+		<script src="./fullcalendar/lib/fullcalendar.js"></script>
+		<script src="./fullcalendar/lib/lang-all.js"></script>
+
+		<template>
+		<link rel='stylesheet' href='./fullcalendar/fullcalendar.css'>
+		<style>
+			/* fix height of dialogPicker (évite que le picker déborde de sa div) */
+			#dialogPicker {
+				max-height: 500px;
+			}
+			paper-button {
+				background-color: #454646;
+				color: white;
+				margin:1%;
+			}
+      paper-button:hover {
+        background-color: var(--color-nutricloud-green);
+      }
+      #annuler:hover {
+        background-color: var(--color-nutricloud-red);
+      }
+			#calendar {
+				padding: 2%;
+			}
+			#dialog {
+				@apply(--layout-vertical);
+				@apply(--layout-center);
+			}
+			#content {
+				@apply(--layout-vertical);
+				@apply(--layout-center);
+			}
+			#dialog {
+				padding: 2%;
+        min-width: 350px;
+			}
+			#errorToast {
+				@apply(--layout-horizontal);
+				@apply(--layout-center);
+				background-color: red;
+			}
+      #patientName {
+        min-width: 180px;
+      }
+		</style>
+
+	    <planning-service id="planningService" on-appointment-created="refresh" appointments="{{events}}"></planning-service>
+
+		<paper-dialog id="dialog">
+			<paper-toast id="errorToast" duration="10000"></paper-toast>
+			<h2><span>{{_helperMode(mode)}}<span> un rendez-vous</h2>
+			<div id="content">
+				<paper-button on-click="toggleDialogPicker" id="date" role="button" floatingLabel></paper-button>
+				<paper-dialog id="dialogPicker" role="dialog" class="paper-date-picker-dialog" on-iron-overlay-closed="setDatePick">
+  					<paper-date-picker id="datePicker" locale="fr"></paper-date-picker>
+	  			</paper-dialog>
+	  			<div><label>Début</label><md-timepicker id="start"></md-timepicker></div>
+	  			<div><label> Fin </label><md-timepicker id="end"></md-timepicker></div>
+				<paper-input-autocomplete id="patientName" label="Patient" suggestionsInOverlay="true" search-property="fullName" source="[[patientslist]]"></paper-input-autocomplete>
+			</div>
+			<div class="buttons">
+          <paper-button on-click='dialogAccept'>Valider</paper-button>
+				  <paper-button on-click="removeAppointment" id="removeButton">Supprimer</paper-button>
+    			<paper-button on-click='dialogCancel' id="annuler">Annuler</paper-button>
+  			</div>
+  		</paper-dialog>
+
+
+		<div id='calendar'></div>
+	</template>
+	<script>
+	Polymer({
+		is: 'planning-element',
+		properties: {
+			// mode de la modal ( 'update' || 'create' )
+			mode: { type:String, value:"create" },
+			patientslist: Array,
+			eventSelected: Object,
+			calendar: {
+				type: Object,
+				value: function() {return $(this.$.calendar);}
+			},
+			events: {
+				type: Array,
+				observer: 'eventsChanged'
+			}
+		},
+		ready: function() {
+			moment.locale('fr');
+			this.patientslist = [{fullName: "laal", id:1}, {fullName: "lolo", id:2}];
+			this.calendar.fullCalendar({
+				lang:'fr',
+                weekends: false,
+                allDaySlot: false,
+                minTime : "06:00:00",
+                maxTime : "20:00:00",
+                defaultView: 'agendaWeek',
+                header: {left:'title', center: 'agendaDay,agendaWeek,month', right:  'today,prev,next'},
+				dayClick: function(date, jsEvent, view, ressource) {
+					this.mode = "create";
+					this.$.dialog.toggle();
+					if (this.$.dialog.opened === true)
+						this.setDialogData(date, view);
+			    }.bind(this),
+				eventClick: function(event, jsEvent, view) {
+					this.mode = "update";
+					this.$.dialog.toggle();
+					if (this.$.dialog.opened === true)
+						this.setDialogData(event.start, view, event);
+			    }.bind(this),
+    			/**
+    			*	Refresh data to get appointments between start and end of the new view
+    			**/
+    			viewRender: function(view, element) {
+    				this.refresh();
+			    }.bind(this),
+
+				editable: true,
+
+			    /* avoid event supperpose */
+				eventOverlap: function(stillEvent, movingEvent) {
+        			return false;
+    			},
+
+    			/**
+    			*	Ajax request to update appointments cause of resize or drop event
+    			**/
+ 				eventResize: function(event, delta, revertFunc) {
+					//substract 2 hours cause of ISOString format
+					this.$.planningService.updateAppointment(event.id, new Date(moment(event.start).subtract(2,'hours').format()), new Date(moment(event.end).subtract(2,'hours').format()), event.title);
+    			}.bind(this),
+				eventDrop: function(event, delta, revertFunc) {
+					//substract 2 hours cause of ISOString format
+					this.$.planningService.updateAppointment(event.id, new Date(moment(event.start).subtract(2,'hours').format()), new Date(moment(event.end).subtract(2,'hours').format()), event.title);
+			    }.bind(this)
+             });
+   		},
+
+   		/* render calendar and refresh data (see in ready, viewRender hook)*/
+   		render: function() {
+   			setTimeout(function() { this.calendar.fullCalendar('render'); }.bind(this), 100);
+			/* fix height of calendar (évite que le calendar est un espace inutile en dessous des slots de temps proposé */
+//   			document.querySelector('.fc-time-grid-container').style.height = "inherit";
+   		},
+
+   		refresh: function() {
+   			var view = this.calendar.fullCalendar('getView');
+   			//if planning non render render it (will refresh data also);
+   			if (view.start == null)
+   				this.render();
+   			else
+				this.$.planningService.getAppointments(view.start, view.end);
+	    },
+
+   		/* set the date on the datePicker's button */
+		setDatePick: function() {
+			console.log('setDatePick');
+			this.$.date.set('textContent', moment(this.$.datePicker.date).format('DD MMMM YYYY'));
+		},
+
+		/* toggle the datePicker */
+   		toggleDialogPicker: function() {
+			console.log('toggleDialog Picker');
+   			if (!this.$.dialogPicker.opened)
+	   			this.$.dialogPicker.open();
+   		},
+
+   		/* prepare the data automaticaly load in the dialog */
+   		setDialogData: function(date, view, event) {
+   			this.$.datePicker.set('date', date.toDate());
+   			this.$.date.textContent = date.format('DD MMMM YYYY');
+   			if (this.mode === "create")
+   				this.setCreateDialog(date, view);
+   			else
+   				this.setUpdateDialog(event);
+   		},
+
+   		/* prepare a dialog for update an event (or remove) */
+   		setUpdateDialog: function(event) {
+			this.$.removeButton.removeAttribute('hidden');
+			this.eventSelected = event;
+			this.$.patientName.value = event.title;
+
+			this.$.patientName.selected = this._findPatientById(event.patientid);
+
+			this.$.start.setValue(event.start.format('HH:mm'));
+			this.$.end.setValue(event.end.format('HH:mm'));
+   		},
+
+
+   		/* prepare a dialog for create an event (or remove) */
+   		setCreateDialog: function(date, view) {
+			this.$.removeButton.setAttribute('hidden', 'true');
+   			if (view.name === "month") {
+				this.$.start.setValue('');
+				this.$.end.setValue('');
+			}
+			else {
+				var min = date.format('mm');
+//				this.$.start.setValue(date.hour() + ':' + min);
+//				this.$.end.setValue((date.hour() + 1) + ':' + min);
+				this.$.start.setValue(date.format("HH") + ':' + min);
+				this.$.end.setValue((date.hour() + 1) + ':' + min);
+			}
+   		},
+
+   		/*
+   			Callback accept button of the dialog (wrapper between save or update)
+   		*/
+   		dialogAccept: function() {
+   			if (!this.checkError()) {
+				if (this.mode === "create")
+					this.saveAppointment(this.$.patientName.getSelected());
+				else
+					this.updateAppointment();
+				this._clearDialog();
+				this.$.dialog.toggle();
+			}
+   		},
+
+   		/* callback if dialog accept (mode === 'create') to save an appointment */
+   		saveAppointment: function(patient) {
+			var newEvent = new Object();
+			var d = this.$.datePicker.date;
+			newEvent.start = new Date(this._getDateString(d) + ' ' + this.$.start.value);
+			newEvent.end = new Date(this._getDateString(d) + ' ' + this.$.end.value);
+			newEvent.title = this.$.patientName.value;
+			newEvent.patientId = patient.id;
+			newEvent.allDay = false;
+
+			this.$.planningService.createAppointment(patient.id, newEvent.start, newEvent.end, newEvent.title);
+
+			this.calendar.fullCalendar('renderEvent', newEvent);
+   		},
+
+   		/* callback if dialog accept (mode === 'update') to update an appointment */
+   		updateAppointment: function() {
+			var d = this.$.datePicker.date;
+   			this.eventSelected.start = new Date(this._getDateString(d) + ' ' + this.$.start.value);
+   			this.eventSelected.end = new Date(this._getDateString(d) + ' ' + this.$.end.value);
+   			this.eventSelected.title = this.$.patientName.value;
+
+			this.$.planningService.updateAppointment(this.eventSelected.id, this.eventSelected.start, this.eventSelected.end, this.eventSelected.title);
+
+			this.calendar.fullCalendar('updateEvent', this.eventSelected);
+   		},
+
+
+   		/* call ajax to remove an appointment */
+   		removeAppointment: function() {
+			this.calendar.fullCalendar('removeEvents', this.eventSelected._id);
+			this.$.planningService.removeAppointment(this.eventSelected.id)
+			this._clearDialog();
+			this.$.dialog.toggle();
+   		},
+
+   		/**
+   		*	observer when planning service get data eventsChanged will be throw because events property
+   		*	is bind with appointments properties of planning-service
+   		*/
+  		eventsChanged: function(data) {
+  			this.calendar.fullCalendar('removeEvents');
+  			for (var i=0; i<this.events.length; i++) {
+  				var newEvent = new Object();
+  				newEvent.start = new Date(this.events[i].start);
+  				newEvent.end = new Date(this.events[i].end);
+  				newEvent.title = this.events[i].title;
+  				newEvent.patientid = this.events[i].patientid;
+  				newEvent.id = this.events[i].id;
+  				newEvent.allDay = false;
+				this.calendar.fullCalendar( 'renderEvent', newEvent );
+  			}
+  		},
+
+	  	/* call when user cancel the dialog */
+   		dialogCancel: function() {
+			this.$.dialog.toggle();
+			this._clearDialog();
+   		},
+
+   		/*
+   			check possible error when dialog is accept like hour incoherence or invalid patient
+   		*/
+   		checkError: function() {
+   			var error = undefined;
+   			if (this.patientslist.indexOf(this.$.patientName.getSelected()) < 0)
+   				error = "Veuillez rentrer un nom de patient correct.";
+   			if (this._toTime(this.$.start.value) > this._toTime(this.$.end.value))
+   				error = "L'heure du début ne peut pas être supérieur à l'heure de fin.";
+   			if (error === undefined)
+   				return false
+   			this.$.errorToast.text = error;
+   			this.$.errorToast.show();
+   			return true;
+   		},
+
+   		/* helper clear the dialog */
+   		_clearDialog: function() {
+   			this.$.patientName.value = '';
+   			this.$.patientName.selected = undefined;
+   		},
+
+   		/* helper get datePicker date and return date in string (YYYY-MM-dd) */
+   		_getDateString: function(d) {
+			return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+   		},
+   		_toTime: function(str) {
+   			var hour = parseInt(str.substr(0, str.indexOf(':')));
+   			var min = parseInt(str.substr(str.indexOf(':') + 1, str.length));
+   			return (hour * 60) + min;
+   		},
+   		_helperMode: function(mode) {
+   			if (mode === "create")
+   				return "Ajouter";
+   			return "Modifier";
+   		},
+   		_findPatientById: function(id) {
+			for (var i=0; i<this.patientslist.length; i++) {
+				if (this.patientslist[i].id === id)
+					return this.patientslist[i];
+			}
+			return null;
+   		},
+   		_findPatientByName: function(str) {
+			for (var i=0; i<this.patientslist.length; i++) {
+				if (this.patientslist[i].fullName === str)
+					return this.patientslist[i];
+			}
+			return null;
+   		}
+	});
+	</script>
+</dom-module>

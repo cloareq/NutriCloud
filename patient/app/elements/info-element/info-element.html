@@ -1,0 +1,156 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html">
+<link rel="import" href="../../bower_components/gold-phone-input/gold-phone-input.html">
+<link rel="import" href="../../bower_components/gold-zip-input/gold-zip-input.html">
+
+<link rel="import" href="../services/info-service.html">
+
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<dom-module id="info-element">
+  <template>
+    <style>
+      :host {
+        --paper-input-container-disabled: {
+          opacity: 1;
+        };
+      }
+
+      #core_icon_button {
+        background-color: var(--color-nutricloud-blue);
+        color: var(--color-nutricloud-white);
+        padding: 7px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #valid {
+        width: 20%;
+        @apply(--layout-flex);
+        margin-left: 30%;
+        position: absolute;
+        color: var(--color-nutricloud-white);
+        background: var(--color-nutricloud-blue);
+      }
+
+      #remove {
+        float: right;
+        background-color: var(--color-nutricloud-red);
+        color: var(--color-nutricloud-white);
+      }
+
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
+
+      .flex1child {
+        @apply(--layout-flex-2);
+      }
+
+      .flexchild {
+        @apply(--layout-flex-5);
+      }
+
+      .flex7child {
+        @apply(--layout-flex-7);
+      }
+      .no-style {
+        -webkit-appearance: none;
+        border: 0;
+        padding: 0;
+        background: transparent;
+      }
+    </style>
+
+    <info-service id="infoService" type="patient" on-remove-success="removeSuccess" data="{{data}}"></info-service>
+
+<form is="iron-form" id="signInForm" on-submit="sendInfo">
+      <div>
+        <iron-icon icon="settings" id="core_icon_button" theme="core-light-theme" on-click="toggleField"></iron-icon>
+        <paper-button raised id="remove" on-click="removePatient">Supprimer le compte</paper-button>
+      </div>
+
+      <div class="horizontal">
+        <paper-input required floatingLabel class="inputForm flexchild" id="username" label="Nom d'utilisateur" disabled$="{{toggle}}" value="{{data.userName}}"></paper-input>
+        <div class="flex7child"></div>
+      </div>
+      <div class="horizontal">
+        <paper-input required floatingLabel class="inputForm flexchild" id="firstname" label="Prénom" disabled$="{{toggle}}" value="{{data.firstName}}" ></paper-input>
+        <div class="flex1child"></div>
+        <paper-input required floatingLabel class="inputForm flexchild" id="lastname" label="Nom" value="{{data.lastName}}" disabled$="{{toggle}}"></paper-input>
+      </div>
+      <div class="horizontal">
+        <gold-phone-input floatingLabel class="inputForm flexchild" required auto-validate error-message="Veuillez entrer un numéro de téléphone valide" country-code="33" phone-number-pattern="X-XX-XX-XX-XX" id="phone" label="Téléphone" disabled$="{{toggle}}" value="{{data.phone}}"></gold-phone-input>
+        <div class="flex1child"></div>
+        <gold-email-input required auto-validate error-message="Veuillez entrer un email valide" class="inputForm flexchild" id="mail" label="Mail" value="{{data.mail}}" floatingLabel disabled$="{{toggle}}"></gold-email-input>
+      </div>
+
+      <paper-input floatingLabel class="inputForm" id="address" label="Numéro & Rue" disabled$="{{toggle}}" value="{{data.address}}"></paper-input>
+
+      <div class="horizontal">
+        <gold-zip-input auto-validate error-message="Code postal invalide" class="inputForm flexchild" id="postcode" label="Code postal" value="{{data.postcode}}" floatingLabel disabled$="{{toggle}}"></gold-zip-input>
+        <div class="flex1child"></div>
+        <paper-input floatingLabel class="inputForm flexchild" id="city" label="Ville" disabled$="{{toggle}}" value="{{data.city}}"></paper-input>
+      </div>
+
+      <button class="no-style" type="submit"><paper-button id="valid" hidden$="{{toggle}}">Valider</paper-button></button>
+    </form>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'info-element',
+      properties: {
+        data: Object,
+        toggle: {
+          type: Boolean,
+          value: true
+        }
+      },
+      refresh: function() {
+        this.$.infoService.getInfo();
+      },
+      toggleField: function() {
+        this.toggle = !this.toggle;
+      },
+      sendInfo: function() {
+        this.$.infoService.updateInfo(app.userId,
+          this.data.userName,
+                    this.data.firstName,
+                    this.data.lastName,
+                    this.data.address,
+                    this.data.postcode,
+                    this.data.city,
+                    this.data.phone,
+                    this.data.mail);
+        this.toggleField();
+      },
+      removePatient: function() {
+        if (confirm("Etes-vous sur de vouloir supprimer votre compte ?"))
+          this.$.infoService.remove();
+      },
+      removeSuccess: function() {
+        document.location.href = "/connection";
+      }
+    });
+  })();
+  </script>
+</dom-module>

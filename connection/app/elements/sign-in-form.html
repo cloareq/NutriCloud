@@ -1,0 +1,134 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/gold-phone-input/gold-phone-input.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="signin-element">
+	<template>
+		<style>
+			#signInForm {
+				font-family: "RobotoDraft", sans-serif;
+				text-align: center;
+			}
+			#signInForm paper-input::shadow paper-input-decorator::shadow .focused-underline, .inputPwd::shadow .focused-underline {
+				background-color: #0A98CF;
+			}
+			#valid {
+				background-color: #0A98CF;
+				color: white;
+				font-family: "RobotoDraft", sans-serif;
+				font-size: 16px;
+				margin-top: 15px;
+			}
+			#errorRegister {
+				font-family: "RobotoDraft", sans-serif;
+				font-size: 75%;
+				color: red;
+				margin-top: 5%;
+				margin-bottom: 0%;
+			}
+			#errorCpassword {
+				font-family: "RobotoDraft", sans-serif;
+				font-size: 75%;
+				color: red;
+				margin-top: 0%;
+				margin-bottom: 5%;
+			}
+			.inputPwd {
+				margin-top: 5%;
+			}
+			.msgError {
+				font-family: "RobotoDraft", sans-serif;
+				font-size: 75%;
+				margin-top: 3%;
+				color: red;
+			}
+			paper-input {
+				text-align: left;
+			}
+      .no-style {
+        -webkit-appearance: none;
+        border: 0;
+        padding: 0;
+        background: transparent;
+      }
+		</style>
+		<iron-ajax id="ajax"
+			url="/NutriCloud/web/app_dev.php/register"
+			on-response="checkSignin"
+			on-error="errorAjax"
+			handleAs="json"
+			method="POST">
+		</iron-ajax>
+		<form is="iron-form" id="signInForm" on-submit="sendForm">
+			<p class="msgError" id="errorCreation" hidden>Cet identifiant ou addresse mail est déjà utilisée</p>
+			<p class="msgError" id="errorRegister" hidden>Merci de renseigner tous les champs.</p>
+			<p class="msgError" id="errorUsername" hidden>Votre nom d'utilisateur doit contenir au moins 6 charactères</p>
+			<paper-input required id="username" label="Nom d'utilisateur" floatingLabel></paper-input>
+			<paper-input required id="firstname" label="Nom" floatingLabel></paper-input>
+			<paper-input required id="lastname" label="Prénom" floatingLabel></paper-input>
+			<paper-input required id="mail" label="Mail" floatingLabel></paper-input>
+
+		    <gold-phone-input class="inputForm flexchild" required auto-validate error-message="Veuillez entrer un numéro de téléphone valide" country-code="33" phone-number-pattern="X-XX-XX-XX-XX" id="phone" label="Téléphone" disabled$="{{toggle}}" value="{{pro.phone}}" floatingLabel></gold-phone-input>
+			<paper-input required id="password" type="password" label="Mot de passe" floatingLabel></paper-input>
+			<paper-input required id="cpassword" type="password" label="Confirmer le mot de passe" floatingLabel></paper-input>
+			<p class="msgError" id="errorCpassword" hidden>Erreur confirmation mot de passe.</p>
+			<p class="msgError" id="errorLengthPassword" hidden>Votre mot de passe doit contenir au moins 6 charactères</p>
+			<button class="no-style"><paper-button raised id="valid">Valider</paper-button></button>
+		</form>
+	</template>
+		<script>
+			Polymer({ is:'signin-element',
+				checkSignin: function() {
+					if (this.$.ajax.lastResponse && this.$.ajax.lastResponse.state !== "success") {
+						this.$.errorCreation.textContent = this.$.ajax.lastResponse.desc;
+						this.$.errorCreation.hidden = false;
+						app.$.toast.text = "Erreur lors de la création du compte";
+						app.$.toast.style.backgroundColor = "red";
+	      				app.$.toast.show();
+						this.clearInput();
+					} else {
+						app.$.toast.text = "Votre compte a été créé";
+						app.$.toast.style.backgroundColor = "";
+	      				app.$.toast.show();
+					}
+				},
+				errorAjax: function() {
+					app.$.toast.text = "Erreur lors de la création du compte";
+					app.$.toast.style.backgroundColor = "red";
+	      			app.$.toast.show();
+	      		},
+				clearInput: function() {
+					this.$.username.value = "";
+					this.$.firstname.value = "";
+					this.$.lastname.value = "";
+					this.$.mail.value = "";
+					this.$.phone.value = "";
+					this.$.password.value = "";
+					this.$.cpassword.value = "";
+				},
+				sendForm: function() {
+					this.$.errorCreation.hidden = true;
+					this.$.errorRegister.hidden = true;
+					this.$.errorCpassword.hidden = true;
+					this.$.errorLengthPassword.hidden = true;
+					if (this.$.username.value == "" || this.$.firstname.value == "" || this.$.lastname.value == "" || this.$.mail.value == "" ||
+						this.$.phone.value == "" || this.$.password.value == "" || this.$.cpassword.value == "")
+						this.$.errorRegister.hidden = false;
+					else if (this.$.password.value != this.$.cpassword.value)
+						this.$.errorCpassword.hidden = false;
+					else if (this.$.password.value.length < 6)
+						this.$.errorLengthPassword.hidden = false;
+					else if (this.$.username.value.length < 6)
+						this.$.errorUsername.hidden = false;
+					else {
+						this.$.ajax.headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+						this.$.ajax.body = {"username":this.$.username.value, "firstname":this.$.firstname.value, "lastname":this.$.lastname.value, "mail":this.$.mail.value, "password":this.$.password.value, "phone": this.$.phone.value};
+						this.$.ajax.generateRequest();
+					}
+				}
+			});
+		</script>
+</dom-module>

@@ -1,0 +1,12 @@
+[
+    {% for calorie in calories %}
+    {
+        "id": "{{ calorie.id }}",
+        "calorie": "{{ calorie.calorie }}",
+        "created_at": "{{ calorie.createdAt|date("Y/m/d.h:m") }}"
+    }
+    {% if loop.last == false %}
+,
+    {% endif %}
+    {% endfor %}
+]

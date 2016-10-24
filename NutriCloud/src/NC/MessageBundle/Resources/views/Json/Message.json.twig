@@ -1,0 +1,13 @@
+[
+{% for message in messages %}
+    {
+        "id": "{{ message.id }}",
+        "text": "{{ message.text }}",
+        "date": "{{ message.date|date('Y-m-d H:i:s') }}",
+        "sender": "{{ message.sender }}"
+    }
+    {% if loop.last ==false%}
+		,
+	{% endif %}
+{% endfor %}
+]

@@ -1,0 +1,17 @@
+{
+    "{{ day.date|capitalize }}": [
+        {% for aliment in day.aliments %}
+        {
+            "hour": "{{ aliment.hour }}",
+            "aliment": "{{ aliment.name }}",
+            "quantity": "{{ aliment.quantity }}",
+            "is_eaten": "{{ aliment.iseaten }}",
+            "is_model": "{{ aliment.ismodel }}"
+        }
+        {% if loop.last == false %},
+        {% endif %}
+        {% endfor %}
+    ],
+    "completion": {{ day.percentage }},
+    "extra_aliment": {{ day.extraAliment }}
+}

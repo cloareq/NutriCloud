@@ -1,0 +1,70 @@
+socket:
+    path: /socket
+    defaults: { _controller: NCProBundle:Pro:socket}
+    methods:  [GET]
+
+
+mail:
+    path: /pro/mail
+    defaults: { _controller: NCProBundle:Pro:sendMail}
+    methods:  [GET]
+
+nc_anonymoous_get_connected_user:
+    path:   /whoisconnected
+    defaults: { _controller: NCProBundle:Pro:whoIsConnected}
+    methods:  [GET]
+
+nc_password_recovery:
+    path:     /passwordrecovery
+    defaults: { _controller: NCProBundle:Pro:updatePassword }
+    methods:  [POST]
+
+nc_password_recovery_mail:
+    path:     /passwordforgotten
+    defaults: { _controller: NCProBundle:Pro:forgotPassword }
+    methods:  [POST]
+
+nc_pro_get_connected_user:
+    path:   /pro/whoisconnected
+    defaults: { _controller: NCProBundle:Pro:whoIsConnected}
+    methods:  [GET]
+
+nc_patient_get_connected_user:
+    path:   /patient/whoisconnected
+    defaults: { _controller: NCProBundle:Pro:whoIsConnected}
+    methods:  [GET]
+
+nc_pro_removePro:
+    path:     /pro/remove
+    defaults: { _controller: NCProBundle:Pro:removePro}
+    methods:  [GET]
+
+nc_pro_updatePro:
+    path:     /pro/update
+    defaults: { _controller: NCProBundle:Pro:updatePro}
+    methods:  [POST]
+
+nc_pro_getInfoPro:
+    path:     /pro/info
+    defaults: { _controller: NCProBundle:Pro:getProInfo}
+    methods:  [GET]
+
+#pro_connected:
+#    path:     /pro/connected
+#    defaults: { _controller: NCProBundle:Pro:connected }
+
+#pro_notconnected:
+#    path:     /pro/notconnected
+#    defaults: { _controller: NCProBundle:Pro:notconnected }
+
+pro_register:
+    path:     /register
+    defaults: { _controller: NCProBundle:Pro:register }
+    methods:  [POST]
+
+pro_login_check:
+    pattern:   /login_check
+    methods:  [POST]
+
+pro_logout:
+    pattern:   /logout

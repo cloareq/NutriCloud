@@ -1,0 +1,45 @@
+##### MEDICATION #####
+
+# DELETE
+nc_medication_deleteMedication_pro:
+    path:     /pro/medication/delete/{id}
+    defaults: { _controller: NCPatientBundle:Medication:deleteMedication}
+    methods:  [DELETE]
+
+nc_medication_deleteMedication_patient:
+    path:     /patient/medication/delete/{id}
+    defaults: { _controller: NCPatientBundle:Medication:deleteMedication}
+    methods:  [DELETE]
+
+## UPDATE
+nc_medication_updateMedication_pro:
+    path:     /pro/medication/update/{id}
+    defaults: { _controller: NCPatientBundle:Medication:updateMedication}
+    methods:  [PUT]
+
+nc_medication_updateMedication_patient:
+    path:     /patient/medication/update/{id}
+    defaults: { _controller: NCPatientBundle:Medication:updateMedication}
+    methods:  [PUT]
+
+## CREATE
+nc_medication_createMedication_pro:
+    path:	/pro/medication/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Medication:createMedication }
+    methods:  [POST]
+
+nc_medication_createMedication_patient:
+    path:	/patient/medication/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Medication:createMedication }
+    methods:  [POST]
+
+## GET
+nc_medication_getMedication_pro:
+    path:     /pro/medication/{patientId}
+    defaults: { _controller: NCPatientBundle:Medication:getMedications }
+    methods:  [GET]
+
+nc_medication_getMedication_patient:
+    path:     /patient/medication/{patientId}
+    defaults: { _controller: NCPatientBundle:Medication:getMedications }
+    methods:  [GET]

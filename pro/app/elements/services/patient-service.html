@@ -1,0 +1,100 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="patient-service">
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+    <my-ajax id="ajax"
+      on-response="ajaxSuccess"
+      on-error="ajaxError"
+      handleAs="json">
+    </my-ajax>
+  </template>
+  <script>
+  Polymer({ is:'patient-service',
+    properties: {
+      lastRequest: String,
+      patient: {
+        type: Object,
+        notify: true,
+        readOnly: true
+      }
+    },
+    createPatient: function(username, firstname, lastname, mail, password, phone) {
+      this.lastRequest = "createPatient";
+      this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/patient/new';
+      this.$.ajax.headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+      };
+      this.$.ajax.method = 'POST';
+      this.$.ajax.setBody({"username":username,
+                            "firstname": firstname,
+                            "lastname": lastname,
+                            "mail":mail,
+                            "password": password,
+                            "phone":phone});
+      this.$.ajax.go();
+    },
+    getInfo: function(patientId) {
+      this.lastRequest = "getInfo";
+      this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/patient/' + patientId;
+      this.$.ajax.headers = {};
+      this.$.ajax.setBody({});
+      this.$.ajax.method = 'GET';
+      this.$.ajax.go();
+    },
+    updateInfo: function(patientId, username, firstname, lastname, address, postcode, city, phone, mail) {
+      this.lastRequest = "updateInfo";
+      this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/update/" + patientId;
+      this.$.ajax.headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+      };
+      this.$.ajax.method = 'POST';
+      this.$.ajax.setBody({  "username":username,
+                              "firstname": firstname,
+                              "lastname": lastname,
+                              "address":address,
+                              "postcode":postcode,
+                              "city":city,
+                              "phone":phone,
+                              "mail":mail});
+      this.$.ajax.go();
+    },
+    remove: function(patientId) {
+      console.log("remove patient [TODO] attente de la création de la route sur l'api !")
+/*
+      this.lastRequest = "remove";
+      this.$.ajax.headers = {};
+      this.$.ajax.setBody({});
+      this.$.ajax.method = 'GET';
+      this.$.ajax.url="/NutriCloud/web/app_dev.php/pro/patient/remove" + patientId
+      this.$.ajax.go();
+      */
+    },
+    ajaxSuccess: function() {
+      if (this.lastRequest == "getInfo") {
+        this._setPatient(this.$.ajax.lastResponse);
+        this.fire('data-fetch');
+      }
+      else if (this.lastRequest == "createPatient")
+        this.fire("patient-created");
+      else if (this.lastRequest == "remove")
+        this.fire('remove-success');
+      else
+        this.getInfo(app.patientId);
+    },
+    ajaxError: function() {
+      if (this.lastRequest == "getInfo")
+        this.fire('data-fetch-error');
+      else if (this.lastRequest == "createPatient")
+        this.fire("patient-created-error");
+      else if (this.lastRequest == "remove")
+        this.fire('remove-error');
+    }
+  });
+  </script>
+</dom-module>

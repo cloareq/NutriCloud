@@ -1,0 +1,339 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+
+<!-- service (data provider) -->
+<link rel="import" href="../services/plan-alimentaire-service.html">
+
+<!-- Internal components -->
+<link rel="import" href="alim-element.html">
+
+<dom-module id="plan-alimentaire">
+  <template>
+    <style>
+    table {
+      border: none;
+      border-collapse: collapse;
+      width: 90%;
+      margin: 4%;
+    }
+    #head th {
+      font-family: 'RobotoDraft', sans-serif;
+      border: none;
+      padding: 4px;
+      background-color: #0A98CF;
+      color: #FFF;
+      font-size: 18px;
+      font-weight: 200;
+    }
+    .row {
+      font-family: 'RobotoDraft', sans-serif;
+      border: none;
+      padding: 5px;
+      background-color: #0A98CF;
+      color: #FFF;
+      font-size: 18px;
+      font-weight: 200;
+    }
+    td {
+      padding: 5px;
+      text-align: right;
+      font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #696969;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 2px solid #eaeaea;
+    }
+    tr:nth-child(odd) {
+      background-color: #FFF;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8f8f8;
+    }
+
+    .addAlim {
+      float: left;
+    }
+    .content {
+      /*margin-left: 15%;*/
+    }
+  </style>
+
+  <plan-alimentaire-service id="planService" plan="{{data}}"></plan-alimentaire-service>
+
+  <table>
+    <tr id="head">
+      <th></th>
+      <th>Lundi</th>
+      <th>Mardi</th>
+      <th>Mercredi</th>
+      <th>Jeudi</th>
+      <th>Vendredi</th>
+      <th>Samedi</th>
+      <th>Dimanche</th>
+    </tr>
+    <tr id="matin">
+      <th class="row">Matin</th>
+      <td class="lundi">
+            <div class="content">
+        <template is="dom-repeat" items="{{data.Monday}}">
+          <template is="dom-if" if="{{_isMorning(item.hour)}}">
+            <alim-element jour="Monday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="mardi">
+        <div class="content">
+          <template is="dom-repeat" items="{{data.Tuesday}}">
+            <template is="dom-if" if="{{_isMorning(item.hour)}}">
+              <alim-element jour="Tuesday" data="{{item}}"></alim-element>
+            </template>
+          </template>
+        </div>
+      </td>
+      <td class="mercredi">
+        <div class="content">
+          <template is="dom-repeat" items="{{data.Wednesday}}">
+            <template is="dom-if" if="{{_isMorning(item.hour)}}">
+              <alim-element jour="Wednesday" data="{{item}}"></alim-element>
+            </template>
+          </template>
+        </div>
+      </td>
+      <td class="jeudi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Thursday}}">
+          <template is="dom-if" if="{{_isMorning(item.hour)}}">
+            <alim-element jour="Thursday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="vendredi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Friday}}">
+          <template is="dom-if" if="{{_isMorning(item.hour)}}">
+            <alim-element jour="Friday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="samedi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Saturday}}">
+          <template is="dom-if" if="{{_isMorning(item.hour)}}">
+            <alim-element jour="Saturday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="dimanche">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Sunday}}">
+          <template is="dom-if" if="{{_isMorning(item.hour)}}">
+            <alim-element jour="Sunday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+    </tr>
+    <tr id="midi">
+      <th class="row">Midi</th>
+      <td class="lundi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Monday}}">
+          <template is="dom-if" if="{{_isLunch(item.hour)}}">
+            <alim-element jour="Monday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="mardi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Tuesday}}">
+          <template is="dom-if" if="{{_isLunch(item.hour)}}">
+            <alim-element jour="Tuesday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="mercredi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Wednesday}}">
+          <template is="dom-if" if="{{_isLunch(item.hour)}}">
+            <alim-element jour="Wednesday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="jeudi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Thursday}}">
+          <template is="dom-if" if="{{_isLunch(item.hour)}}">
+            <alim-element jour="Thursday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="vendredi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Friday}}">
+          <template is="dom-if" if="{{_isLunch(item.hour)}}">
+            <alim-element jour="Friday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="samedi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Saturday}}">
+          <template is="dom-if" if="{{_isLunch(item.hour)}}">
+            <alim-element jour="Saturday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="dimanche">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Sunday}}">
+          <template is="dom-if" if="{{_isLunch(item.hour)}}">
+            <alim-element jour="Sunday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+    </tr>
+    <tr id="soir">
+      <th class="row">Soir</th>
+      <td class="lundi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Monday}}">
+          <template is="dom-if" if="{{_isEvening(item.hour)}}">
+            <alim-element jour="Monday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="mardi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Tuesday}}">
+          <template is="dom-if" if="{{_isEvening(item.hour)}}">
+            <alim-element jour="Tuesday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="mercredi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Wednesday}}">
+          <template is="dom-if" if="{{_isEvening(item.hour)}}">
+            <alim-element jour="Wednesday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="jeudi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Thursday}}">
+          <template is="dom-if" if="{{_isEvening(item.hour)}}">
+            <alim-element jour="Thursday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="vendredi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Friday}}">
+          <template is="dom-if" if="{{_isEvening(item.hour)}}">
+            <alim-element jour="Friday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="samedi">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Saturday}}">
+          <template is="dom-if" if="{{_isEvening(item.hour)}}">
+            <alim-element jour="Saturday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+      <td class="dimanche">
+            <div class="content">
+            <template is="dom-repeat" items="{{data.Sunday}}">
+          <template is="dom-if" if="{{_isEvening(item.hour)}}">
+            <alim-element jour="Sunday" data="{{item}}"></alim-element>
+          </template>
+        </template>
+        </div>
+      </td>
+    </tr>
+    </table>
+
+  </template>
+
+  <script>
+  Polymer({ is:'plan-alimentaire',
+    properties: {
+      /**
+      * Plan alimentaire in JSON
+      *  example of aliment :
+      *   {aliment: "pain", quantity: "200g", hour: "7h"}
+      */
+      data: {
+        type: Object,
+        observer: '_dataChanged',
+        value: { 'Monday' : [],
+                  'Tuesday' : [],
+                  'Wednesday' : [],
+                  'Thursday' : [],
+                  'Friday' : [],
+                  'Saturday' : [],
+                  'Sunday' : [] 
+              }
+      }
+    },
+    _dataChanged: function() {
+      //if this.data is empty = {}
+      if (Object.getOwnPropertyNames(this.data).length === 0)
+        this.data = { 'Monday' : [],
+                  'Tuesday' : [],
+                  'Wednesday' : [],
+                  'Thursday' : [],
+                  'Friday' : [],
+                  'Saturday' : [],
+                  'Sunday' : [] };
+    },
+    getHour: function(hour) {
+      return parseInt(hour.substr(0, hour.length - 1));
+    },
+    _isMorning: function(hour) {
+      hour = this.getHour(hour);
+      if (hour < 12)
+        return true;
+      return false;
+    },
+    _isLunch: function(hour) {
+      hour = this.getHour(hour);
+      if (hour > 11 && hour < 14)
+        return true;
+      return false;
+    },
+    _isEvening: function(hour) {
+      hour = this.getHour(hour);
+      if (hour > 14)
+        return true;
+      return false;
+    },
+    refresh: function() {
+      this.$.planService.getPlan(app.userId);
+    }
+  });
+  </script>
+</dom-module>

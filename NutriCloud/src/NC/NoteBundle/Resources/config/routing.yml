@@ -1,0 +1,27 @@
+nc_pro_note_new:
+    path:     /pro/note/new/{patientId}
+    defaults: { _controller: NCNoteBundle:Note:newNote }
+
+nc_patient_note_new:
+    path:     /patient/note/new/{patientId}
+    defaults: { _controller: NCNoteBundle:Note:newNote }
+
+nc_pro_note_get_weight:
+    path:     /pro/note/weight/{patientId}
+    defaults: { _controller: NCNoteBundle:Note:getWeight }
+
+nc_patient_note_get_weight:
+    path:     /patient/note/weight/{patientId}
+    defaults: { _controller: NCNoteBundle:Note:getWeight }
+
+nc_pro_note_get:
+    path:     /pro/note/{patientId}
+    defaults: { _controller: NCNoteBundle:Note:getNotes }
+
+nc_patient_note_get:
+    path:     /patient/note/last/{patientId}
+    defaults: { _controller: NCNoteBundle:Note:getLastNote }
+
+nc_pro_get_last_note:
+    path:     /pro/note/last/{patientId}
+    defaults: { _controller: NCNoteBundle:Note:getLastNote }

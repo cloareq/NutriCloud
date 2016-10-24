@@ -1,0 +1,1 @@
+[{% for app in appointments %}{"id": "{{ app.id }}","patientid": "{{ app.patient.id }}","title": "{{ app.comment }}","start": "{{ app.start }}","end": "{{ app.end }}"}{% if loop.last ==false%},{% endif %}{% endfor %}]

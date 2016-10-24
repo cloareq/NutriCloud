@@ -1,0 +1,1 @@
+[{% for faq in faqList %}{"id": "{{ faq.id }}", "category": "{{ faq.category }}", "question": "{{ faq.question }}","response": "{{ faq.response }}"}{% if loop.last ==false%},{% endif %}{% endfor %}]

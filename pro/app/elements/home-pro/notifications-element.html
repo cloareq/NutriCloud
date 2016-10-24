@@ -1,0 +1,112 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<!-- service -->
+<link rel="import" href="../services/alertes-service.html">
+
+<!-- styling sheet -->
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<dom-module id="notifications-element" >
+  <template>
+  	<style>
+      #navdiv {
+        padding: 2%;
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+      }
+      #navdiv paper-item {
+        @apply(--layout-flex);
+        @apply(--layout-center);
+        @apply(--layout-center-center);
+      }
+      .nav {
+        background-color: var(--color-nutricloud-black);
+      }
+      #content {
+        text-align: center;
+      }
+    </style>
+
+    <alertes-service id="notifService" alertes="{{notif}}"></alertes-service>
+
+    <div id="content">
+      <div id="navdiv">
+        <paper-fab on-click="prev" id="prev" class="nav" icon="arrow-back" title="arrow-back" role="button" tabindex="0" aria-label="arrow-back"></paper-fab>
+        <paper-item id="datecontent">{{label}}</paper-item>
+        <paper-fab on-click="next" id="next" class="nav" icon="arrow-forward" title="arrow-forward" role="button" tabindex="0" aria-label="arrow-forward"></paper-fab>
+      </div>
+      <iron-pages id="msg" selected="{{selected}}">
+      <template is="dom-repeat" items="[[notifications]]">
+        <template is="dom-if" if="{{_isNotif(item.name)}}">
+          <section class="content">
+            <a href$="[[_createLink(item)]]">
+              <p>[[_getPatientName(item.patient)]]</p>
+            </a>
+          </section>
+        </template>
+      </template>
+      </iron-pages>
+    </div>
+
+  </template>
+
+  <script>
+  	Polymer({ is:'notifications-element',
+      properties: {
+        selected: {
+          type: Number,
+          notify: true,
+          value: 0,
+          observer: 'selectedChanged'
+        },
+        typeLabel: {
+          type: Object,
+          readOnly: true,
+          value: {
+            "NEW_MESSAGE": "Nouveau message"
+          }
+        },
+        notif: {
+          type: Array,
+          observer: 'selectedChanged'
+        }
+      },
+      _createLink: function(item) {
+        var routeParam = "";
+        if (item.name == "NEW_MESSAGE")
+          routeParam = "/discussion";
+        return "/patient/" + item.patient + routeParam;
+      },
+      _getPatientName: function(patientId) {
+        for (var i=0; i < app.patients.length; i++)
+          if (app.patients[i].id === patientId)
+            return app.patients[i].fullName;
+        return "unknow";
+      },
+      _isNotif: function(alertName) {
+        if (alertName == "NEW_MESSAGE")
+          return true;
+        return false;
+      },
+      selectedChanged: function() {
+        if (this.data && this.data.length > 0)
+          this.label = this.typeLabel[this.notif[this.selected].name];
+        else
+          this.label = "Vous n'avez pas de notification.";
+      },
+      prev: function() {
+        this.$.msg.selectPrevious();
+      },
+      next: function() {
+        this.$.msg.selectNext();
+      },
+      update: function() {
+        this.$.notifService.getAlertes();
+      }
+    });
+  </script>
+</dom-module>

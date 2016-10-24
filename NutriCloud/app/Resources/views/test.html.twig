@@ -1,0 +1,51 @@
+{% extends "base.html.twig" %}
+
+{% block stylesheets %}
+  <script src="/components/webcomponentsjs/webcomponents.js"></script>
+
+  <link href="/components/font-roboto/roboto.html" rel="import">
+  <link href="/components/core-icon/core-icon.html" rel="import">
+  <link href="/components/core-icons/core-icons.html" rel="import">
+  <link href="/components/core-selector/core-selector.html" rel="import">
+  <link href="/components/paper-shadow/paper-shadow.html" rel="import">
+
+  <link href="/components/paper-item/paper-item.html" rel="import">
+  <style shim-shadowdom>
+    body {
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      font-size: 14px;
+      margin: 0;
+      padding: 24px;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-touch-callout: none;
+    }
+    section {
+      padding: 20px 0;
+    }
+    section > div {
+      padding: 14px;
+      font-size: 16px;
+    }
+    html /deep/ paper-shadow {
+      display: inline-block;
+    }
+    core-icon {
+      margin-right: 0.5em;
+    }
+  </style>
+{% endblock %}
+{% block body %}
+  <section>
+
+    <div>In a core-selector</div>
+
+    <paper-shadow>
+      <core-selector selected="1" selectedAttribute="">
+        <paper-item>Item 1</paper-item>
+        <paper-item>Item 2</paper-item>
+        <paper-item>Item 3</paper-item>
+      </core-selector>
+    </paper-shadow>
+
+  </section>
+{% endblock %}

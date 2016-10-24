@@ -1,0 +1,50 @@
+###### GET ######
+
+nc_pro_get_all_alert:
+    path:     /pro/alert/get/all
+    defaults: { _controller: NCAlertBundle:Alert:proGetAllAlert }
+    methods:  [GET]
+
+nc_patient_get_all_alert:
+    path:     /patient/alert/get/all
+    defaults: { _controller: NCAlertBundle:Alert:patientGetAllAlert }
+    methods:  [GET]
+
+nc_pro_get_patient_alert:
+    path:     /pro/alert/get/{patientId}
+    defaults: { _controller: NCAlertBundle:Alert:proGetPatientAlert }
+    methods:  [GET]
+
+nc_pro_get_alert_by_name:
+    path:     /pro/alert/get/name/{alert_name}
+    defaults: { _controller: NCAlertBundle:Alert:proGetAlertByName }
+    methods:  [GET]
+
+nc_patient_get_alert_by_name:
+    path:     /patient/alert/get/name/{alert_name}
+    defaults: { _controller: NCAlertBundle:Alert:patientGetAlertByName }
+    methods:  [GET]
+
+nc_pro_get_patient_alert_by_name:
+    path:     /pro/alert/get/id/{patientId}/name/{alert_name}
+    defaults: { _controller: NCAlertBundle:Alert:proGetPatientAlertByName }
+    methods:  [GET]
+
+nc_pro_delete_alert:
+    path:     /pro/alert/delete/{alert_id}
+    defaults: { _controller: NCAlertBundle:Alert:proDeleteAlert }
+    methods:  [DELETE]
+
+nc_patient_delete_alert:
+    path:     /patient/alert/delete/{alert_id}
+    defaults: { _controller: NCAlertBundle:Alert:patientDeleteAlert }
+    methods:  [DELETE]
+
+
+###### UPDATE ######
+
+nc_alert_update_appointment:
+    path:     /pro/alert/update/appointment
+    defaults: { _controller: NCScheduleBundle:Schedule:proCheckApppointmentAlert }
+    methods:  [GET]
+

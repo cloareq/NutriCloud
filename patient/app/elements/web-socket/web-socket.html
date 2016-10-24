@@ -1,0 +1,40 @@
+<link rel="import" src="../bower_components/polymer/polymer.html">
+
+<dom-module id="web-socket">
+	<template>
+	</template>
+	<script>
+	/*
+	* fire event "receive" when data is receive
+	*/
+	Polymer({
+		is: 'web-socket',
+		properties: {
+			url: String,
+			socket: Object
+		},
+		connect: function() {
+			this.socket = new WebSocket(this.url);
+			this.socket.onopen = function() {
+    	        // Web Socket is connected
+	            this.fire('open');
+        	}.bind(this);
+
+           	this.socket.onmessage = function (event) {
+	            this.fire('receive', {data: event.data});
+            }.bind(this);
+
+            this.socket.onclose = function() {
+               	this.socket.close();
+                this.fire('close');
+            }.bind(this);
+		},
+		close: function() {
+            this.socket.close();
+		},
+		send: function(str) {
+			this.socket.send(str);
+		}
+	});
+	</script>
+</dom-module>

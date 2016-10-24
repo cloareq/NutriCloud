@@ -1,0 +1,37 @@
+nc_pro_get_all_appointment:
+    path:     /pro/appointment/get/all
+    defaults: { _controller: NCScheduleBundle:Schedule:getProAllAppointment }
+    methods:  [GET]
+
+nc_pro_get_patient_appointment:
+    path:     /pro/appointment/get/patient/{patientId}
+    defaults: { _controller: NCScheduleBundle:Schedule:proGetPatientAppointment }
+    methods:  [GET]
+
+nc_pro_get_appointment_between_two_dates:
+    path:     /pro/appointment/get/{start}/{end}
+    defaults: { _controller: NCScheduleBundle:Schedule:getProAppointmentBetweenTwoDates }
+    methods:  [GET]
+
+nc_patient_get_appointment:
+    path:     /patient/appointment/get
+    defaults: { _controller: NCScheduleBundle:Schedule:getPatientAppointment }
+    methods:  [GET]
+
+
+
+
+nc_pro_remove_appointment:
+    path:     /pro/appointment/remove/{appointmentId}
+    defaults: { _controller: NCScheduleBundle:Schedule:removeAppointment }
+    methods:  [DELETE]
+
+nc_pro_create_appointment:
+    path:     /pro/appointment/create/{patientId}
+    defaults: { _controller: NCScheduleBundle:Schedule:createAppointment }
+    methods:  [POST]
+
+nc_pro_update_appointment:
+    path:     /pro/appointment/update/{appointmentId}
+    defaults: { _controller: NCScheduleBundle:Schedule:updateAppointment }
+    methods:  [POST]

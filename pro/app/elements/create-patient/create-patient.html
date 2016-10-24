@@ -1,0 +1,150 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html">
+<link rel="import" href="../../bower_components/gold-phone-input/gold-phone-input.html">
+
+<!-- color variable -->
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<!-- patient service -->
+<link rel="import" href="../services/patient-service.html">
+
+<dom-module id="create-patient">
+	<template>
+		<style>
+    	  #err {
+	        color: var(--color-nutricloud-red);
+	        font-size: medium;
+	      }
+    	  .horizontal {
+	        @apply(--layout-horizontal);
+    	  }
+	      .flex1child {
+    	    @apply(--layout-flex-2);
+	      }
+    	  .flexchild {
+	        @apply(--layout-flex-5);
+    	  }
+	      .flex7child {
+        	@apply(--layout-flex-7);
+    	  }
+    	  .center {
+    	  	@apply(--layout-center);
+    	  	@apply(--layout-center-center);
+    	  }
+    	  #valid {
+    	  	margin-top: 10%;
+    	  	width: 100%;
+	        color: var(--color-nutricloud-white);
+    	    background: var(--color-nutricloud-blue);
+	      }
+	      /* title "Ajouter patient" */
+	      #label {
+	      	color: var(--color-nutricloud-blue);
+	      	font-family: 'RobotoDraft', sans-serif;
+	      	text-align: center;
+	      	font-weight: bold;
+	      }
+      .no-style {
+        -webkit-appearance: none;
+        border: 0;
+        padding: 0;
+        background: transparent;
+      }
+		</style>
+
+		<patient-service on-patient-created="patientCreated" on-patient-created-error="errorPatientCreation" error="{{apiError}}" id="patientService"></patient-service>
+
+		<paper-dialog id="patientForm">
+		    <form is="iron-form" on-submit="createPatient">
+				<h2 id="label">Ajouter un patient</h2>
+		     	<div class="horizontal center">
+	      			<p hidden id="err">{{error}}</p>
+	      		</div>
+		    	<div class="horizontal">
+        			<paper-input floatingLabel class="inputForm flexchild" id="username" label="Nom d'utilisateur" value="{{username::input}}"></paper-input>
+        			<div class="flex7child"></div>
+		      	</div>
+		      	<div class="horizontal">
+        			<paper-input floatingLabel class="inputForm flexchild" id="firstname" label="Prénom" value="{{firstName::input}}" ></paper-input>
+        			<div class="flex1child"></div>
+        			<paper-input floatingLabel class="inputForm flexchild" id="lastname" label="Nom" value="{{lastName::input}}"></paper-input>
+		      	</div>
+      			<div class="horizontal">
+			        <gold-phone-input floatingLabel class="inputForm flexchild" auto-validate error-message="Veuillez entrer un numéro de téléphone valide" country-code="33" phone-number-pattern="X-XX-XX-XX-XX" id="phone" label="Téléphone" value="{{phone::input}}"></gold-phone-input>
+        			<div class="flex1child"></div>
+			        <gold-email-input auto-validate error-message="Veuillez entrer un email valide" class="inputForm flexchild" id="mail" label="Mail" value="{{mail::input}}" floatingLabel></gold-email-input>
+      			</div>
+		     	<div class="horizontal">
+        			<paper-input floatingLabel class="inputForm flexchild" id="password" type="password" label="Mot de passe" value="{{password::input}}" ></paper-input>
+        			<div class="flex1child"></div>
+        			<paper-input floatingLabel class="inputForm flexchild" id="cpassword" type="password" label="Confirmer mot de passe" value="{{cpassword::input}}"></paper-input>
+		      	</div>
+		     	<div class="horizontal center">
+	      			<button class="no-style" type="submit"><paper-button id="valid">Valider</paper-button></button>
+		      	</div>
+		    </form>
+
+		</paper-dialog>
+	</template>
+
+	<script>
+		Polymer({ is:'create-patient',
+			properties: {
+				error: {
+					type:String,
+					observer: 'errorChanged'
+				}
+			},
+			ready: function() {
+				this.clearInput();
+			},
+			toggle: function() {
+				this.$.patientForm.toggle();
+			},
+			errorChanged: function() {
+				if (this.error == "")
+					this.$.err.setAttribute('hidden', true);
+				else
+					this.$.err.removeAttribute('hidden');
+			},
+			clearInput: function() {
+				this.username = "";
+				this.firstName = "";
+				this.lastName = "";
+				this.mail = "";
+				this.phone = "";
+				this.password = "";
+				this.cpassword = "";
+			},
+			createPatient: function() {
+				if (this.username == "" || this.firstName == "" || this.lastName == "" || this.mail == "" || this.phone == "" || this.password == "" || this.cpassword == "")
+					this.error = "Merci de renseigner tout les champs";
+				else if (this.password != this.cpassword)
+					this.error = "Erreur dans la confirmation du mot de passe";
+				else if (this.password && this.password.length < 6)
+					this.error = "Votre mot de passe doit contenir au moins 6 charactères";
+				else if (this.username && this.username.length < 6)
+					this.error = "Votre nom d'utilisateur doit contenir au moins 6 charactères";
+				else {
+					this.error = "";
+					this.$.patientService.createPatient(this.username, this.firstName, this.lastName, this.mail, this.password, this.phone);
+				}
+			},
+			patientCreated: function() {
+				this.fire('patient-created');
+				this.clearInput();
+				this.$.patientForm.toggle();
+			},
+			errorPatientCreation: function() {
+				app.$.toast.text = "Erreur lors de la création du patient ["+this.apiError+"]";
+				app.$.toast.style.backgroundColor = "red";
+				app.$.toast.show();
+			}
+		});
+	</script>
+</dom-module>

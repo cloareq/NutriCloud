@@ -1,0 +1,100 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="addquestion-element">
+  <template>
+  <style>
+    #addForm {
+        padding: 0 20px;
+    }
+    #addButton {
+      width: 250px;
+      background-color: #454646;
+      color: white;
+      font-family: "RobotoDraft", sans-serif;
+    }
+    #addButton:hover {
+      background-color: var(--color-nutricloud-green);
+    }
+    #sendQR {
+      width: 200px;
+      background-color: rgb(69, 70, 70);
+      color: white;
+      font-family: "RobotoDraft", sans-serif;
+    }
+    .addInput {
+      text-align: left;
+      max-width: 800px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+    }
+    .addInput #decorator #focusedUnderline {
+      background-color: #0A98CF;
+    }
+    .addInput #decorator #floatedLabelText {
+      color: #0A98CF;
+    }
+    .colorChangeHover:hover
+    {
+      background-color: #0AC45E;
+    }
+    #errordiv {
+      margin-bottom: 2%;
+      color: red;
+    }
+      .no-style {
+        -webkit-appearance: none;
+        border: 0;
+        padding: 0;
+        background: transparent;
+      }
+  </style>
+
+    <paper-button raised class="colorChangeHover" id="addButton" floatingLabel on-click="toggle">Ajouter une question</paper-button>
+    <iron-collapse id="collapseAddForm">
+      <form is="iron-form" id="addForm" on-submit="formAdd">
+        <paper-input class="addInput" id="qToAdd" label="Question" floatingLabel></paper-input>
+        <paper-input class="addInput" id="rToAdd" label="Réponse" floatingLabel></paper-input>
+        <paper-input class="addInput" id="cToAdd" label="Catégorie" value="{{category}}" floatingLabel></paper-input>
+        <p id="errordiv" hidden>Merci de renseigner la question ainsi qu'une réponse associée</p>
+        <button type="submit" class="no-style"><paper-button raised id="sendQR">Valider</paper-button></button>
+      </form>
+    </iron-collapse>
+  </template>
+
+  <script>
+  	Polymer({is:'addquestion-element',
+  		properties: {
+  			category: {type: String, value:"default"}
+  		},
+	    formAdd: function(e) {
+      		e.preventDefault();
+      		this.addQR();
+    	},
+	    addQR: function() {
+      		if (this.$.qToAdd.value == '' || this.$.rToAdd.value == '')
+        		this.$.errordiv.hidden = false;
+	      	else {
+            this.fire('add-qr', {
+              question: this.$.qToAdd.value,
+              response: this.$.rToAdd.value,
+              category: this.category
+            });
+            this.$.errordiv.hidden = true;
+    	    	this.toggle();
+        		this.$.qToAdd.value = '';
+        		this.$.rToAdd.value = '';
+	      	}
+	    },
+	    toggle: function() {
+    		this.$.collapseAddForm.toggle();
+	    }
+  	});
+  </script>
+</dom-module>

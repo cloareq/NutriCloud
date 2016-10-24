@@ -1,0 +1,145 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html">
+<link rel="import" href="../../bower_components/gold-phone-input/gold-phone-input.html">
+<link rel="import" href="../../bower_components/gold-zip-input/gold-zip-input.html">
+
+<link rel="import" href="../services/patient-service.html">
+
+<dom-module id="info-patient">
+  <template>
+    <style>
+      :host {
+          --paper-input-container-disabled: {
+            opacity: 1;
+          };
+      }
+
+      #signInForm paper-input paper-input-decorator .focused-underline, .inputPwd .focused-underline {
+        background-color: var(--color-nutricloud-blue);
+      }
+
+      #core_icon_button {
+        background-color: var(--color-nutricloud-blue);
+        color: var(--color-nutricloud-white);
+        padding: 7px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #valid {
+        width: 20%;
+        @apply(--layout-flex);
+        margin-left: 30%;
+        position: absolute;
+        color: var(--color-nutricloud-white);
+        background: var(--color-nutricloud-blue);
+      }
+
+      #remove {
+        float: right;
+        background-color: var(--color-nutricloud-red);
+        color: var(--color-nutricloud-white);
+      }
+
+      #err {
+        color: var(--color-nutricloud-red);
+      }
+
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
+
+      .flex1child {
+        @apply(--layout-flex-2);
+      }
+
+      .flexchild {
+        @apply(--layout-flex-5);
+      }
+
+      .flex7child {
+        @apply(--layout-flex-7);
+      }
+      .no-style {
+        -webkit-appearance: none;
+        border: 0;
+        padding: 0;
+        background: transparent;
+      }
+    </style>
+
+    <patient-service id="patientService" patient="{{patient}}"></patient-service>
+
+    <form is="iron-form" id="signInForm" on-submit="sendInfo">
+      <div>
+        <iron-icon icon="settings" id="core_icon_button" theme="core-light-theme" on-click="toggleField"></iron-icon>
+        <paper-button raised id="remove" on-click="removePatient">Supprimer le compte</paper-button>
+      </div>
+
+      <div class="horizontal">
+        <paper-input required floatingLabel class="inputForm flexchild" id="username" label="Nom d'utilisateur" disabled$="{{toggle}}" value="{{patient.userName}}"></paper-input>
+        <div class="flex7child"></div>
+      </div>
+      <div class="horizontal">
+        <paper-input required floatingLabel class="inputForm flexchild" id="firstname" label="Prénom" disabled$="{{toggle}}" value="{{patient.firstName}}" ></paper-input>
+        <div class="flex1child"></div>
+        <paper-input required floatingLabel class="inputForm flexchild" id="lastname" label="Nom" value="{{patient.lastName}}" disabled$="{{toggle}}"></paper-input>
+      </div>
+      <div class="horizontal">
+        <gold-phone-input floatingLabel class="inputForm flexchild" required auto-validate error-message="Veuillez entrer un numéro de téléphone valide" country-code="33" phone-number-pattern="X-XX-XX-XX-XX" id="phone" label="Téléphone" disabled$="{{toggle}}" value="{{patient.phone}}"></gold-phone-input>
+        <div class="flex1child"></div>
+        <gold-email-input required auto-validate error-message="Veuillez entrer un email valide" class="inputForm flexchild" id="mail" label="Mail" value="{{patient.mail}}" floatingLabel disabled$="{{toggle}}"></gold-email-input>
+      </div>
+
+      <paper-input floatingLabel class="inputForm" id="address" label="Numéro & Rue" disabled$="{{toggle}}" value="{{patient.address}}"></paper-input>
+
+      <div class="horizontal">
+        <gold-zip-input auto-validate error-message="Code postal invalide" class="inputForm flexchild" id="postcode" label="Code postal" value="{{patient.postcode}}" floatingLabel disabled$="{{toggle}}"></gold-zip-input>
+        <div class="flex1child"></div>
+        <paper-input floatingLabel class="inputForm flexchild" id="city" label="Ville" disabled$="{{toggle}}" value="{{patient.city}}"></paper-input>
+      </div>
+
+      <button class="no-style" type="submit"><paper-button id="valid" hidden$="{{toggle}}">Valider</paper-button></button>
+    </form>
+
+  </template>
+  <script>
+    Polymer({ is:'info-patient',
+      properties: {
+        patient: Object,
+        toggle: {
+          type: Boolean,
+          value: true
+        }
+      },
+      toggleField: function() {
+        this.toggle = !this.toggle;
+      },
+      sendInfo: function() {
+        this.$.patientService.updateInfo(
+            app.patientId,
+            this.$.username.value,
+            this.$.firstname.value,
+            this.$.lastname.value,
+            this.$.address.value,
+            this.$.postcode.value,
+            this.$.city.value,
+            this.$.phone.value,
+            this.$.mail.value
+        );
+        this.toggleField();
+      },
+      removePatient: function() {
+        if (confirm("Etes-vous sur de vouloir supprimer le compte de ce patient ?"))
+          this.$.patientService.remove(app.patientId);
+      },
+      refresh: function() {
+        this.$.patientService.getInfo(app.patientId);
+      }
+    });
+  </script>
+</dom-module>

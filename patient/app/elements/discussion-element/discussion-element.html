@@ -1,0 +1,182 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/moment-element/moment-with-locales-import.html">
+
+<link rel="import" href="../web-socket/web-socket.html">
+
+<link rel="import" href="../services/discussion-service.html">
+<link rel="import" href="../services/info-service.html">
+
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<dom-module id="discussion-element">
+  <template>
+    <style>
+      #discussion {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+/*        overflow: scroll;*/
+      }
+
+      .messageDate {
+        font-size: 12px;
+        color: var(--color-nutricloud-grey);
+        text-align: left;
+      }
+
+      .messageText {
+        font-weight: 200;
+      }
+
+      .message {
+        @apply(--layout-horizontal);
+        padding: 1%;
+        border-radius: 1%;
+        box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.2);
+        width: 55%;
+        margin-bottom: 1%;
+        margin-left: 1%;
+        margin-right: 1%;
+        color: #FFF;
+        text-align: left;
+      }
+
+      .pro {
+        background-color: #BBB;
+      }
+
+      .patient {
+        padding-right: 0%;
+        margin-left: 44%;
+        background-color: rgba(174, 213, 127, 1);
+      }
+
+      /**
+      * css pour la partie envoie de message <form id="newMessage">..........</form>
+      */
+      #newMessage {
+        margin-top: 2%;
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        @apply(--layout-center-center);
+        background-color: var(--color-nutricloud-blue);
+      }
+
+      .flex-vertical {
+        @apply(--layout-vertical);
+      }
+
+      #textarea {
+        --paper-input-container-color: white;
+        --paper-input-container-input-color: white;
+        --paper-input-container-focus-color: white;
+        width: 70%;
+        max-width: 75%;
+        min-width: 50%;
+        @apply(--layout-flex);
+      }
+
+      #button_container {
+        @apply(--layout-flex);
+        @apply(--layout-center);
+        @apply(--layout-center-center);
+        color: var(--color-nutricloud-white);
+        text-align: center;
+        background-color: var(--color-nutricloud-black);
+        margin-top: 1%;
+        margin-bottom: 1%;
+        border-radius: 5px;
+      }
+
+    </style>
+
+    <discussion-service id="discussionService" on-message-sended="showToast" messages="{{messages}}"></discussion-service>
+    <info-service id="patientService" type="patient" on-data-fetch="opensocket" data="{{patient}}"></info-service>
+    <web-socket id="ws" on-open="sendUsername" on-receive="receiveMessage" url="ws://beta.nutricloud.eu:3000"></web-socket>
+
+    <div id="content">
+      <div id="discussion">
+        <template is="dom-repeat" items="[[messages]]">
+          <div class$="message [[item.sender]] flex-vertical">
+            <div class="messageDate">{{item.date}}</div>
+            <div class="messageText">{{item.text}}</div>
+          </div>
+        </template>
+      </div>
+
+      <form id="newMessage" on-submit="newMessage" method="POST">
+        <paper-textarea id="textarea" label="Votre message"></paper-textarea>
+        <div id="button_container">
+          <paper-button id="button" type="submit" on-click="sendMessage">Envoyer</paper-button>
+        </div>
+      </form>
+      <paper-toast id="toastMeal" text="Message envoyé."></paper-toast>
+    </div>
+
+  </template>
+
+  <script>
+  Polymer({
+    is:'discussion-element',
+    properties: {
+      messages: {
+        type: Array,
+        observer: '_messagesChanged'
+      }
+    },
+    ready: function() {
+      this.$.patientService.getInfo();
+    },
+    opensocket: function() {
+      this.$.ws.connect();
+    },
+    sendUsername: function() {
+      this.$.ws.send('{"username": "' + this.patient.userName + '"}');
+    },
+    showToast: function() {
+      this.$.toastMeal.show();
+    },
+    refresh: function() {
+      this.$.discussionService.getMessages(app.userId);
+    },
+    sendMessage: function() {
+      this.$.discussionService.sendMessage(app.userId, escape(this.$.textarea.value));
+      this.$.textarea.value = "";
+      this.refresh();
+    },
+    _messagesChanged: function(event) {
+      moment.locale('fr');
+      for (var i=0; i<this.messages.length; i++) {
+        this.messages[i].date = moment(this.messages[i].date).format("hh:mm - dddd Do MMMM YYYY");
+       this.messages[i].text = unescape(this.messages[i].text);
+      }
+    },
+    receiveMessage: function(event) {
+      var obj = JSON.parse(event.detail.data);
+      obj.text = obj.content;
+      obj.text = unescape(obj.text);
+      obj.sender = "pro";
+      obj.date = moment().format("HH:mm - dddd Do MMMM YYYY");
+      this.push('messages', obj);
+      app.$.notifieur.notifier("Nouveau message", obj.text, function() {
+        var url = "http://" + document.location.host +  "/patient/app/#!/discussion";
+        console.log(url);
+        window.open(url, "_blank").focus();
+      });
+    }
+  });
+  </script>
+</dom-module>

@@ -1,0 +1,32 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="logout-service">
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+  <template>
+    <my-ajax id="ajax"
+      handleAs="json"
+      method="GET"
+      url="/NutriCloud/web/app_dev.php/logout"
+      on-response="ajaxSuccess"
+      >
+    </my-ajax>
+  </template>
+  <script>
+  	Polymer({
+  		is: 'logout-service',
+  		disconnect: function() {
+	     	this.$.ajax.go();
+  		},
+      ajaxSuccess: function() {
+  			this.fire("disconnect");
+  		}
+  	});
+  </script>
+
+</dom-module>

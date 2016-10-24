@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="MySQL - nutricloud@localhost" uuid="65da70ae-942b-47fe-832f-7cb16132092b">
+      <secret-storage>master_key</secret-storage>
+      <user-name>root</user-name>
+      <schema-pattern>nutricloud.*</schema-pattern>
+      <default-schemas>nutricloud.*</default-schemas>
+    </data-source>
+  </component>
+</project>

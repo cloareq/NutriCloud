@@ -1,0 +1,10 @@
+[
+{% for note in notes %}
+    {% if note.weight != "" %}
+        ["{{ note.date|date('Y-m-d') }}" , {{ note.weight }}]
+        {% if loop.last == false %}
+            ,
+        {% endif %}
+    {% endif %}
+{% endfor %}
+]

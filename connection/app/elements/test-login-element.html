@@ -1,0 +1,42 @@
+<html>
+
+	<head>
+ 		<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+ 		<link rel="import" href="login-element.html">
+	</head>
+
+	<body>
+		<login-element id="login"></login-element>
+	</body>
+
+	<script type="text/javascript">
+
+/*		it('should fire patient-selected-change if selected attribute change', function(){
+      		var list = document.createElement('patient-list');
+      		var select = 1; 
+      		list.addEventListener('patient-selected-change', function() {
+      			exepect(list.selected).toEqual(select);
+      		});
+      		list.selected = select;
+    	});
+*/
+
+		var login = document.querySelector('#login');
+		login.$.username.textContent = "usertest";
+		login.$.password.textContent = "usertest";
+
+		login.$.ajax.addEventListener("response", function(data) {
+			if (this.$.ajax.lastResponse.state ==="success")
+				console.log("login success code 200");
+			else
+				console.log("login fail code 200");
+		});
+		login.$.ajax.addEventListener("error", function(data) {
+			console.log("login fail error code");
+		});
+
+		login.sendLogin();
+
+	</script>
+
+</html>

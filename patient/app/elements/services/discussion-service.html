@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="discussion-service">
+  <template>
+    <my-ajax id="ajax"
+          handleAs="json"
+          on-response="ajaxSuccess"
+          >
+      </my-ajax>
+  </template>
+  <script>
+  	Polymer({
+  		is: "discussion-service",
+		properties: {
+			lastRequest: String,
+			messages: {
+				type: Array,
+				notify: true,
+				readOnly: true
+			}
+		},
+		ready: function() {
+/*			this._setMessages([
+		    	{"id": "1", "text": "fgh", "date": "2016-04-10 05:51:22", "sender": "pro"},
+	    		{"id": "2", "text": "lll", "date": "2016-04-12 17:50:46","sender": "pro"},
+			    {"id": "6","text": "coucou","date": "2016-04-15 16:22:02","sender": "patient"},
+        		{"id": "7", "text": "coucou", "date": "2016-04-15 16:22:13", "sender": "patient"},
+		        {"id": "9", "text": "test", "date": "2016-04-15 21:17:19", "sender": "pro"}
+		    ]);
+*/
+		},
+		getMessages: function(patientId) {
+			this.lastRequest = "getMessages";
+	      	this.$.ajax.url = '/NutriCloud/web/app_dev.php/patient/message/get/' + patientId;
+	        this.$.ajax.headers = {};
+   	    	this.$.ajax.setBody ({});
+			this.$.ajax.method = 'GET';
+	      	this.$.ajax.go();
+  		},
+		sendMessage: function(patientId, text) {
+			this.lastRequest = "sendMessage";
+          	this.$.ajax.url = "/NutriCloud/web/app_dev.php/patient/message/new";
+			this.$.ajax.headers = {
+				"Content-Type": "application/x-www-form-urlencoded"
+			};
+			this.$.ajax.method = 'POST';
+    	    this.$.ajax.setBody({"text":text, "patientId":patientId});
+    	    this.$.ajax.go();
+		},
+		ajaxSuccess: function(data) {
+			if (this.lastRequest == "getMessages")
+				this._setMessages(this.$.ajax.data);
+			else if (this.lastRequest == "sendMessage")
+				this.fire("message-sended");
+			else
+				this.getMessages(app.userId);
+		}
+  	});
+  </script>
+</dom-module>

@@ -1,0 +1,108 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<!-- service -->
+<link rel="import" href="../services/planning-service.html">
+
+<!-- styling sheet -->
+<link rel="import" href="../../styles/app-theme.html">
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<dom-module id="list-appointment-pro">
+	<template>
+		<style>
+			#navdiv {
+				padding: 2%;
+				@apply(--layout-horizontal);
+				@apply(--layout-flex);
+			}
+			#navdiv paper-item {
+				@apply(--layout-flex);
+				@apply(--layout-center);
+				@apply(--layout-center-center);
+			}
+			.nav {
+				background-color: var(--color-nutricloud-black);
+			}
+			#content {
+				text-align: center;
+			}
+		</style>
+
+	    <planning-service id="planningService" appointments="{{data}}"></planning-service>
+
+		<div id="content">
+	      <div id="navdiv">
+			<paper-fab on-click="prev" id="prev" class="nav" icon="arrow-back" title="arrow-back" role="button" tabindex="0" aria-label="arrow-back"></paper-fab>
+			<paper-item id="datecontent">{{label}}</paper-item>
+			<paper-fab on-click="next" id="next" class="nav" icon="arrow-forward" title="arrow-forward" role="button" tabindex="0" aria-label="arrow-forward"></paper-fab>
+		  </div>
+		  <iron-pages id="msg" selected="{{selected}}">
+			<template is="dom-repeat" items="[[data]]">
+				<section class="content">
+					<a href$="/patient/[[item.patientid]]">
+						<p>[[_getPatientName(item.patientid)]]</p>
+					</a>
+					<p><span>[[_formatDate(item.start)]]</span> - <span>[[_formatDate(item.end)]]</span></p>
+				</section>
+			</template>
+		  </iron-pages>
+		</div>
+	</template>
+
+	<script>
+		Polymer({is: 'list-appointment-pro',
+			properties: {
+				selected: {
+					type: Number,
+					notify: true,
+					value: 0,
+					observer: 'selectedChanged'
+				},
+				data: {
+					type:Array,
+					observer: 'dataChanged'
+				},
+				label: String
+			},
+      		_getPatientName: function(patientId) {
+        		for (var i=0; i < app.patients.length; i++)
+          			if (app.patients[i].id === patientId)
+            			return app.patients[i].fullName;
+        		return "unknow";
+		    },
+			_formatDate: function(d) {
+				return moment(d).format("HH:mm");
+			},
+			dataChanged: function() {
+				if (this.data && this.data.length > 0)
+					this.data.reverse();
+				this.selectedChanged();
+			},
+			selectedChanged: function() {
+				if (this.data && this.data.length > 0) {
+					this.selected = isNaN(this.selected) ? 0 : this.selected;
+					this.label = moment(this.data[this.selected].start).format("dddd Do MMMM YYYY");
+				}
+				else
+					this.label = "Vous n'avez pas de rendez-vous prévu.";
+			},
+			prev: function() {
+				this.$.msg.selectPrevious();
+			},
+			next: function() {
+				this.$.msg.selectNext();
+			},
+			update: function() {
+				var now = new Date();
+				var start = moment(now);
+				//end = start + 1 week
+				var end = moment(new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000));
+				this.$.planningService.getAppointments(start, end);
+			}
+		});
+	</script>
+</dom-module>

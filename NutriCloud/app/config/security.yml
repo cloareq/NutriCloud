@@ -1,0 +1,87 @@
+security:
+    encoders:
+        NC\ProBundle\Entity\Pro: plaintext
+        NC\PatientBundle\Entity\Patient: plaintext
+
+    role_hierarchy:
+        ROLE_ADMIN:       [ROLE_PRO, ROLE_PATIENT]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        chain_provider:
+            chain :
+                providers: [patient, pro]
+        patient:
+            name:   patient
+            entity: { class: NC\PatientBundle\Entity\Patient, property: username }
+        pro:
+            name:   pro
+            entity: { class: NC\ProBundle\Entity\Pro, property: username }
+
+    firewalls:
+        ## DOCUMENTATION
+        doc_default:
+            pattern: ^/api/doc$
+            anonymous: true
+        doc_faq:
+            pattern: ^/api/doc/faq$
+            anonymous: true
+        doc_message:
+            pattern: ^/api/doc/message$
+            anonymous: true
+        doc_pro:
+            pattern: ^/api/doc/pro$
+            anonymous: true
+        doc_patient:
+            pattern: ^/api/doc/patient$
+            anonymous: true
+        doc_aliment:
+            pattern: ^/api/doc/aliment$
+            anonymous: true
+        doc_planalimentaire:
+            pattern: ^/api/doc/planalimentaire$
+            anonymous: true
+        doc_model:
+            pattern: ^/api/doc/model$
+            anonymous: true
+        doc_goal:
+            pattern: ^/api/doc/goal$
+            anonymous: true
+
+        ## SECURITE
+        pro_login:
+            pattern:   ^/login$
+            anonymous: true
+
+        pro_register:
+            pattern:   ^/register$
+            anonymous: true 
+
+        who_is_connected:
+            pattern:   ^/whoisconnected$
+            anonymous: true
+
+        password_recovery:
+            pattern:   ^/passwordrecovery$
+            anonymous: true
+
+        password_recovery_mail:
+            pattern:   ^/passwordforgotten$
+            anonymous: true
+
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        pro:
+            pattern:   ^/
+            anonymous: false
+            provider:  chain_provider #
+            #stateless: true
+            form_login:
+                check_path: /login_check
+                require_previous_session: false
+                success_handler: authentication_pro_handler
+                failure_handler: authentication_pro_handler
+            logout:
+                path:   /logout
+                target: /whoisconnected

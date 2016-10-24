@@ -1,0 +1,14 @@
+[
+{% for note in notes %}
+    {
+    "note": "{{ note.note }}",
+    "weight": "{{ note.weight }}",
+    "height": "{{ note.height }}",
+    "writer": "{{ note.writer }}",
+    "date": "{{ note.date|date('Y-m-d') }}"
+           }
+    {% if loop.last ==false%}
+		,
+	{% endif %}
+{% endfor %}
+]

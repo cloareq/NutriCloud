@@ -1,0 +1,84 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="suivi-service">
+  <style>
+     :host {
+      display: none;
+    }
+  </style>
+  <template>
+    <my-ajax id="ajax"
+      handleAs="json"
+      on-response="ajaxSuccess"
+      >
+    </my-ajax>
+  </template>
+  <script>
+    (function() {
+      'use-strict';
+
+      Polymer({
+        is: 'suivi-service',
+        properties: {
+          /* one day of suivi */
+          suivi: {
+            type: Object,
+            notify: true,
+            readOnly: true
+          },
+          /* multiple suivi */
+          suivis: {
+            type: Array,
+            notify: true,
+            readOnly: true
+          }
+        },
+        saveSuiviDate: function(patientId, date, plan) {
+          this.lastRequest = "saveSuiviDate";
+          this.$.ajax.method = "PUT";
+          this.$.ajax.headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+          };
+          this.$.ajax.setBody({
+            "plan": '{"'+date+'":'+JSON.stringify(plan)+'}'
+          });
+          this.$.ajax.url = "/NutriCloud/web/app_dev.php/patient/plan/daily/update/" + patientId + "/" + date;
+          this.$.ajax.go();
+        },
+        getSuiviToday: function(patientId) {
+          this.lastRequest = "getSuiviToday";
+          this.$.ajax.method = "GET";
+          this.$.ajax.headers = {};
+          this.$.ajax.setBody({});
+          this.$.ajax.url = "/NutriCloud/web/app_dev.php/patient/plan/daily/get/" + patientId;
+          this.$.ajax.go();
+        },
+        getSuiviDate: function(patientId, date) {
+          this.lastRequest = "getSuiviDate";
+          this.$.ajax.method = "GET";
+          this.$.ajax.headers = {};
+          this.$.ajax.setBody({});
+          this.$.ajax.url = "/NutriCloud/web/app_dev.php/patient/plan/daily/get/" + patientId + "/" + date;
+          this.$.ajax.go();
+        },
+        getSuiviBetween: function(patientId, start, end) {
+          this.lastRequest = "getSuiviBetween";
+          this.$.ajax.method = "GET";
+          this.$.ajax.headers = {};
+          this.$.ajax.setBody({});
+          this.$.ajax.url = "/NutriCloud/web/app_dev.php/patient/plan/daily/get/" + patientId + "/" + start + "/" + end;
+          this.$.ajax.go();
+        },
+        ajaxSuccess: function() {
+          if (this.lastRequest == "getSuiviBetween")
+            this._setSuivis(this.$.ajax.data);
+          else if (this.lastRequest != "saveSuiviDate")
+            this._setSuivi(this.$.ajax.data);
+        }
+      });
+    })();
+  </script>
+
+</dom-module>

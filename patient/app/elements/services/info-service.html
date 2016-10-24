@@ -1,0 +1,80 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="info-service">
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+    <my-ajax id="ajax"
+      on-response="ajaxSuccess"
+      handleAs="json">
+    </my-ajax>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({ is:'info-service',
+      properties: {
+        lastRequest: String,
+        type: {
+          type: String,
+          value: 'pro'
+        },
+        data: {
+          type: Object,
+          notify: true,
+          readOnly: true
+        }
+      },
+      getInfo: function() {
+        this.lastRequest = "getInfo";
+        this.$.ajax.url = "/NutriCloud/web/app_dev.php/" + this.type + "/info";
+        this.$.ajax.headers = {};
+        this.$.ajax.setBody({});
+        this.$.ajax.method = 'GET';
+        this.$.ajax.go();
+      },
+      updateInfo: function(id, username, firstname, lastname, address, postcode, city, phone, mail, password) {
+        this.lastRequest = "updateInfo";
+        this.$.ajax.url = "/NutriCloud/web/app_dev.php/" + this.type + "/update/" + id;
+        this.$.ajax.headers = {
+          "Content-Type": "application/x-www-form-urlencoded"
+        };
+        this.$.ajax.method = 'POST';
+        this.$.ajax.setBody({  "username":username,
+                              "firstname": firstname,
+                              "lastname": lastname,
+                              "address":address,
+                              "postcode":postcode,
+                              "city":city,
+                              "phone":phone,
+                              "mail":mail});
+        this.$.ajax.go();
+      },
+      //delete the account
+      remove: function() {
+        this.lastRequest = "remove";
+        this.$.ajax.headers = {};
+        this.$.ajax.setBody({});
+        this.$.ajax.method = 'GET';
+        this.$.ajax.url="/NutriCloud/web/app_dev.php/" + this.type + "/remove"
+        this.$.ajax.go();
+      },
+      ajaxSuccess: function() {
+        if (this.lastRequest == "getInfo") {
+          this._setData(this.$.ajax.data);
+          this.fire('data-fetch');
+        }
+        else if (this.lastRequest == "remove")
+          this.fire('remove-success');
+        else
+          this.getInfo();
+      }
+    });
+  })();
+  </script>
+</dom-module>

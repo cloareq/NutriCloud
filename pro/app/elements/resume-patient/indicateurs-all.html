@@ -1,0 +1,105 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!-- Styling sheet -->
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<!-- Internal component -->
+<link rel="import" href="indicateur-element.html">
+
+<dom-module id="indicateurs-all" >
+  <template>
+  	<style>
+      #errorData {
+        color: red;
+        text-align: center;
+      }
+      .indicateurs_conteneur {
+      	@apply(--layout-horizontal);
+      	@apply(--layout-flex);
+      	@apply(--layout-wrap);
+      	@apply(--layout-center);
+      	@apply(--layout-center-center);
+      	background-color: var(--color-nutricloud-white);
+	  }
+  	</style>
+
+    <div hidden id="indicateurDiv" class="indicateurs_conteneur">
+    	<indicateur-element id="weightIndic" color="[[color]]" label="Poids" value="[[lastNote.weight]]" green-begin="[[idealWeightMin]]" green-end="[[idealWeightMax]]" min="[[minWeightGauge]]" max="[[maxWeightGauge]]"></indicateur-element>
+        <indicateur-element id="IMCIndic" color="[[color]]" label="IMC" value="[[lastNote.IMC]]" green-begin="[[imcIdeal.0]]" green-end="[[imcIdeal.1]]" min="[[minIMCGauge]]" max="[[maxIMCGauge]]"></indicateur-element>
+    </div>
+    <p id="errorData">Aucune donnée</p>
+
+  </template>
+
+  <script>
+  	Polymer({ is:'indicateurs-all',
+  	  properties: {
+        imcIdeal: {
+          type: Array,
+          value: [18.5, 25]
+        },
+        imcYellowMax: {
+          type: Array,
+          value: [25, 35]
+        },
+        imcYellowMin: {
+          type: Array,
+          value: [10, 18.5]
+        },
+        lastNote: {
+          type: Object,
+          observer: "_lastNoteChanged"
+        }
+  	  },
+  	  ready: function() {
+//  	  	console.log("lalalaalal");
+  	  },
+      showEmptyData: function() {
+        this.$.indicateurDiv.setAttribute("hidden", true);
+        this.$.errorData.removeAttribute("hidden");
+      },
+      hideEmptyData: function() {
+        this.$.indicateurDiv.removeAttribute("hidden");
+        this.$.errorData.setAttribute("hidden", true);
+      },
+      _lastNoteChanged: function() {
+        this.showEmptyData();
+        if (this.lastNote && this.lastNote.weight) {
+          //convert height in meter for IMC calcul
+          this.lastNote.heightM = this.lastNote.height / 100;
+
+          /* IMC calcul and ideal weight calcul */
+          this.lastNote.IMC = this.lastNote.weight/(this.lastNote.heightM*this.lastNote.heightM);
+          this.idealWeightMin = this.imcIdeal[0] * this.lastNote.heightM * this.lastNote.heightM;
+          this.idealWeightMax = this.imcIdeal[1] * this.lastNote.heightM * this.lastNote.heightM;
+
+          //correspond to the yellow limit in gauge graph
+          this.underWeightLimit = this.imcYellowMin[0] * this.lastNote.heightM * this.lastNote.heightM;
+          this.overWeightLimit = this.imcYellowMax[1] * this.lastNote.heightM * this.lastNote.heightM;
+          if (this.lastNote.weight > this.overWeightLimit || this.lastNote.weight < this.underWeightLimit)
+            this.color = "#DC3912";
+          else
+            this.color = "#F90";
+
+        //for style effect on the spin (aiguille)
+        // if overweight the indicator is "aiguille" is 10% on the right
+          if (this.weight >= this.idealWeightMax) {
+            this.minWeightGauge = parseInt(this.lastNote.weight) - (this.lastNote.weight * 0.4);
+            this.maxWeightGauge = parseInt(this.lastNote.weight) + (this.lastNote.weight * 0.6);
+            this.minIMCGauge = this.lastNote.IMC - (this.lastNote.IMC * 0.4);
+            this.maxIMCGauge = this.lastNote.IMC + (this.lastNote.IMC * 0.6);
+          } else {
+          // if normal or underweight the indicator is "aiguille" is 10% on the left
+            this.minWeightGauge = parseInt(this.lastNote.weight) - (this.lastNote.weight * 0.6);
+            this.maxWeightGauge = parseInt(this.lastNote.weight) + (this.lastNote.weight * 0.4);
+            this.minIMCGauge = this.lastNote.IMC - (this.lastNote.IMC * 0.6);
+            this.maxIMCGauge = this.lastNote.IMC + (this.lastNote.IMC * 0.4);
+          }
+          this.$.weightIndic.refresh(this.lastNote.weight);
+          this.$.IMCIndic.refresh(this.lastNote.IMC);
+          this.hideEmptyData();
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,43 @@
+## DELETE
+nc_goal_deleteGoal_pro:
+    path:     /pro/goal/delete/{id}
+    defaults: { _controller: NCPatientBundle:Goal:deleteGoal}
+    methods:  [DELETE]
+
+nc_goal_deleteGoal_patient:
+    path:     /patient/goal/delete/{id}
+    defaults: { _controller: NCPatientBundle:Goal:deleteGoal}
+    methods:  [DELETE]
+
+## UPDATE
+nc_goal_updateGoal_pro:
+    path:     /pro/goal/update/{id}
+    defaults: { _controller: NCPatientBundle:Goal:updateGoal}
+    methods:  [PUT]
+
+nc_goal_updateGoal_patient:
+    path:     /patient/goal/update/{id}
+    defaults: { _controller: NCPatientBundle:Goal:updateGoal}
+    methods:  [PUT]
+
+## CREATE
+nc_goal_createGoal_pro:
+    path:	/pro/goal/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Goal:createGoal }
+    methods:  [POST]
+
+nc_goal_createGoal_patient:
+    path:	/patient/goal/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Goal:createGoal }
+    methods:  [POST]
+
+## GET
+nc_goal_getGoal_pro:
+    path:     /pro/goal/{patientId}
+    defaults: { _controller: NCPatientBundle:Goal:getGoals }
+    methods:  [GET]
+
+nc_goal_getgoal_patient:
+    path:     /patient/goal/{patientId}
+    defaults: { _controller: NCPatientBundle:Goal:getGoals }
+    methods:  [GET]

@@ -1,0 +1,4 @@
+services:
+    authentication_pro_handler:
+         class: NC\ProBundle\Handler\AuthenticationHandler
+         arguments:  [@security.context]

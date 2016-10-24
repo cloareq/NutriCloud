@@ -1,0 +1,47 @@
+nc_alert:
+    resource: "@NCAlertBundle/Resources/config/routing.yml"
+    prefix:   /
+
+nc_schedule:
+    resource: "@NCScheduleBundle/Resources/config/routing.yml"
+    prefix:   /
+
+nc_note:
+    resource: "@NCNoteBundle/Resources/config/routing.yml"
+    prefix:   /
+
+nc_message:
+    resource: "@NCMessageBundle/Resources/config/routing.yml"
+    prefix:   /
+
+nc_pro:
+    resource: "@NCProBundle/Resources/config/routing.yml"
+    prefix:   /
+
+nc_plan:
+    resource: "@NCPlanBundle/Resources/config/routing.yml"
+    prefix:   /
+
+nc_patient:
+    resource: "@NCPatientBundle/Resources/config/routing.yml"
+    prefix:   /
+
+nc_faq:
+    resource: "@NCFaqBundle/Resources/config/routing.yml"
+    prefix:   /
+
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc
+
+nc_patient_allergy:
+    resource: "@NCPatientBundle/Resources/config/allergy_routing.yml"
+    prefix:   /
+
+nc_patient_medication:
+    resource: "@NCPatientBundle/Resources/config/medication_routing.yml"
+    prefix:   /
+
+nc_patient_goal:
+     resource: "@NCPatientBundle/Resources/config/goal_routing.yml"
+     prefix:   /

@@ -1,0 +1,128 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/pro/perso/Patient/alim-element.html">
+<link rel="import" href="/pro/perso/Patient/add-aliment.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+
+<dom-module id="plan-alimentaire-jour" attributes="data listAlim">
+  <template>
+  	<style>
+		table {
+			border: medium solid #6495ed;
+			border-collapse: collapse;
+			width: 90%;
+			margin: 4%;
+		}
+		th {
+			border: thin solid #0A5FC4;
+			padding: 5px;
+			background-color: #0A98CF;
+			font-family: 'RobotoDraft', sans-serif;
+			color: #FFF;
+		}
+		.row {
+			font-family: 'RobotoDraft', sans-serif;
+			border: thin solid #0A5FC4;
+			padding: 5px;
+			background-color: #0A98CF;
+			color: #FFF;
+		}
+		td {
+			border: thin solid #0A5FC4;
+			padding: 5px;
+			text-align: center;
+			background-color: #FFF ;
+			font-family: 'RobotoDraft', sans-serif;
+			color: #696969;
+		}
+		.addAlim {
+			float: left;
+			padding-left: 10%;
+		}
+		.content {
+			float:right;
+			margin-right:10%;
+		}
+	</style>
+
+	<table>
+		<tr id="label">
+			<th>
+				<add-aliment listAlim="{{listAlim}}" data="{{data}}" periode="matin" on-save-plan-alimentaire="save"></add-aliment>
+				<h1 class="row">Matin</h1>
+			</th>
+			<th>
+				<add-aliment listAlim="{{listAlim}}" data="{{data}}" periode="midi" on-save-plan-alimentaire="save"></add-aliment>
+				<h1 class="row">Midi</h1>
+			</th>
+			<th>
+				<add-aliment listAlim="{{listAlim}}" data="{{data}}" periode="gouter" on-save-plan-alimentaire="save"></add-aliment>
+				<h1 class="row">Gouter</h1>
+			</th>
+			<th>
+				<add-aliment listAlim="{{listAlim}}" data="{{data}}" periode="soir" on-save-plan-alimentaire="save"></add-aliment>
+				<h1 class="row">Soir</h1>
+			</th>
+		</tr>
+		<tr id="content">
+			<td id="matin">
+			<template is="dom-repeat" items="{{data.matin}}">
+				<alim-element layout horizontal center data="{{item}}" mode="jour"></alim-element>
+			</template>
+			</td>
+
+			<td id="midi">
+			<template is="dom-repeat" items="{{data.midi}}">
+				<alim-element data="{{alim}}" mode="jour"></alim-element>
+			</template>
+			</td>
+
+			<td id="gouter">
+			<template is="dom-repeat" items="{{data.gouter}}">
+				<alim-element data="{{alim}}" mode="jour"></alim-element>
+			</template>
+			</td>
+
+			<td id="soir">
+			<template is="dom-repeat" items="{{data.soir}}">
+				<alim-element data="{{alim}}" mode="jour"></alim-element>
+			</template>
+			</td>
+		</tr>
+  	</table>
+
+    <iron-ajax id="ajax"
+      method="POST"
+      on-response="ajaxSuccess"
+      handleAs="json">
+    </iron-ajax>
+
+  </template>
+
+  <script>
+  Polymer({ is:'plan-alimentaire-jour',
+  	properties: {
+	  	periode: {value: undefined}
+	},
+  	ready: function() {
+  		console.log("plan alimentaire-jour ready");
+  	},
+  	setPeriode:function(periode) {
+  		this.periode = periode;
+  	},
+  	removeAlim:function(toRemove) {
+  		var planData = this.data[this.periode];
+  		var idx = planData.indexOf(toRemove);
+  		if (idx != -1) {
+	  		planData.splice(planData.indexOf(toRemove),1);
+	  		this.save();
+  		}
+  	},
+  	ajaxSuccess:function(data) {
+  		console.log(data);
+  	},
+  	save: function() {
+  		this.fire('save-plan-alimentaire');
+	}
+  });
+  </script>
+</dom-module>

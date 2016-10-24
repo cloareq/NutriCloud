@@ -1,0 +1,12 @@
+[
+{% for Patient in PatientList %}
+    {
+        "id": "{{ Patient.id }}",
+        "firstName": "{{ Patient.firstName }}",
+        "lastName": "{{ Patient.lastName }}"
+    }
+    {% if loop.last ==false%}
+		,
+	{% endif %}
+{% endfor %}
+]

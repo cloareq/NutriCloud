@@ -1,0 +1,135 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="login-element.html">
+<link rel="import" href="sign-in-form.html">
+
+<dom-module id="connexion-element">
+	<template>
+		<style>
+			:host {
+				display: block;
+				background-color: #0A98CF;
+				min-height: 100%;
+			}
+	    	.logo {
+				width: 200px;
+				height: 150px;
+      		}
+			#login, #createAccount {
+				background-color: #0A98CF;
+				color: white;
+				margin-top: 30px;
+				font-family: "RobotoDraft", sans-serif;
+				width: 250px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			#connexionChoice a {
+				margin-top: 2%;
+			}
+			#connexionChoice {
+				background-color: white;
+				margin-top: 5%;
+				padding: 1%;
+				border-radius: 1.5%;
+				max-width: 500px;
+				margin-left: auto;
+				margin-right: auto;
+		        @apply(--layout-vertical);
+        		@apply(--layout-center);
+			}
+			/* spinner */
+		  	.spinner-box {
+    			position: fixed;
+			    width:100%;
+			    height:100%;
+    			top:0;
+		    	left:0;
+    			background-color: black;
+		    	z-index:1000;
+	    		opacity: 0.8;
+		    	@apply(--layout-center);
+	    		@apply(--layout-center-center);
+			}
+			.center {
+        		@apply(--layout-center);
+        	}
+			paper-spinner {
+			    top:40%;
+		    	left:45%;
+	    		width:100px;
+	    		height:100px;
+	    		--paper-spinner-stroke-width: 7px;
+			}
+			#wrap_passwordforget {
+				width: 100%;
+				padding: 10px;
+			}
+			#wrap_passwordforget a {
+				color: #333;
+				float: right;
+				text-decoration: none;
+				font-size: 12px;
+			}
+		</style>
+
+        <div hidden id="spinnerBox" class="spinner-box">
+          <paper-spinner></paper-spinner>
+        </div>
+		<div class="content container">
+			<div id="connexionChoice">
+				<div class="center">
+					<iron-image class="logo" sizing="contain" preload src="/pro/app/images/logo/LogoQuentin.png"></iron-image>
+				</div>
+
+				<div class="center">
+					<paper-button raised id="login" floatingLabel on-click="showLogin">Se connecter</paper-button>
+					<iron-collapse id="collapseLogin">
+						<login-element id="loginForm"></login-element><br>
+					</iron-collapse>
+				</div>
+
+				<div class="center">
+					<paper-button raised id="createAccount" floatingLabel on-click="showRegister">Créer un compte professionnel</paper-button>
+					<iron-collapse id="collapseRegister">
+						<signin-element id="signinForm" ></signin-element>
+					</iron-collapse>
+				</div>
+				<div id="wrap_passwordforget"><a href="{{baseUrl}}passwordforget">Mot de passe oublié ?</a></div>
+			</div>
+		</div>
+
+	</template>
+
+		<script>
+			Polymer({ is:'connexion-element',
+				created: function() {
+		        	this.addListeners();
+		      	},
+	    		addListeners: function() {
+			        this.addEventListener('show-spinner', function() {
+					    this.$.spinnerBox.removeAttribute("hidden");
+					    this.$.spinnerBox.children[0].active = true;
+			        }.bind(this));
+        			this.addEventListener('hide-spinner', function() {
+				    		this.$.spinnerBox.setAttribute("hidden", true);
+    						this.$.spinnerBox.children[0].active = false;
+			        }.bind(this));
+			    },
+ 				showLogin: function() {
+					this.$.collapseLogin.toggle();
+					if (!this.$.collapseRegister.attributes["class"].value.match(/iron-collapse-closed/))
+						this.$.collapseRegister.toggle();
+				},
+				showRegister: function() {
+					this.$.collapseRegister.toggle();
+					if (!this.$.collapseLogin.attributes["class"].value.match(/iron-collapse-closed/))
+						this.$.collapseLogin.toggle();
+				}
+			});
+		</script>
+
+</dom-module>

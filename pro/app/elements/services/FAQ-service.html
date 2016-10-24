@@ -1,0 +1,79 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="FAQ-service">
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+  <template>
+    <my-ajax id="ajax"
+      handleAs="json"
+      on-response="ajaxSuccess"
+      >
+    </my-ajax>
+  </template>
+  <script>
+  	Polymer({
+  		is: 'FAQ-service',
+  		properties: {
+  			lastRequest: String,
+  			faqData: {
+  				type: Array,
+  				notify: true,
+  				readOnly: true
+  			}
+  		},
+  		ready: function() {
+/*	      this._setFaqData([
+		        {id:1, question:"question1", response:"response1", category:"category1"},
+        		{id:2, question:"question2", response:"response2", category:"category2"},
+		        {id:3, question:"question3", response:"response3", category:"category3"},
+		        {id:4, question:"question4", response:"response4", category:"category4"}
+	      ]);
+*/		},
+  		getFAQ: function() {
+  			this.lastRequest = "getFAQ";
+		    this.$.ajax.method="GET";
+	        this.$.ajax.headers = {};
+   	    	this.$.ajax.setBody ({});
+		    this.$.ajax.url="/NutriCloud/web/app_dev.php/pro/faq/";
+	     	this.$.ajax.go();
+  		},
+  		addQR: function(question, response, category) {
+  			this.lastRequest = "addQR";
+       		this.$.ajax.method = 'POST';
+       		this.$.ajax.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        	this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/faq/new';
+   	    	this.$.ajax.setBody ({"question":question, "response":response, "category":category});
+        	this.$.ajax.go();
+  		},
+  		updateQR: function(id, question, response, category) {
+  			this.lastRequest = "updateQR";
+    	    this.$.ajax.method = 'POST'
+	        this.$.ajax.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        	this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/faq/update/' + id;
+   	    	this.$.ajax.setBody ({"question":question, "response":response, "category":category});
+	        this.$.ajax.go();
+  		},
+  		removeQR: function(id) {
+  			this.lastRequest = "removeQR";
+        	this.$.ajax.method = 'GET';
+	        this.$.ajax.headers = {};
+   	    	this.$.ajax.setBody ({});
+    	    this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/faq/remove/' + id;
+	        this.$.ajax.go();
+  		},
+  		ajaxSuccess: function() {
+  			if (this.lastRequest == "addQR" || this.lastRequest == "removeQR" || this.lastRequest == "updateQR")
+  				this.fire('qr-modified');
+  			else if (this.lastRequest == "getFAQ")
+  				this._setFaqData(this.$.ajax.data);
+
+  		}
+  	});
+  </script>
+
+</dom-module>

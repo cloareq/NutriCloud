@@ -1,0 +1,89 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+
+<dom-module id="question-reponse-element">
+  <template>
+  <style>
+    :host {
+      color: rgb(255, 255, 255);
+      background-color: rgb(69, 70, 70);
+      text-align: center;
+      max-height: 40px;
+      max-width: 40px;
+    }
+    .question {
+      position: relative;
+      padding: 15px;
+      color: #454646;
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .question:hover {
+      cursor: pointer;
+      background-color: rgb(231, 232, 232);
+    }
+    .reponse_collapse {
+      position:relative;
+      padding: 0 10px;
+    }
+    .reponse {
+      width: 100%;
+      padding: 2px;
+      color: #454646;
+      border-bottom: 1px solid #0A98CF;
+      margin-right: 10px;
+    }
+    .QR_wrap {
+      @apply(--layout-horizontal-center);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      padding: 2px 10px;
+      font-family: "RobotoDraft", sans-serif;
+    }
+    .QR_wrap:hover {
+      background-color: rgb(231, 232, 232);;
+    }
+    .QR {
+      @apply(--layout-vertical-center-flex-11);
+      padding: 0px 10px;
+    }
+    .container {
+      @apply(--layout-horizontal);
+    }
+    p {
+      text-align: justify;
+    }
+  </style>
+
+    <div hidden$="{{hidden}}" class="QR_wrap">
+      <div class="QR">
+        <p id="questionArea" on-click="toggleResponse" class="question"><span>• </span><span>{{qr.question}}</span></p>
+        <iron-collapse id="response" class="reponse_collapse">
+          <div class="container">
+            <p id="responseArea" class="reponse flex10child">{{qr.response}}</p>
+          </div>
+        </iron-collapse>
+      </div>
+    </div>
+  </template>
+
+  <script>
+  	Polymer({is:'question-reponse-element',
+  		properties: {
+        qr: Object,
+        hidden: Boolean
+      },
+      ready: function() {
+        console.log("QR element ready");
+      },
+      toggleResponse: function(event) {
+        this.$.response.toggle()
+      }
+  	});
+  </script>
+</dom-module>

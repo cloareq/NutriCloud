@@ -1,0 +1,4 @@
+services:
+#    nc_note.example:
+#        class: NC\NoteBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

@@ -1,0 +1,73 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-input-autocomplete/paper-input-autocomplete.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/md-timepicker/md-timepicker.html">
+
+<link rel="import" href="../quantity-input-element/quantity-input-element.html">
+
+
+<dom-module id="add-aliment">
+	<template>
+		<style>
+			#overlay {
+				padding:2%;
+			}
+			.addButton {
+				font-size: 18px;
+				background-color: #0A98CF;
+				padding:2%;
+				color: #FFF;
+				text-transform: none;
+			}
+      .addAlim {
+        cursor: pointer;
+      }
+		</style>
+
+		<iron-icon icon="add-circle" class="addAlim" theme="core-light-theme" on-click="toggleAdd"></iron-icon>
+		<paper-dialog id="overlay" style="padding:3%; background-color: white; width: 40%; max-width: 50%; min-width: 268px">
+			<paper-input-autocomplete id="alim_name" label="Aliment" suggestionsInOverlay="true" source="{{datalist}}" floatingLabel></paper-input-autocomplete>
+			<quantity-input-element id="alim_quantite" label="Quantité" floatingLabel></quantity-input-element>
+        <div>Heure: <md-timepicker id="alim_hour"></md-timepicker></div><br/>
+		   	<paper-button class="addButton" raised style="margin-top:7%;" type="submit" on-click="addAlim">Ajouter</paper-button>
+		</paper-dialog>
+
+	</template>
+	<script>
+	Polymer({ is:'add-aliment',
+		properties: {
+			jour: String,
+			datalist: Array
+		},
+		ready: function() {
+			console.log("ready");
+		},
+	  	toggleAdd:function() {
+  			this.$.overlay.toggle();
+	  	},
+		addAlim: function() {
+			var name = this.$.alim_name.value;
+			if (name != null && name != "") {
+				this.fire('push-aliment', {
+					jour: this.jour,
+					alim: {
+						aliment: name,
+						quantity: this.$.alim_quantite.getFullValue(),
+						hour: this.$.alim_hour.value
+					}
+				});
+				if (this.datalist.indexOf(name) === -1)
+					this.addAlimentData(name);
+			} else {
+				//Add error name non specified
+			}
+		},
+		addAlimentData: function(name) {
+			this.fire('add-aliment', {'aliment': escape(name)});
+		},
+	});
+	</script>
+</dom-module>
