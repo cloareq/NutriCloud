@@ -45,3 +45,15 @@ nc_patient_medication:
 nc_patient_goal:
      resource: "@NCPatientBundle/Resources/config/goal_routing.yml"
      prefix:   /
+
+nc_patient_weight:
+     resource: "@NCPatientBundle/Resources/config/weight_routing.yml"
+     prefix:   /
+
+nc_patient_height:
+     resource: "@NCPatientBundle/Resources/config/height_routing.yml"
+     prefix:   /
+
+nc_note_patient_height:
+     resource: "@NCNoteBundle/Resources/config/note_patient_routing.yml"
+     prefix:   /

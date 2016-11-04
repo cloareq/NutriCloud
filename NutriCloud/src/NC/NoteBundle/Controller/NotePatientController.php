@@ -1,37 +1,35 @@
 <?php
 
-namespace NC\PatientBundle\Controller;
+namespace NC\NoteBundle\Controller;
 
-use NC\PatientBundle\Entity\Allergy;
-use NC\PatientBundle\Entity\Patient;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use NC\NoteBundle\Entity\NotePatient;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-
-class AllergyController extends Controller
+class NotePatientController extends Controller
 {
     function __construct() {
         $this->header = array('Content-Type' => 'application/json');
     }
 
     /**
-     * Cette méthode permet d'obtenir les allergies.
+     * Cette méthode permet d'obtenir les notespatient.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "NotePatient"="FFCCCC"},
      *  resource=true,
-     *  description="/pro/allergy/{patientId} -- /patient/allergy/{patientId}",
+     *  description="/pro/notepatient/{patientId} -- /patient/notepatient/{patientId}",
      *  statusCodes={
      *         200="OK",
      *         404="Le patient recherché n'existe pas",
      *         403="Le patient recherché ne fait pas partie de votre liste de patient"
      *  },
      *  requirements={
-     *  {"name"="patientid", "dataType"="int", "required"=true, "description"="Id du patient pour qui on accede au allergys, si vous etes connecté comme patient envoyer me à la place de cet ID"}
+     *  {"name"="patientid", "dataType"="int", "required"=true, "description"="Id du patient a qui on lit un objectif, si vous etes connecté comme patient envoyer me à la place de cet ID"}
      * },
-     * views = { "default", "pro", "patient", "allergy"})
+     * views = { "default", "pro", "patient", "notepatient" })
      */
-    public function getAllergysAction($patientId)
+    public function getNotePatientsAction($patientId)
     {
         if ($this->get('security.context')->isGranted('ROLE_PRO')) {
             $repository = $this
@@ -46,15 +44,15 @@ class AllergyController extends Controller
                 return (new Response(json_encode(array('desc' => "Le patient recherché ne fait pas partie de votre liste de patient.")), 403, $this->header));
         } else if ($this->get('security.context')->isGranted('ROLE_PATIENT'))
             $Patient = $this->getUser();
-        return $this->render('NCPatientBundle:Json:Allergy.json.twig', array('allergys' => $Patient->getAllergy()));
+        return $this->render('NCNoteBundle:Json:Note.json.twig', array('notes' => $Patient->getNotePatient()));
     }
 
     /**
-     * Cette méthode permet d'ajouter des allergys.
+     * Cette méthode permet d'ajouter un objectif.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "NotePatient"="FFCCCC"},
      *  resource=true,
-     *  description="/pro/allergy/create/{patientId} -- /patient/allergy/create/{patientId}",
+     *  description="/pro/notepatient/create/{patientId} -- /patient/notepatient/create/{patientId}",
      *  statusCodes={
      *      201="Data Created",
      *      404="Le patient recherché n'existe pas",
@@ -62,14 +60,14 @@ class AllergyController extends Controller
      *      500= "Internal Error (BDD error)"
      *  },
      *  parameters={
-     *      {"name"="name", "dataType"="integer", "required"=true, "description"=""}
+     *      {"name"="note", "dataType"="string", "required"=true, "description"=""}
      *  },
      *  requirements={
-     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id du patient a qui on ajoute des allergys, si vous etes connecté comme patient envoyer me à la place de cet ID"}
+     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id du patient a qui on ajoute un objectif, si vous etes connecté comme patient envoyer me à la place de cet ID"}
      * },
-     * views = { "default", "pro", "patient", "allergy" })
+     * views = { "default", "pro", "patient", "notepatient" })
      */
-    public function createAllergyAction($patientId)
+    public function createNotePatientAction($patientId)
     {
         if ($this->get('security.context')->isGranted('ROLE_PRO')) {
             $repository = $this
@@ -85,12 +83,12 @@ class AllergyController extends Controller
         } else if ($this->get('security.context')->isGranted('ROLE_PATIENT'))
             $Patient = $this->getUser();
         $request = $this->get('request');
-        $newAllergy = new Allergy();
-        $newAllergy->setName($request->request->get('name', null));
-        $newAllergy->setPatient($Patient);
+        $newNotePatient = new NotePatient();
+        $newNotePatient->setNote($request->request->get('note', null));
+        $newNotePatient->setPatient($Patient);
         $em = $this->getDoctrine()->getManager();
         try {
-            $em->persist($newAllergy);
+            $em->persist($newNotePatient);
             $em->flush();
             return (new Response("", 201, $this->header));
         } catch (\Exception $e) {
@@ -99,11 +97,11 @@ class AllergyController extends Controller
     }
 
     /**
-     * Cette méthode permet de modifier une allergy.
+     * Cette méthode permet de modifier un notepatient.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "NotePatient"="FFCCCC"},
      *  resource=true,
-     *  description="/pro/allergy/update/{id} -- /patient/allergy/update/{id}",
+     *  description="/pro/notepatient/update/{id} -- /patient/notepatient/update/{id}",
      *  statusCodes={
      *         200="OK",
      *         403="Forbidden: You are connected but you are not allowed to access to this data",
@@ -111,36 +109,36 @@ class AllergyController extends Controller
      *         500= "Internal Error (BDD error)"
      *  },
      *  parameters={
-     *      {"name"="name", "dataType"="integer", "required"=true, "description"=""},
+     *      {"name"="note", "dataType"="string", "required"=true, "description"=""}
      *  },
      *  requirements={
-     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id de l'allergie à modifier"}
+     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id du notepatient à modifier"}
      * },
-     * views = { "default", "pro", "patient", "allergy"})
+     * views = { "default", "pro", "patient", "notepatient" })
      */
-    public function updateAllergyAction($id)
+    public function updateNotePatientAction($id)
     {
         $repository = $this->getDoctrine()
             ->getManager()
-            ->getRepository('NCPatientBundle:Allergy');
-        $AllergyToUpdate = $repository->findOneById($id);
-        if ($AllergyToUpdate == NULL)
+            ->getRepository('NCNoteBundle:NotePatient');
+        $NotePatientToUpdate = $repository->findOneById($id);
+        if ($NotePatientToUpdate == NULL)
             return (new Response(json_encode(array('desc' => "L'élément que vous cherchez à modifier n'existe pas.")), 404, $this->header));
         if ($this->get('security.context')->isGranted('ROLE_PRO')) {
             $connectedPro =  $this->getUser();
-            if ($AllergyToUpdate->getPatient()->getPro()->getId() != $connectedPro->getId())
+            if ($NotePatientToUpdate->getPatient()->getPro()->getId() != $connectedPro->getId())
                 return (new Response(json_encode(array('desc' => "Vous n'êtes pas le propriétaire de cet élément.")), 403, $this->header));
         }
         else if ($this->get('security.context')->isGranted('ROLE_PATIENT')) {
             $connectedPatient =  $this->getUser();
-            if ($AllergyToUpdate->getPatient()->getId() != $connectedPatient->getId())
+            if ($NotePatientToUpdate->getPatient()->getId() != $connectedPatient->getId())
                 return (new Response(json_encode(array('desc' => "Vous n'êtes pas le propriétaire de cet élément.")), 403, $this->header));
         }
         $request = $this->get('request');
-        $AllergyToUpdate->setName($request->request->get('name', null));
+        $NotePatientToUpdate->setNote($request->request->get('note', null));
         $em = $this->getDoctrine()->getManager();
         try {
-            $em->persist($AllergyToUpdate);
+            $em->persist($NotePatientToUpdate);
             $em->flush();
             return (new Response("", 200, $this->header));
         }
@@ -150,11 +148,11 @@ class AllergyController extends Controller
     }
 
     /**
-     * Cette méthode permet de supprimer une allergy.
+     * Cette méthode permet de supprimer un notepatient.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "NotePatient"="FFCCCC"},
      *  resource=true,
-     *  description="/pro/allergy/delete/{id} -- /delete/allergy/delete/{id}",
+     *  description="/pro/notepatient/delete/{id} -- /delete/notepatient/delete/{id}",
      *  statusCodes={
      *         200="OK",
      *         403="Forbidden: You are connected but you are not allowed to access to this data",
@@ -162,31 +160,31 @@ class AllergyController extends Controller
      *         500= "Internal Error (BDD error)"
      *  },
      *  requirements={
-     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id de l'allergie à supprimer"}
+     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id du notepatient à supprimer"}
      * },
-     * views = { "default", "pro", "patient", "allergy"})
+     * views = { "default", "pro", "patient", "notepatient" })
      */
-    public function deleteAllergyAction($id)
+    public function deleteNotePatientAction($id)
     {
         $repository = $this->getDoctrine()
             ->getManager()
-            ->getRepository('NCPatientBundle:Allergy');
-        $AllergyToDelete = $repository->findOneById($id);
-        if ($AllergyToDelete == NULL)
+            ->getRepository('NCNoteBundle:NotePatient');
+        $NotePatientToDelete = $repository->findOneById($id);
+        if ($NotePatientToDelete == NULL)
             return (new Response(json_encode(array('desc' => "L'élément que vous cherchez à supprimer n'existe pas.")), 404, $this->header));
         if ($this->get('security.context')->isGranted('ROLE_PRO')) {
             $connectedPro =  $this->getUser();
-            if ($AllergyToDelete->getPatient()->getPro()->getId() != $connectedPro->getId())
+            if ($NotePatientToDelete->getPatient()->getPro()->getId() != $connectedPro->getId())
                 return (new Response(json_encode(array('desc' => "Vous n'êtes pas le propriétaire de cet élément.")), 403, $this->header));
         }
         else if ($this->get('security.context')->isGranted('ROLE_PATIENT')) {
             $connectedPatient =  $this->getUser();
-            if ($AllergyToDelete->getPatient()->getId() != $connectedPatient->getId())
+            if ($NotePatientToDelete->getPatient()->getId() != $connectedPatient->getId())
                 return (new Response(json_encode(array('desc' => "Vous n'êtes pas le propriétaire de cet élément.")), 403, $this->header));
         }
         $em = $this->getDoctrine()->getManager();
         try {
-            $em->remove($AllergyToDelete);
+            $em->remove($NotePatientToDelete);
             $em->flush();
             return (new Response("", 200, $this->header));
         }

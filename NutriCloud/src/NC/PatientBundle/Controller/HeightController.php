@@ -2,36 +2,35 @@
 
 namespace NC\PatientBundle\Controller;
 
-use NC\PatientBundle\Entity\Allergy;
+use NC\PatientBundle\Entity\Height;
 use NC\PatientBundle\Entity\Patient;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-
-class AllergyController extends Controller
+class HeightController extends Controller
 {
     function __construct() {
         $this->header = array('Content-Type' => 'application/json');
     }
 
     /**
-     * Cette méthode permet d'obtenir les allergies.
+     * Cette méthode permet d'obtenir les heights.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Height"="#66FFFF"},
      *  resource=true,
-     *  description="/pro/allergy/{patientId} -- /patient/allergy/{patientId}",
+     *  description="/pro/height/{patientId} -- /patient/height/{patientId}",
      *  statusCodes={
      *         200="OK",
      *         404="Le patient recherché n'existe pas",
      *         403="Le patient recherché ne fait pas partie de votre liste de patient"
      *  },
      *  requirements={
-     *  {"name"="patientid", "dataType"="int", "required"=true, "description"="Id du patient pour qui on accede au allergys, si vous etes connecté comme patient envoyer me à la place de cet ID"}
+     *  {"name"="patientid", "dataType"="int", "required"=true, "description"="Id du patient pour qui on accede au heights, si vous etes connecté comme patient envoyer me à la place de cet ID"}
      * },
-     * views = { "default", "pro", "patient", "allergy"})
+     * views = { "default", "pro", "patient", "height"})
      */
-    public function getAllergysAction($patientId)
+    public function getHeightsAction($patientId)
     {
         if ($this->get('security.context')->isGranted('ROLE_PRO')) {
             $repository = $this
@@ -46,15 +45,15 @@ class AllergyController extends Controller
                 return (new Response(json_encode(array('desc' => "Le patient recherché ne fait pas partie de votre liste de patient.")), 403, $this->header));
         } else if ($this->get('security.context')->isGranted('ROLE_PATIENT'))
             $Patient = $this->getUser();
-        return $this->render('NCPatientBundle:Json:Allergy.json.twig', array('allergys' => $Patient->getAllergy()));
+        return $this->render('NCPatientBundle:Json:Height.json.twig', array('heights' => $Patient->getHeight()));
     }
 
     /**
-     * Cette méthode permet d'ajouter des allergys.
+     * Cette méthode permet d'ajouter des heights.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Height"="#66FFFF"},
      *  resource=true,
-     *  description="/pro/allergy/create/{patientId} -- /patient/allergy/create/{patientId}",
+     *  description="/pro/height/create/{patientId} -- /patient/height/create/{patientId}",
      *  statusCodes={
      *      201="Data Created",
      *      404="Le patient recherché n'existe pas",
@@ -62,14 +61,14 @@ class AllergyController extends Controller
      *      500= "Internal Error (BDD error)"
      *  },
      *  parameters={
-     *      {"name"="name", "dataType"="integer", "required"=true, "description"=""}
+     *      {"name"="height", "dataType"="integer", "required"=true, "description"=""}
      *  },
      *  requirements={
-     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id du patient a qui on ajoute des allergys, si vous etes connecté comme patient envoyer me à la place de cet ID"}
+     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id du patient a qui on ajoute des heights, si vous etes connecté comme patient envoyer me à la place de cet ID"}
      * },
-     * views = { "default", "pro", "patient", "allergy" })
+     * views = { "default", "pro", "patient", "height" })
      */
-    public function createAllergyAction($patientId)
+    public function createHeightAction($patientId)
     {
         if ($this->get('security.context')->isGranted('ROLE_PRO')) {
             $repository = $this
@@ -85,12 +84,12 @@ class AllergyController extends Controller
         } else if ($this->get('security.context')->isGranted('ROLE_PATIENT'))
             $Patient = $this->getUser();
         $request = $this->get('request');
-        $newAllergy = new Allergy();
-        $newAllergy->setName($request->request->get('name', null));
-        $newAllergy->setPatient($Patient);
+        $newHeight = new Height();
+        $newHeight->setHeight($request->request->get('height', null));
+        $newHeight->setPatient($Patient);
         $em = $this->getDoctrine()->getManager();
         try {
-            $em->persist($newAllergy);
+            $em->persist($newHeight);
             $em->flush();
             return (new Response("", 201, $this->header));
         } catch (\Exception $e) {
@@ -99,11 +98,11 @@ class AllergyController extends Controller
     }
 
     /**
-     * Cette méthode permet de modifier une allergy.
+     * Cette méthode permet de modifier une height.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Height"="#66FFFF"},
      *  resource=true,
-     *  description="/pro/allergy/update/{id} -- /patient/allergy/update/{id}",
+     *  description="/pro/height/update/{id} -- /patient/height/update/{id}",
      *  statusCodes={
      *         200="OK",
      *         403="Forbidden: You are connected but you are not allowed to access to this data",
@@ -111,36 +110,36 @@ class AllergyController extends Controller
      *         500= "Internal Error (BDD error)"
      *  },
      *  parameters={
-     *      {"name"="name", "dataType"="integer", "required"=true, "description"=""},
+     *      {"name"="height", "dataType"="integer", "required"=true, "description"=""},
      *  },
      *  requirements={
-     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id de l'allergie à modifier"}
+     *  {"name"="id", "dataType"="int", "required"=true, "description"="id de la taille à modifier"}
      * },
-     * views = { "default", "pro", "patient", "allergy"})
+     * views = { "default", "pro", "patient", "height"})
      */
-    public function updateAllergyAction($id)
+    public function updateHeightAction($id)
     {
         $repository = $this->getDoctrine()
             ->getManager()
-            ->getRepository('NCPatientBundle:Allergy');
-        $AllergyToUpdate = $repository->findOneById($id);
-        if ($AllergyToUpdate == NULL)
+            ->getRepository('NCPatientBundle:Height');
+        $HeightToUpdate = $repository->findOneById($id);
+        if ($HeightToUpdate == NULL)
             return (new Response(json_encode(array('desc' => "L'élément que vous cherchez à modifier n'existe pas.")), 404, $this->header));
         if ($this->get('security.context')->isGranted('ROLE_PRO')) {
             $connectedPro =  $this->getUser();
-            if ($AllergyToUpdate->getPatient()->getPro()->getId() != $connectedPro->getId())
+            if ($HeightToUpdate->getPatient()->getPro()->getId() != $connectedPro->getId())
                 return (new Response(json_encode(array('desc' => "Vous n'êtes pas le propriétaire de cet élément.")), 403, $this->header));
         }
         else if ($this->get('security.context')->isGranted('ROLE_PATIENT')) {
             $connectedPatient =  $this->getUser();
-            if ($AllergyToUpdate->getPatient()->getId() != $connectedPatient->getId())
+            if ($HeightToUpdate->getPatient()->getId() != $connectedPatient->getId())
                 return (new Response(json_encode(array('desc' => "Vous n'êtes pas le propriétaire de cet élément.")), 403, $this->header));
         }
         $request = $this->get('request');
-        $AllergyToUpdate->setName($request->request->get('name', null));
+        $HeightToUpdate->setHeight($request->request->get('height', null));
         $em = $this->getDoctrine()->getManager();
         try {
-            $em->persist($AllergyToUpdate);
+            $em->persist($HeightToUpdate);
             $em->flush();
             return (new Response("", 200, $this->header));
         }
@@ -150,11 +149,11 @@ class AllergyController extends Controller
     }
 
     /**
-     * Cette méthode permet de supprimer une allergy.
+     * Cette méthode permet de supprimer une height.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Height"="#66FFFF"},
      *  resource=true,
-     *  description="/pro/allergy/delete/{id} -- /delete/allergy/delete/{id}",
+     *  description="/pro/height/delete/{id} -- /delete/height/delete/{id}",
      *  statusCodes={
      *         200="OK",
      *         403="Forbidden: You are connected but you are not allowed to access to this data",
@@ -162,31 +161,31 @@ class AllergyController extends Controller
      *         500= "Internal Error (BDD error)"
      *  },
      *  requirements={
-     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id de l'allergie à supprimer"}
+     *  {"name"="id", "dataType"="int", "required"=true, "description"="Id de la taille à supprimer"}
      * },
-     * views = { "default", "pro", "patient", "allergy"})
+     * views = { "default", "pro", "patient", "height"})
      */
-    public function deleteAllergyAction($id)
+    public function deleteHeightAction($id)
     {
         $repository = $this->getDoctrine()
             ->getManager()
-            ->getRepository('NCPatientBundle:Allergy');
-        $AllergyToDelete = $repository->findOneById($id);
-        if ($AllergyToDelete == NULL)
+            ->getRepository('NCPatientBundle:Height');
+        $HeightToDelete = $repository->findOneById($id);
+        if ($HeightToDelete == NULL)
             return (new Response(json_encode(array('desc' => "L'élément que vous cherchez à supprimer n'existe pas.")), 404, $this->header));
         if ($this->get('security.context')->isGranted('ROLE_PRO')) {
             $connectedPro =  $this->getUser();
-            if ($AllergyToDelete->getPatient()->getPro()->getId() != $connectedPro->getId())
+            if ($HeightToDelete->getPatient()->getPro()->getId() != $connectedPro->getId())
                 return (new Response(json_encode(array('desc' => "Vous n'êtes pas le propriétaire de cet élément.")), 403, $this->header));
         }
         else if ($this->get('security.context')->isGranted('ROLE_PATIENT')) {
             $connectedPatient =  $this->getUser();
-            if ($AllergyToDelete->getPatient()->getId() != $connectedPatient->getId())
+            if ($HeightToDelete->getPatient()->getId() != $connectedPatient->getId())
                 return (new Response(json_encode(array('desc' => "Vous n'êtes pas le propriétaire de cet élément.")), 403, $this->header));
         }
         $em = $this->getDoctrine()->getManager();
         try {
-            $em->remove($AllergyToDelete);
+            $em->remove($HeightToDelete);
             $em->flush();
             return (new Response("", 200, $this->header));
         }

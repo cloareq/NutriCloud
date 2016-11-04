@@ -1,0 +1,43 @@
+## DELETE
+nc_height_deleteHeight_pro:
+    path:     /pro/height/delete/{id}
+    defaults: { _controller: NCPatientBundle:Height:deleteHeight}
+    methods:  [DELETE]
+
+nc_height_deleteHeight_patient:
+    path:     /patient/height/delete/{id}
+    defaults: { _controller: NCPatientBundle:Height:deleteHeight}
+    methods:  [DELETE]
+
+## UPDATE
+nc_height_updateHeight_pro:
+    path:     /pro/height/update/{id}
+    defaults: { _controller: NCPatientBundle:Height:updateHeight}
+    methods:  [PUT]
+
+nc_height_updateHeight_patient:
+    path:     /patient/height/update/{id}
+    defaults: { _controller: NCPatientBundle:Height:updateHeight}
+    methods:  [PUT]
+
+## CREATE
+nc_height_createHeight_pro:
+    path:	/pro/height/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Height:createHeight }
+    methods:  [POST]
+
+nc_height_createHeight_patient:
+    path:	/patient/height/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Height:createHeight }
+    methods:  [POST]
+
+## GET
+nc_height_getHeight_pro:
+    path:     /pro/height/{patientId}
+    defaults: { _controller: NCPatientBundle:Height:getHeights }
+    methods:  [GET]
+
+nc_height_getheight_patient:
+    path:     /patient/height/{patientId}
+    defaults: { _controller: NCPatientBundle:Height:getHeights }
+    methods:  [GET]
