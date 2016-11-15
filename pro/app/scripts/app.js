@@ -39,7 +39,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   // will call the method refresh of the selected "content element".
   app.update = function(routeToMatch) {
-    console.log("update");
     var elements = this.$.contentPages.children;
     for (var i=0; i< elements.length; i++) {
       var el = elements[i];
@@ -93,7 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         || document.documentElement.clientWidth
         || document.body.clientWidth;
 
-      //set bottom margin for logout button 
+      //set bottom margin for logout button
       if (browserWidth < 1024)
         document.getElementById("headerPanel").children[0].style.bottom = "56px";
       else
@@ -110,7 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
          //menu tab responsive set
         var listChoices = document.getElementsByTagName("paper-tab");
-        // ratio calculate the widh appropriate for a tab of the menu in function of the parent element (paper-tabs) size 
+        // ratio calculate the widh appropriate for a tab of the menu in function of the parent element (paper-tabs) size
         var choiceWidth = document.getElementsByTagName("paper-tabs")[0].offsetWidth / listChoices.length;
 //        if (!(browserWidth < 601 && listChoices.length == 5))
         if (document.getElementsByTagName("paper-tabs")[0].offsetWidth > 600 || (browserWidth > 380 && browserWidth < 601))
@@ -171,6 +170,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     }
   };
+
+  app.writeError = function(text) {
+    app.$.toast.text = text;
+    app.$.toast.style.backgroundColor = "red";
+    app.$.toast.show();
+  }
+
+  app.writeToast = function(text) {
+    app.$.toast.text = text;
+    app.$.toast.style.backgroundColor = "#454646";
+    app.$.toast.show();
+  }
 
   // See https://github.com/Polymer/polymer/issues/1381
   window.addEventListener('WebComponentsReady', function() {

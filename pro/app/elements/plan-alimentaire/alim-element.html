@@ -1,53 +1,85 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+
+<!-- constant colors -->
+<link rel="import" href="../../styles/color-nutricloud.html">
 
 <dom-module id="alim-element">
   <template>
   	<style>
 	 	 .quantite {
 		    font-family: 'RobotoDraft', 'RobotoDraft', sans-serif;
-           font-weight:bold;
-           display: inline-block;
-             text-align: left;
+        font-weight:bold;
+        display: inline-block;
+        text-align: left;
 		  }
-         .desc {
-           display: inline-block;
-           text-align: right;
-         }
-         .my-inline {
-             display: inline-block;
-         }
-		  .remove {
-              margin-left: 5px;
-			  float:right;
+     .desc {
+       display: inline-block;
+       text-align: right;
+     }
+     .my-inline {
+       display: inline-block;
+     }
+     .remove {
+       margin-left: 5px;
+       float:right;
   		}
-          .info {
-              display: block;
-          }
+      .info {
+        display: block;
+      }
+      .model {
+        color: var(--color-nutricloud-blue);
+      }
+      .not-model {
+        color: var(--color-nutricloud-red);
+      }
   	</style>
   	<div class="info">
-		<div>
-          <div class="quantite">{{data.quantity}}</div>
-          <div class="desc">
-              <div class="my-inline">{{data.aliment}}</div>
-             <iron-icon on-click="removeAlim" icon="remove-circle" class="remove my-inline" theme="core-light-theme">
-		    </iron-icon>
-          </div>
-            <div class="clearfix"></div>
-        </div>
-    </div>
+      <div class="quantite">{{data.quantity}}</div>
+      <div class="desc">
+        <div class$="[[_addClass(data)]]">{{data.aliment}}</div>
+
+        <!-- if model view add icon to remove alim -->
+        <template is='dom-if' if="[[modelView]]">
+          <iron-icon on-click="removeAlim" icon="remove-circle" class="remove my-inline" theme="core-light-theme">
+          </iron-icon>
+        </template>
+
+        <!-- if suivi view add paper-checkbox to know if eaten or not -->
+        <template is='dom-if' if="[[!modelView]]">
+          <paper-checkbox class="check" checked$=[[data.is_eaten]] disabled></paper-checkbox>
+        </template>
+  </div>
+  </div>
   </template>
 
   <script>
-  Polymer({ is:'alim-element',
-    properties: {
-      jour: String,
-      data: Object
-    },
-    removeAlim:function() {
-      this.fire('remove-aliment', {jour: this.jour, alim: this.data});
-    }
-  });
+    Polymer({
+      is: 'alim-element',
+      properties: {
+        modelView: {
+          type: Boolean,
+          value: false
+        },
+        jour: String,
+        data: Object
+      },
+      _addClass: function(data) {
+        var c = "my-inline";
+        if (!this.modelView) {
+          c += data.is_model ? " model" : " not-model";
+          c += data.is_eaten ? " eaten" : "";
+        }
+        return c;
+      },
+      removeAlim: function() {
+        this.fire('remove-aliment', {
+          jour: this.jour,
+          alim: this.data
+        });
+      }
+    });
   </script>
 </dom-module>

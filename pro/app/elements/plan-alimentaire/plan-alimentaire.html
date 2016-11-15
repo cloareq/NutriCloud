@@ -1,170 +1,46 @@
-<link rel="import" href="/bower_components/polymer/polymer.html">
-<link rel="import" href="/bower_components/paper-button/paper-button.html">
-<link rel="import" href="/bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="/bower_components/neon-animation/neon-animated-pages.html">
-<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="/pro/perso/Generic/simple-overlay.html">
-<link rel="import" href="/pro/perso/Patient/alim-element.html">
-<link rel="import" href="/pro/perso/Patient/plan-alimentaire-semaine.html">
-<link rel="import" href="/pro/perso/Patient/plan-alimentaire-jour.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="plan-alimentaire-view.html">
+<link rel="import" href="plan-alimentaire-suivi.html">
 
 <dom-module id="plan-alimentaire">
 	<template>
 		<style>
-			#valid {
-				margin:2%;
-				background: #0AC45E;
-				color:white;
-				font-family: 'RobotoDraft', sans-serif;
+			#choiceButton {
+				font-size: 18px;
+				background-color: var(--color-nutricloud-grey);
+	    	padding: 1% 2% 1% 2%;
+				color: #FFF;
 			}
 		</style>
 
-		<paper-button raised id="valid" type="submit" on-click="togglePrevisualisation">Mode</paper-button>
-		<simple-overlay id="previsualisation" layered backdrop style="width: 70%; max-width: 80%; min-width: 268px; height: 70%; max-height: 80%; min-height: 268px">
-			<style no-shim>
-				.nav {
-					background: #0AC45E;
-				}
-				#navPrevis {
-					margin-bottom: 5%;
-				}
-				#selectMode {
-					float: left;
-					margin-left: 5%;
-					color: #FFF;
-					background-color: #0A98CF;
-					font-family: 'RobotoDraft', sans-serif;
-				}
-				#slider {
-					margin-top: 3%;
-				}
-			</style>
+		<paper-button id="choiceButton" on-click="toggleChoice">[[_concat('Plan ', choice)]]</paper-button>
 
-			<div layout horizontal id="navPrevis">
-			  	<paper-fab start-justified icon="icons:arrow-back" class="nav" id="preBtn" on-click="prePage"></paper-fab>
-		  		<paper-fab icon="icons:arrow-forward" id="nextBtn" class="nav" on-click="nextPage"></paper-fab>
-				<paper-button raised id="selectMode" type="submit" on-click="selectMode">Selectionner</paper-button>
-			</div>
-
-			<neon-animated-pages id="slider" selected="{{selected}}" transitions="slide-from-right">
-				<section><plan-alimentaire-semaine listAlim="{{listAlim}}" on-save-plan-alimentaire="save" data="{{data.planSemaine}}"></plan-alimentaire-semaine></section>
-				<section><plan-alimentaire-jour listAlim="{{listAlim}}" on-save-plan-alimentaire="save" data="{{data.planJour}}"></plan-alimentaire-jour></section>
-			</neon-animated-pages>
-		</simple-overlay>
-
-    	<iron-ajax id="ajax"
-	      method="POST"
-      	  on-response="postResponseAjax"
-    	  handleAs="json">
-	    </iron-ajax>
-
-    	<iron-ajax id="ajaxGet"
-	      method="GET"
-      	  on-response="setDataAjax"
-    	  handleAs="json">
-	    </iron-ajax>
-
-    	<iron-ajax id="ajaxAlimGet"
-	      method="GET"
-      	  on-response="setListAlim"
-    	  handleAs="json">
-	    </iron-ajax>
-
-		<plan-alimentaire-semaine id="paSemaine" listAlim="{{listAlim}}" on-save-plan-alimentaire="save" data="{{data.planSemaine}}" hidden></plan-alimentaire-semaine>
-		<plan-alimentaire-jour id="paJour" listAlim="{{listAlim}}" on-save-plan-alimentaire="save" data="{{data.planJour}}" hidden></plan-alimentaire-jour>
+		<iron-pages selected={{choice}} attr-for-selected="type">
+			<section type="model"><plan-alimentaire-view id="planModel" model-view></plan-alimentaire-view></section>
+			<section type="suivi"><plan-alimentaire-suivi id="planSuivi"></plan-alimentaire-suivi></section>
+		</iron-pages>
 	</template>
 
 	<script>
 		Polymer({ is:'plan-alimentaire',
 			properties: {
-        		selected: 0,
-				nbMode: 2,
-				listAlim:[],
-				data: {
-					planJour:{
-        				title:"",
-				        matin:[],
-    		    		midi:[],
-				        gouter:[],
-        				soir:[],
-		    		},
-		    		planSemaine: {
-          				title:"",
-          				lundi:{matin:[], midi:[], soir:[]},
-          				mardi:{matin:[], midi:[], soir:[]},
-          				mercredi:{matin:[], midi:[], soir:[]},
-          				jeudi:{matin:[], midi:[], soir:[]},
-          				vendredi:{matin:[], midi:[], soir:[]},
-				        samedi:{matin:[], midi:[], soir:[]},
-        		  		dimanche:{matin:[], midi:[], soir:[]}
-			      	}
-			    }
-      		},
-			ready: function() {
-				console.log("plan-alimentaire ready");
-		  		this.addEventListener('plan-patient-update', this.updateEvent);
-				if (this.selected == 0)
-					this.$.preBtn.hidden = true;
-				else if (this.selected == this.nbMode - 1)
-					this.$.nextBtn.hidden = true;
+  			choice: {
+					type: String,
+					value: "model"
+				}
+  		},
+			toggleChoice: function() {
+				this.choice = this.choice == "model" ? "suivi" : "model";
 			},
-			togglePrevisualisation: function() {
-				this.$.previsualisation.toggle();
+			_concat(str1, str2) {
+				return str1+str2;
 			},
-			selectMode: function() {
-				this.$.paJour.hidden = true;
-				this.$.paSemaine.hidden = true;
-				if (this.selected == 0)
-					this.$.paSemaine.hidden = false;
-				else if (this.selected == 1)
-					this.$.paJour.hidden = false;
-				this.$.previsualisation.toggle();
-			},
-			update: function(idPat) {
-				this.idPat = idPat;
-				this.$.ajaxGet.url = '/NutriCloud/web/app_dev.php/pro/plan/get/' + idPat;
-	  			this.$.ajaxGet.generateRequest();
-			},
-		    updateEvent: function(e) {
-      			this.update(e.detail.patId);
-		    },
-			prePage: function() {
-				this.$.nextBtn.hidden = false;
-				this.selected -= 1;
-				if (this.selected == 0)
-					this.$.preBtn.hidden = true;
-			},
-			nextPage: function() {
-				this.$.preBtn.hidden = false;
-				this.selected += 1;
-				if (this.selected == this.nbMode - 1)
-					this.$.nextBtn.hidden = true;
-			},
-  			save:function() {
-  				this.data = {"planSemaine":this.data.planSemaine, "planJour": this.data.planJour};
-	  			this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/plan/update/' + this.idPat;
-  				this.$.ajax.body = {"plan": JSON.stringify(this.data)};
-	  			this.$.ajax.generateRequest();
-		  	},
-		  	postResponseAjax: function() {
-		  		if (this.$.ajax.lastResponse && this.$.ajax.lastResponse.state !== "success")
-			  		alert(this.$.ajax.lastResponse.desc);
-		  	},
-		  	setDataAjax: function() {
-		  		if (this.$.ajaxGet.lastResponse[0] != "") {
-					this.$.ajaxGet.lastResponse = JSON.parse(this.$.ajaxGet.lastResponse.toString().replace(/&quot;/g, '"'));
-			  		console.log("plan alimentaire ajax get data plan response:", this.$.ajaxGet.lastResponse);
-			  		this.data = this.$.ajaxGet.lastResponse;
-			  	} else if (this.$.ajaxGet.lastResponse && this.$.ajaxGet.lastResponse.state !== "sucess")
-			  		alert(this.$.ajax.lastResponse.desc);
-		  	},
-		  	getListAlim: function() {
-				this.$.ajaxAlimGet.url = '/NutriCloud/web/app_dev.php/pro/aliment/get/';
-  				this.$.ajaxAlimGet.generateRequest();
-		  	},
-		  	setListAlim: function() {
-		  		this.lisAlim = this.$.ajaxAlimGet.lastResponse;
-		  	}
+			refresh: function() {
+				this.$.planModel.refresh();
+				this.$.planSuivi.refresh();
+			}
 		});
 	</script>
 </dom-module>
