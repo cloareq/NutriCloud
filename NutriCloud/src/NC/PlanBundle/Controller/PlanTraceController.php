@@ -209,7 +209,7 @@ class PlanTraceController extends Controller
             if ($plan->getDate() >= $from && $plan->getDate() <= $to)
                 $tmp[] = $plan;
         }
-        return $this->render('NCPlanBundle:Json:PlanWeek.json.twig', array("plans" => $tmp));
+        return $this->render('NCPlanBundle:Json:PlanWeekSuivi.json.twig', array("plans" => $tmp));
     }
 
     public function percentageCompletionCalculation($aliments){
