@@ -15,7 +15,7 @@
 <link rel="import" href="suivi-element.html">
 <link rel="import" href="indicateurs-all.html">
 
-<dom-module id="resume-patient" >
+<dom-module id="resume-patient">
   <template>
   	<style>
 
@@ -113,22 +113,13 @@
       </div>
     </div>
 
-<!--
-  VOIR pour rajouter une courbe de taille plus indicateur a gauche sur toute la longueur ! UNIQUEMENT pour les enfants !
-    <div id="courbe" class="element">
-      <paper-toolbar> <span class="title">Courbe du poids</span></paper-toolbar>
-      <div>
-        <courbe-poid data="[[notes]]"></courbe-poid>
-      </div>
-    </div>
--->
-
-    <div id="list" class="element">
-      <paper-toolbar> <span class="title">Prochain rendez-vous avec ce patient</span></paper-toolbar>
+    <div id="comment" class="element">
+      <paper-toolbar> <span class="title">Dernier commentaire</span></paper-toolbar>
       <div class="component">
-        <list-appointment-patient data="[[appointments]]"></list-appointment-patient>
+        <lastnote-element data="[[notes]]"></lastnote-element>
       </div>
     </div>
+	</div>
 
     <div id="autre" class="element">
       <paper-toolbar> <span class="title">Dernier commentaire</span></paper-toolbar>
@@ -139,8 +130,16 @@
 	</div>
   </template>
 
+  <div id="list" class="element">
+    <paper-toolbar> <span class="title">Prochain rendez-vous avec ce patient</span></paper-toolbar>
+    <div class="component">
+      <list-appointment-patient data="[[appointments]]"></list-appointment-patient>
+    </div>
+  </div>
+
   <script>
-  	Polymer({ is:'resume-patient',
+    Polymer({
+      is: 'resume-patient',
       properties: {
         notes: Array,
         appointments: Array,
@@ -150,9 +149,9 @@
       refresh: function() {
         this.$.resumeService.getNotes(app.patientId);
         this.$.resumeService.getAppointments(app.patientId);
-//        this.$.resumeService.getPoids(app.patientId);
+        //        this.$.resumeService.getPoids(app.patientId);
 
-//        this.$.suiviService.getSuivi(app.patientId);
+        //        this.$.suiviService.getSuivi(app.patientId);
       },
       suiviSaved: function() {
         this.$.suivi.suiviSaved();

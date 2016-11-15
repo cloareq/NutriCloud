@@ -1,0 +1,93 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!-- Import my-component -->
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="plan-suivi-service">
+
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+
+   <my-ajax id="ajax"
+      on-response="ajaxSuccess"
+      handleAs="json">
+    </my-ajax>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'plan-suivi-service',
+      properties: {
+        /**
+         * "upward property" permet de récupérer le plan alimentaire chargé via l'attribut.
+         * La valeur ne peut être modifier que depuis cet élément
+         */
+        plan: {
+          type: Array,
+          notify: true,
+          readOnly: true
+        }
+      },
+      ready: function() {
+        /*        this._setPlan({
+                  "2016-11-04": [{
+                    "hour": "12:00",
+                    "aliment": "Pomme",
+                    "quantity": "1",
+                    "is_eaten": "true",
+                    "is_model": "true"
+                  }],
+                  "2016-11-03": [{
+                    "hour": "09:33",
+                    "aliment": "pain",
+                    "quantity": "39gr",
+                    "is_eaten": "false",
+                    "is_model": "true"
+                  },{
+                    "hour": "15:33",
+                    "aliment": "chocolat",
+                    "quantity": "100gr",
+                    "is_eaten": "true",
+                    "is_model": "false"
+                  },{
+                    "hour": "19:33",
+                    "aliment": "pain",
+                    "quantity": "39gr",
+                    "is_eaten": "false",
+                    "is_model": "true"
+                  }],
+                  "2016-11-05": []
+                });
+        */
+      },
+      getPlanSuivi: function(patientId, start, end) {
+        this.lastRequest = "getPlanSuivi";
+        this.$.ajax.setBody({});
+        this.$.ajax.headers = {};
+        this.$.ajax.method = 'GET';
+        this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/plan/daily/get/' + patientId + "/" + start + "/" + end;
+        this.$.ajax.go();
+      },
+      makeunescape: function(p) {
+        for (key in p) {
+          var arr = p[key];
+          if (arr && arr.constructor == Array) {
+            for (var i = 0; i < arr.length; i++)
+              arr[i].aliment = unescape(arr[i].aliment);
+          }
+        }
+        return p;
+      },
+      ajaxSuccess: function() {
+        if (this.lastRequest == "getPlanSuivi") {
+          this._setPlan(this.makeunescape(this.$.ajax.data));
+        }
+      }
+    });
+  </script>
+</dom-module>

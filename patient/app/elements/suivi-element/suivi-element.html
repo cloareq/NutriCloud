@@ -101,35 +101,35 @@
         ready: function() {
           moment.locale("fr");
           this._setCurrentMoment();
-/*
-          this.suivi = {
-            "2016-10-06": [{
-              "hour": "09:00",
-              "aliment": "Kiwi",
-              "quantity": "1",
-              "is_eaten": "true",
-              "is_model": "false"
-            }, {
-              "hour": "12:00",
-              "aliment": "Pain",
-              "quantity": "100gr",
-              "is_eaten": "false",
-              "is_model": "true"
-            }, {
-              "hour": "12:00",
-              "aliment": "Pomme",
-              "quantity": "1",
-              "is_eaten": "true",
-              "is_model": "false"
-            }, {
-              "hour": "19:00",
-              "aliment": "Soupe",
-              "quantity": "1",
-              "is_eaten": "false",
-              "is_model": "true"
-            }]
-          };
-*/
+          /*
+                    this.suivi = {
+                      "2016-10-06": [{
+                        "hour": "09:00",
+                        "aliment": "Kiwi",
+                        "quantity": "1",
+                        "is_eaten": "true",
+                        "is_model": "false"
+                      }, {
+                        "hour": "12:00",
+                        "aliment": "Pain",
+                        "quantity": "100gr",
+                        "is_eaten": "false",
+                        "is_model": "true"
+                      }, {
+                        "hour": "12:00",
+                        "aliment": "Pomme",
+                        "quantity": "1",
+                        "is_eaten": "true",
+                        "is_model": "false"
+                      }, {
+                        "hour": "19:00",
+                        "aliment": "Soupe",
+                        "quantity": "1",
+                        "is_eaten": "false",
+                        "is_model": "true"
+                      }]
+                    };
+          */
         },
         _setCurrentMoment: function() {
           this.currentDate = this.currentDate || moment();
@@ -142,13 +142,14 @@
         suiviChanged: function() {
           if (this.suivi) {
             for (var d in this.suivi)
-              this.suivi[d].forEach(function(alim) {
-                alim.is_eaten = alim.is_eaten == "true" ? true : false;
-                if (!alim.is_model)
-                  alim.is_model = "true";
-                alim.is_model = alim.is_model == "true" ? true : false;
-              });
-            console.log(this.suivi);
+              if (this.suivi[d] && this.suivi[d].constructor == Array) {
+                this.suivi[d].forEach(function(alim) {
+                  alim.is_eaten = alim.is_eaten == "true" ? true : false;
+                  if (!alim.is_model)
+                    alim.is_model = "true";
+                  alim.is_model = alim.is_model == "true" ? true : false;
+                });
+              }
             this.currentSuivi = this.suivi[this.currentDate.format("YYYY-MM-DD")];
           }
         },

@@ -141,9 +141,7 @@
 				this.$.patientForm.toggle();
 			},
 			errorPatientCreation: function() {
-				app.$.toast.text = "Erreur lors de la création du patient ["+this.apiError+"]";
-				app.$.toast.style.backgroundColor = "red";
-				app.$.toast.show();
+				app.writeError("Erreur lors de la création du patient ["+this.apiError+"]");
 			}
 		});
 	</script>

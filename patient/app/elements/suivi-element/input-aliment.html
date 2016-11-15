@@ -19,40 +19,37 @@
       	width: 40vh;
       }
     </style>
-<!--
-        <paper-input id="input" disabled=$"{{disabled}}" label="{{label}}" floatingLabel></paper-input>
--->
-        <paper-input id="input" value="[[value]]" disabled$="{{disabled}}" floatingLabel></paper-input>
-        <quantity-input-element unit="[[quantityUnit]]" value="[[quantityValue]]" disabled$="[[disabled]]" id="quantity"></quantity-input-element>
+    <paper-input id="input" value="[[value]]" disabled$="{{disabled}}" floatingLabel></paper-input>
+    <quantity-input-element unit="[[quantityUnit]]" value="[[quantityValue]]" disabled$="[[disabled]]" id="quantity"></quantity-input-element>
   </template>
   <script>
-  (function() {
-    'use strict';
+    (function() {
+      'use strict';
 
-  	Polymer({
-  		is:'input-aliment',
-  		properties:  {
-//  			label: String
-        quantity: {
-          type: String,
-          observer: 'quantityChanged'
+      Polymer({
+        is: 'input-aliment',
+        properties: {
+          //  			label: String
+          quantity: {
+            type: String,
+            observer: 'quantityChanged'
+          }
+        },
+        getAliment: function() {
+          return this.$.input.value;
+        },
+        getQuantity: function() {
+          return this.$.quantity.getFullValue();
+        },
+        quantityChanged: function() {
+          this.quantityUnit = "";
+          if (this.quantity.match("[a-z A-Z]+"))
+            this.quantityUnit = this.quantity.match("[a-z A-Z]+")[0];
+          this.quantityValue = this.quantity.match("[0-9]+")[0];
+          console.log("unit" + this.quantityUnit);
+          console.log("value" + this.quantityValue);
         }
-  		},
-  		getAliment: function() {
-  			return this.$.input.value;
-  		},
-  		getQuantity: function() {
-  			return this.$.quantity.getFullValue();
-  		},
-      quantityChanged: function() {
-        this.quantityUnit = "";
-        if (this.quantity.match("[a-z A-Z]+"))
-          this.quantityUnit = this.quantity.match("[a-z A-Z]+")[0];
-        this.quantityValue = this.quantity.match("[0-9]+")[0];
-        console.log("unit"+this.quantityUnit);
-        console.log("value"+this.quantityValue);
-      }
-  	});
-  })();
+      });
+    })();
   </script>
 </dom-module>
