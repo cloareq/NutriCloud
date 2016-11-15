@@ -104,7 +104,18 @@
         this.$.ajax.go();
       },
       makeunescape: function(p) {
-        if (Object.getOwnPropertyNames(p).length != 0) {
+        if (Object.getOwnPropertyNames(p).length === 0) {
+          p = {
+            'Monday': [],
+            'Tuesday': [],
+            'Wednesday': [],
+            'Thursday': [],
+            'Friday': [],
+            'Saturday': [],
+            'Sunday': []
+          };
+        } else {
+
           var arr = p.Monday;
           for (var i = 0; i < arr.length; i++)
             arr[i].aliment = unescape(arr[i].aliment);
@@ -126,6 +137,7 @@
           arr = p.Sunday;
           for (var i = 0; i < arr.length; i++)
             arr[i].aliment = unescape(arr[i].aliment);
+
         }
         return p;
       },
