@@ -73,9 +73,46 @@
         this.$.ajax.url = '/NutriCloud/web/app_dev.php/pro/plan/daily/get/' + patientId + "/" + start + "/" + end;
         this.$.ajax.go();
       },
+      makeunescape: function(p) {
+        if (Object.getOwnPropertyNames(p).length === 0) {
+          p = {
+            'Monday': [],
+            'Tuesday': [],
+            'Wednesday': [],
+            'Thursday': [],
+            'Friday': [],
+            'Saturday': [],
+            'Sunday': []
+          };
+        } else {
+          var arr = p.Monday;
+          for (var i = 0; i < arr.length; i++)
+            arr[i].aliment = unescape(arr[i].aliment);
+          arr = p.Tuesday;
+          for (var i = 0; i < arr.length; i++)
+            arr[i].aliment = unescape(arr[i].aliment);
+          arr = p.Wednesday;
+          for (var i = 0; i < arr.length; i++)
+            arr[i].aliment = unescape(arr[i].aliment);
+          arr = p.Thursday;
+          for (var i = 0; i < arr.length; i++)
+            arr[i].aliment = unescape(arr[i].aliment);
+          arr = p.Friday;
+          for (var i = 0; i < arr.length; i++)
+            arr[i].aliment = unescape(arr[i].aliment);
+          arr = p.Saturday;
+          for (var i = 0; i < arr.length; i++)
+            arr[i].aliment = unescape(arr[i].aliment);
+          arr = p.Sunday;
+          for (var i = 0; i < arr.length; i++)
+            arr[i].aliment = unescape(arr[i].aliment);
+
+        }
+        return p;
+      },
       ajaxSuccess: function() {
         if (this.lastRequest == "getPlanSuivi") {
-          this._setPlan(this.$.ajax.data);
+          this._setPlan(this.makeunescape(this.$.ajax.data));
         }
       }
     });

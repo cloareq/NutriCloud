@@ -105,20 +105,21 @@
 				},
 				data: {
 					type: Object,
-					value: {
-						'Monday': [],
-						'Tuesday': [],
-						'Wednesday': [],
-						'Thursday': [],
-						'Friday': [],
-						'Saturday': [],
-						'Sunday': []
+					value: function() {
+						return {
+							'Monday': [],
+							'Tuesday': [],
+							'Wednesday': [],
+							'Thursday': [],
+							'Friday': [],
+							'Saturday': [],
+							'Sunday': []
+						}
 					}
 				}
 			},
 			ready: function() {
 				this.currentDate = moment();
-				this.refresh();
 			},
 			refresh: function() {
 				var monday = moment(this.currentDate).startOf('week');
@@ -135,7 +136,7 @@
 			},
 			parseData: function(dataBrut) {
 				//restore data to init value
-				this.set('data', this.properties.data.value);
+				this.set('data', this.properties.data.value());
 				for (var date in dataBrut) {
 					if (dataBrut[date] && dataBrut[date].constructor == Array) {
 						this.dataBrut[date].forEach(function(d) {
