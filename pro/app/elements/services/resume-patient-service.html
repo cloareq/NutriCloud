@@ -16,7 +16,31 @@
       on-response="ajaxApSuccess"
       handleAs="json">
     </my-ajax>
-  </template>
+    <my-ajax id="ajaxWeight"
+      on-response="weight"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxHeight"
+      on-response="height"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxMedication"
+      on-response="medication"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxAllergy"
+      on-response="allergy"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxGoal"
+      on-response="goal"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxNotePatient"
+      on-response="notepatient"
+      handleAs="json">
+    </template>
+    </my-ajax>
   <script>
   Polymer({ is:'resume-patient-service',
     properties: {
@@ -37,7 +61,7 @@
         notify: true,
         readOnly: true
       },
-      poids: {
+      weight: {
         type: Array,
         notify: true,
         readOnly: true
@@ -71,14 +95,54 @@
       });
 */
     },
-/*    getPoids: function(patientId) {
-      /* example data receive =>  [ ["2016-04-10" , 100] , ["2016-04-10" , 100] , ["2016-04-25" , 130] , ["2016-04-25" , 130] ] */
-/*      this.lastRequest = "getPoids";
-      this.$.ajax.method = 'GET';
-      this.$.ajax.setBody({});
-      this.$.ajax.headers = {};
-      this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/note/weight/" + app.patientId;
-      this.$.ajax.go();
+/*
+
+getMedication: function(patientId) {
+  /pro/medication/{patientId}
+}
+
+medication: function() {
+  this.$.ajaxMedication.data;
+}
+
+getHeight: function(patientId) {
+  /pro/height/{patientId}
+}
+
+height: function() {
+  this.$.ajaxHeight.data;
+}
+
+getGoal: function(patientId) {
+  /pro/goal/{patientId}
+}
+
+goal: function() {
+  this.$.ajaxGoal.data;
+}
+
+getAllergy: function(patientId) {
+  /pro/allergy/{patientId}
+}
+allergy: function() {
+  this.$.ajaxAllergy.data;
+}
+
+getNotePatient: function(patientId) {
+  /pro/notepatient/{patientId}
+}
+notepatient: function() {
+  this.$.ajaxNotePatient.data;
+}
+
+getWeight: function(patientId) {
+      // example data receive =>  [ ["2016-04-10" , 100] , ["2016-04-10" , 100] , ["2016-04-25" , 130] , ["2016-04-25" , 130] ]
+      this.lastRequest = "getPoids";
+      this.$.ajaxWeight.method = 'GET';
+      this.$.ajaxWeight.setBody({});
+      this.$.ajaxWeight.headers = {};
+      this.$.ajaxWeight.url = "/NutriCloud/web/app_dev.php/pro/weight/" + patientId;
+      this.$.ajaxWeight.go();
     },
 */
     getAppointments: function(patientId) {

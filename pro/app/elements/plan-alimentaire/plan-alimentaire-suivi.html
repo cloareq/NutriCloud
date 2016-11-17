@@ -138,13 +138,11 @@
 				//restore data to init value
 				this.set('data', this.properties.data.value());
 				for (var date in dataBrut) {
-					if (dataBrut[date] && dataBrut[date].constructor == Array) {
-						this.dataBrut[date].forEach(function(d) {
+						this.dataBrut[date].aliments.forEach(function(d) {
 							d.is_eaten = d.is_eaten == "true" ? true : false;
 							d.is_model = d.is_model == "true" ? true : false;
 						});
-						this.set('data.' + this.getDay(date), this.dataBrut[date]);
-					}
+						this.set('data.' + this.getDay(date), this.dataBrut[date].aliments);
 				}
 			},
 			togglePicker: function() {
