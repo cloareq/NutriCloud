@@ -198,7 +198,7 @@
       },
 
       getAppointments: function(patientId) {
-        this.lastRequest = "getAppointments";
+        this.lastAppointmentRequest = "getAppointments";
         this.$.ajaxAppointment.method = 'GET';
         this.$.ajaxAppointment.setBody({});
         this.$.ajaxAppointment.headers = {};
@@ -217,7 +217,7 @@
       },
 
       getNotes: function(patientId) {
-        this.lastRequest = "getNotes";
+        this.lastNotesRequest = "getNotes";
         this.$.ajaxNotes.method = 'GET';
         this.$.ajaxNotes.setBody({});
         this.$.ajaxNotes.headers = {};
