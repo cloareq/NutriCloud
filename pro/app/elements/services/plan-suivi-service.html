@@ -33,38 +33,6 @@
           readOnly: true
         }
       },
-      ready: function() {
-        /*        this._setPlan({
-                  "2016-11-04": [{
-                    "hour": "12:00",
-                    "aliment": "Pomme",
-                    "quantity": "1",
-                    "is_eaten": "true",
-                    "is_model": "true"
-                  }],
-                  "2016-11-03": [{
-                    "hour": "09:33",
-                    "aliment": "pain",
-                    "quantity": "39gr",
-                    "is_eaten": "false",
-                    "is_model": "true"
-                  },{
-                    "hour": "15:33",
-                    "aliment": "chocolat",
-                    "quantity": "100gr",
-                    "is_eaten": "true",
-                    "is_model": "false"
-                  },{
-                    "hour": "19:33",
-                    "aliment": "pain",
-                    "quantity": "39gr",
-                    "is_eaten": "false",
-                    "is_model": "true"
-                  }],
-                  "2016-11-05": []
-                });
-        */
-      },
       getPlanSuivi: function(patientId, start, end) {
         this.lastRequest = "getPlanSuivi";
         this.$.ajax.setBody({});
@@ -75,11 +43,9 @@
       },
       makeunescape: function(p) {
         for (key in p) {
-          var arr = p[key];
-          if (arr && arr.constructor == Array) {
-            for (var i = 0; i < arr.length; i++)
+          var arr = p[key].aliments;
+          for (var i = 0; i < arr.length; i++)
               arr[i].aliment = unescape(arr[i].aliment);
-          }
         }
         return p;
       },
