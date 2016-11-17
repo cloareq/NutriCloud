@@ -9,7 +9,7 @@
     }
     </style>
     <my-ajax id="ajaxNotes"
-      on-response="notes"
+      on-response="notesResponse"
       handleAs="json">
     </my-ajax>
     <my-ajax id="ajaxAppointment"
@@ -224,7 +224,7 @@
         this.$.ajaxNotes.url = "/NutriCloud/web/app_dev.php/pro/note/" + patientId;
         this.$.ajaxNotes.go();
       },
-      notes: function() {
+      notesResponse: function() {
         this._setNotes(this.$.ajaxNotes.data.reverse());
       },
       //set last note when notes changed
