@@ -174,8 +174,7 @@
 				}
 			},
 			suiviSaved: function() {
-				app.$.toast.text = "Suivi sauvegardé";
-				app.$.toast.show();
+				app.writeToast("Suivi sauvegardé");
 				this.toggleSuivi();
 			}
 		});

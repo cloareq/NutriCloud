@@ -1,0 +1,43 @@
+## DELETE
+nc_note_deleteNotePatient_pro:
+    path:     /pro/notepatient/delete/{id}
+    defaults: { _controller: NCNoteBundle:NotePatient:deleteNotePatient}
+    methods:  [DELETE]
+
+nc_note_deleteNotePatient_patient:
+    path:     /patient/notepatient/delete/{id}
+    defaults: { _controller: NCNoteBundle:NotePatient:deleteNotePatient}
+    methods:  [DELETE]
+
+## UPDATE
+nc_note_updateNotePatient_pro:
+    path:     /pro/notepatient/update/{id}
+    defaults: { _controller: NCNoteBundle:NotePatient:updateNotePatient}
+    methods:  [PUT]
+
+nc_note_updateNotePatient_patient:
+    path:     /patient/notepatient/update/{id}
+    defaults: { _controller: NCNoteBundle:NotePatient:updateNotePatient}
+    methods:  [PUT]
+
+## CREATE
+nc_note_createNotePatient_pro:
+    path:	/pro/notepatient/create/{patientId}
+    defaults: { _controller: NCNoteBundle:NotePatient:createNotePatient }
+    methods:  [POST]
+
+nc_note_createNotePatient_patient:
+    path:	/patient/notepatient/create/{patientId}
+    defaults: { _controller: NCNoteBundle:NotePatient:createNotePatient }
+    methods:  [POST]
+
+## GET
+nc_note_getNotePatient_pro:
+    path:     /pro/notepatient/{patientId}
+    defaults: { _controller: NCNoteBundle:NotePatient:getNotePatients }
+    methods:  [GET]
+
+nc_note_getnotepatient_patient:
+    path:     /patient/notepatient/{patientId}
+    defaults: { _controller: NCNoteBundle:NotePatient:getNotePatients }
+    methods:  [GET]

@@ -1,0 +1,12 @@
+[
+    {% for note in notes %}
+    {
+        "id": "{{ note.id }}",
+        "note": "{{ note.note }}",
+        "date": "{{ note.date }}"
+    }
+    {% if loop.last == false %}
+,
+    {% endif %}
+    {% endfor %}
+]

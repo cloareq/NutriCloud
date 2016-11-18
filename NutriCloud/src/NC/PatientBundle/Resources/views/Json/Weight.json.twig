@@ -1,0 +1,12 @@
+[
+    {% for weight in weights %}
+    {
+        "id": "{{ weight.id }}",
+        "weight": "{{ weight.weight }}",
+        "date": "{{ weight.date }}"
+    }
+    {% if loop.last == false %}
+,
+    {% endif %}
+    {% endfor %}
+]

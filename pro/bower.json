@@ -14,7 +14,8 @@
     "gold-zip-input": "PolymerElements/gold-zip-input#~1.0.5",
     "google-chart": "GoogleWebComponents/google-chart#~1.0.4",
     "paper-spinner": "PolymerElements/paper-spinner#~1.1.1",
-    "paper-toast-top": "*"
+    "paper-toast-top": "*",
+    "neon-animation": "~1.2.4"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

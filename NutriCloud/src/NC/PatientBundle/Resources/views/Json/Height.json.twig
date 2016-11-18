@@ -1,0 +1,12 @@
+[
+    {% for height in heights %}
+    {
+        "id": "{{ height.id }}",
+        "height": "{{ height.height }}",
+        "date": "{{ height.date }}"
+    }
+    {% if loop.last == false %}
+,
+    {% endif %}
+    {% endfor %}
+]

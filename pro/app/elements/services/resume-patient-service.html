@@ -8,115 +8,231 @@
       display: none;
     }
     </style>
-    <my-ajax id="ajax"
-      on-response="ajaxSuccess"
+    <my-ajax id="ajaxNotes"
+      on-response="notesResponse"
       handleAs="json">
     </my-ajax>
-    <my-ajax id="ajaxAp"
-      on-response="ajaxApSuccess"
+    <my-ajax id="ajaxAppointment"
+      on-response="appointment"
       handleAs="json">
     </my-ajax>
-  </template>
+    <my-ajax id="ajaxWeight"
+      on-response="weight"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxHeight"
+      on-response="height"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxMedication"
+      on-response="medication"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxAllergy"
+      on-response="allergy"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxGoal"
+      on-response="goal"
+      handleAs="json">
+    </my-ajax>
+    <my-ajax id="ajaxNotePatient"
+      on-response="notepatient"
+      handleAs="json">
+    </template>
+  </my-ajax>
   <script>
-  Polymer({ is:'resume-patient-service',
-    properties: {
-      lastRequest: String,
-      notes: {
-        type: Array,
-        notify: true,
-        readOnly: true,
-        observer: "notesChanged"
+    Polymer({
+      is: 'resume-patient-service',
+      properties: {
+        lastRequest: String,
+        notes: {
+          type: Array,
+          notify: true,
+          readOnly: true,
+          observer: "notesChanged"
+        },
+        lastNote: {
+          type: Object,
+          notify: true,
+          readOnly: true
+        },
+        appointments: {
+          type: Array,
+          notify: true,
+          readOnly: true
+        },
+        weight: {
+          type: Array,
+          notify: true,
+          readOnly: true
+        }
       },
-      lastNote: {
-        type: Object,
-        notify: true,
-        readOnly: true
+
+      getHeight: function(patientId) {
+        this.lastHeightRequest = "getHeight";
+        this.$.ajaxHeight.method = 'GET';
+        this.$.ajaxHeight.setBody({});
+        this.$.ajaxHeight.headers = {};
+        this.$.ajaxHeight.url = "/NutriCloud/web/app_dev.php/pro/height/" + patientId;
+        this.$.ajaxHeight.go();
       },
-      appointments: {
-        type: Array,
-        notify: true,
-        readOnly: true
+      addHeight: function(patientId, h) {
+        this.lastHeightRequest = "addHeight";
+        this.$.ajaxHeight.method = 'POST';
+        this.$.ajaxHeight.setBody({height: h});
+        this.$.ajaxHeight.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        this.$.ajaxHeight.url = "/NutriCloud/web/app_dev.php/pro/height/create/" + patientId;
+        this.$.ajaxHeight.go();
       },
-      poids: {
-        type: Array,
-        notify: true,
-        readOnly: true
+      height: function() {
+        if (this.lastHeightRequest == "getHeight")
+          this._setHeight(this.$.ajaxHeight.data);
+      },
+
+      getMedication: function(patientId) {
+        this.lastMedicationRequest = "getMedication";
+        this.$.ajaxMedication.method = 'GET';
+        this.$.ajaxMedication.setBody({});
+        this.$.ajaxMedication.headers = {};
+        this.$.ajaxMedication.url = "/NutriCloud/web/app_dev.php/pro/medication/" + patientId;
+        this.$.ajaxMedication.go();
+      },
+      addMedication: function(patientId, number) {
+        this.lastMedicationRequest = "addMedication";
+        this.$.ajaxMedication.method = 'POST';
+        this.$.ajaxMedication.setBody({medication: number});
+        this.$.ajaxMedication.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        this.$.ajaxMedication.url = "/NutriCloud/web/app_dev.php/pro/medication/create/" + patientId;
+        this.$.ajaxMedication.go();
+      },
+      medication: function() {
+        if (this.lastMedicationRequest == "getMedication")
+          this._setMedication(this.$.ajaxMedication.data);
+      },
+
+      getGoal: function(patientId) {
+        this.lastGoalRequest = "getGoal";
+        this.$.ajaxGoal.method = 'GET';
+        this.$.ajaxGoal.setBody({});
+        this.$.ajaxGoal.headers = {};
+        this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/" + patientId;
+        this.$.ajaxGoal.go();
+      },
+      addGoal: function(patientId, a) {
+        this.lastGoalRequest = "addGoal";
+        this.$.ajaxGoal.method = 'POST';
+        this.$.ajaxGoal.setBody({name: a});
+        this.$.ajaxGoal.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/create/" + patientId;
+        this.$.ajaxGoal.go();
+      },
+      goal: function() {
+        if (this.lastGoalRequest == "getGoal")
+          this._setGoal(this.$.ajaxGoal.data);
+      },
+
+      getAllergy: function(patientId) {
+        this.lastAllergyRequest = "getAllergy";
+        this.$.ajaxAllergy.method = 'GET';
+        this.$.ajaxAllergy.setBody({});
+        this.$.ajaxAllergy.headers = {};
+        this.$.ajaxAllergy.url = "/NutriCloud/web/app_dev.php/pro/allergy/" + patientId;
+        this.$.ajaxAllergy.go();
+      },
+      addAllergy: function(patientId, a) {
+        this.lastAllergyRequest = "addAllergy";
+        this.$.ajaxAllergy.method = 'POST';
+        this.$.ajaxAllergy.setBody({name: a});
+        this.$.ajaxAllergy.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        this.$.ajaxAllergy.url = "/NutriCloud/web/app_dev.php/pro/allergy/create/" + patientId;
+        this.$.ajaxAllergy.go();
+      },
+      allergy: function() {
+        if (this.lastAllergyRequest == "getAllergy")
+          this._setAllergy(this.$.ajaxAllergy.data);
+      },
+
+      getNotePatient: function(patientId) {
+        this.lastNotePatientRequest = "getNotePatient";
+        this.$.ajaxNotePatient.method = 'GET';
+        this.$.ajaxNotePatient.setBody({});
+        this.$.ajaxNotePatient.headers = {};
+        this.$.ajaxNotePatient.url = "/NutriCloud/web/app_dev.php/pro/notepatient/" + patientId;
+        this.$.ajaxNotePatient.go();
+        this.$.ajaxNotePatient.url = '/pro/notepatient/' + patientId
+      },
+      addNotePatient: function(patientId, n) {
+        this.lastNotePatientRequest = "addNotePatient";
+        this.$.ajaxNotePatient.method = 'POST';
+        this.$.ajaxNotePatient.setBody({note: n});
+        this.$.ajaxNotePatient.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        this.$.ajaxNotePatient.url = "/NutriCloud/web/app_dev.php/pro/notepatient/create/" + patientId;
+        this.$.ajaxNotePatient.go();
+      },
+      notepatient: function() {
+        if (this.lastNotePatientRequest == "getNotePatient")
+          this._setNotePatient(this.$.ajaxNotePatient.data);
+      },
+
+      getWeight: function(patientId) {
+        // example data receive =>  [ ["2016-04-10" , 100] , ["2016-04-10" , 100] , ["2016-04-25" , 130] , ["2016-04-25" , 130] ]
+        this.lastWeightRequest = "getWeight";
+        this.$.ajaxWeight.method = 'GET';
+        this.$.ajaxWeight.setBody({});
+        this.$.ajaxWeight.headers = {};
+        this.$.ajaxWeight.url = "/NutriCloud/web/app_dev.php/pro/weight/" + patientId;
+        this.$.ajaxWeight.go();
+      },
+      addWeight: function(patientId, w) {
+        this.lastWeightRequest = "addWeight";
+        this.$.ajaxWeight.method = 'POST';
+        this.$.ajaxWeight.setBody({weight: w});
+        this.$.ajaxWeight.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        this.$.ajaxWeight.url = "/NutriCloud/web/app_dev.php/pro/weight/create/" + patientId;
+        this.$.ajaxWeight.go();
+      },
+      weight: function() {
+        if (this.lastWeightRequest == "getWeight")
+          this._setWeight(this.$.ajaxWeight.data);
+      },
+
+      getAppointments: function(patientId) {
+        this.lastAppointmentRequest = "getAppointments";
+        this.$.ajaxAppointment.method = 'GET';
+        this.$.ajaxAppointment.setBody({});
+        this.$.ajaxAppointment.headers = {};
+        this.$.ajaxAppointment.url = "/NutriCloud/web/app_dev.php/pro/appointment/get/patient/" + patientId;
+        this.$.ajaxAppointment.go();
+      },
+      appointment: function() {
+        var dataToSort = this.$.ajaxAppointment.data;
+        var data = [];
+        var n = Date.now();
+        dataToSort.forEach(function(d) {
+          if (new Date(d.end) > n)
+            data.push(d);
+        });
+        this._setAppointments(data);
+      },
+
+      getNotes: function(patientId) {
+        this.lastNotesRequest = "getNotes";
+        this.$.ajaxNotes.method = 'GET';
+        this.$.ajaxNotes.setBody({});
+        this.$.ajaxNotes.headers = {};
+        this.$.ajaxNotes.url = "/NutriCloud/web/app_dev.php/pro/note/" + patientId;
+        this.$.ajaxNotes.go();
+      },
+      notesResponse: function() {
+        this._setNotes(this.$.ajaxNotes.data.reverse());
+      },
+      //set last note when notes changed
+      notesChanged: function() {
+        var val = (this.notes && this.notes[0]) ? this.notes[0] : {};
+        this._setLastNote(val);
       }
-    },
-    //set last note when notes changed
-    notesChanged: function() {
-      var val = (this.notes && this.notes[0]) ? this.notes[0] : {};
-      this._setLastNote(val);
-    },
-    ready: function() {
-/*
-      setTimeout(
-          function() {
-            this._setPoids([ ["2016-01-15" , 130] , ["2016-02-15" , 110] , ["2016-03-15" , 95] , ["2016-04-15" , 90] ]);
-            this._setNotes([
-              {"note": "Bien", "weight": "130", "height": "180", "writer": "pro", "date": "2016-01-15"},
-              {"note": "Bien", "weight": "110", "height": "180", "writer": "pro", "date": "2016-02-15"},
-              {"note": "Bien", "weight": "95", "height": "180", "writer": "pro", "date": "2016-03-15"},
-              {"note": "Bien", "weight": "90", "height": "180", "writer": "pro", "date": "2016-04-15"}
-            ]);
-          }.bind(this),
-          300);
-*/
-/*
-      this._setAppointments([{"title": "lalalala", "start": "10h", "end": "11h"},
-          {"title": "lalalala", "start": "11h", "end": "12h"},
-          {"title": "lalalala", "start": "12h", "end": "13h"},
-          {"title": "lalalala", "start": "15h", "end": "16h"},
-          {"title": "lalalala", "start": "16h", "end": "18h"}]
-      });
-*/
-    },
-/*    getPoids: function(patientId) {
-      /* example data receive =>  [ ["2016-04-10" , 100] , ["2016-04-10" , 100] , ["2016-04-25" , 130] , ["2016-04-25" , 130] ] */
-/*      this.lastRequest = "getPoids";
-      this.$.ajax.method = 'GET';
-      this.$.ajax.setBody({});
-      this.$.ajax.headers = {};
-      this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/note/weight/" + app.patientId;
-      this.$.ajax.go();
-    },
-*/
-    getAppointments: function(patientId) {
-      /*
-      example data receive =>
-          [
-            {"id": "9","title": "patient1 patient1","start": "2016-04-25T15:00:00.000Z","end": "2016-04-25T16:00:00.000Z"},
-            {"id": "8","title": "patient1 patient1","start": "2016-04-25T05:00:00.000Z","end": "2016-04-25T06:00:00.000Z"}
-          ]
-      */
-      this.lastRequest = "getAppointments";
-      this.$.ajaxAp.method = 'GET';
-      this.$.ajaxAp.setBody({});
-      this.$.ajaxAp.headers = {};
-      this.$.ajaxAp.url = "/NutriCloud/web/app_dev.php/pro/appointment/get/patient/" + patientId;
-      this.$.ajaxAp.go();
-    },
-    getNotes: function(patientId) {
-      this.lastRequest = "getNotes";
-      this.$.ajax.method = 'GET';
-      this.$.ajax.setBody({});
-      this.$.ajax.headers = {};
-      this.$.ajax.url = "/NutriCloud/web/app_dev.php/pro/note/" + patientId;
-      this.$.ajax.go();
-    },
-    ajaxApSuccess: function() {
-      var dataToSort = this.$.ajaxAp.data;
-      var data = [];
-      var n = Date.now();
-      dataToSort.forEach(function(d) {
-        if (new Date(d.end) > n)
-          data.push(d);
-      });
-      this._setAppointments(data);
-    },
-    ajaxSuccess: function() {
-      this._setNotes(this.$.ajax.data.reverse());
-    }
-  });
+
+    });
   </script>
 </dom-module>

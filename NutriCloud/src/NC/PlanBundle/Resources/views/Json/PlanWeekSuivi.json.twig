@@ -1,0 +1,24 @@
+{
+    {% for plan in plans %}
+        "{{ plan.date|capitalize }}": {
+            "aliments": [
+                {% for aliment in plan.aliments %}
+                {
+                    "hour": "{{ aliment.hour }}",
+                    "aliment": "{{ aliment.name }}",
+                    "quantity": "{{ aliment.quantity }}",
+                    "is_eaten": "{{ aliment.iseaten }}",
+                    "is_model": "{{ aliment.ismodel }}"
+                }
+                {% if loop.last == false %},
+                {% endif %}
+                {% endfor %}
+            ],
+            "completion": {{ plan.percentage }},
+            "extra_aliment": {{ plan.extraAliment }}
+        }
+
+        {% if loop.last == false %},
+        {% endif %}
+    {% endfor %}
+}

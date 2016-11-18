@@ -29,7 +29,7 @@
 
 		<iron-icon icon="add-circle" class="addAlim" theme="core-light-theme" on-click="toggleAdd"></iron-icon>
 		<paper-dialog id="overlay" style="padding:3%; background-color: white; width: 40%; max-width: 50%; min-width: 268px">
-			<paper-input-autocomplete id="alim_name" label="Aliment" suggestionsInOverlay="true" source="{{datalist}}" floatingLabel></paper-input-autocomplete>
+			<paper-input-autocomplete value="{{name}}" id="alim_name" label="Aliment" suggestionsInOverlay="true" source="{{datalist}}" floatingLabel></paper-input-autocomplete>
 			<quantity-input-element id="alim_quantite" label="Quantité" floatingLabel></quantity-input-element>
         <div>Heure: <md-timepicker id="alim_hour"></md-timepicker></div><br/>
 		   	<paper-button class="addButton" raised style="margin-top:7%;" type="submit" on-click="addAlim">Ajouter</paper-button>
@@ -42,28 +42,25 @@
 			jour: String,
 			datalist: Array
 		},
-		ready: function() {
-			console.log("ready");
-		},
-	  	toggleAdd:function() {
-  			this.$.overlay.toggle();
-	  	},
+  	toggleAdd:function() {
+			this.$.overlay.toggle();
+  	},
 		addAlim: function() {
-			var name = this.$.alim_name.value;
-			if (name != null && name != "") {
+//			var name = this.$.alim_name.value;
+			var quantity = this.$.alim_quantite.getFullValue();
+			if (this.name != null && this.name != "" && quantity != null && quantity != "") {
 				this.fire('push-aliment', {
 					jour: this.jour,
 					alim: {
-						aliment: name,
+						aliment: this.name,
 						quantity: this.$.alim_quantite.getFullValue(),
 						hour: this.$.alim_hour.value
 					}
 				});
 				if (this.datalist.indexOf(name) === -1)
 					this.addAlimentData(name);
-			} else {
-				//Add error name non specified
-			}
+			} else
+				app.writeError("Veuillez indiquer un aliment et sa quantité");
 		},
 		addAlimentData: function(name) {
 			this.fire('add-aliment', {'aliment': escape(name)});

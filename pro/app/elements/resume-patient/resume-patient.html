@@ -15,7 +15,7 @@
 <link rel="import" href="suivi-element.html">
 <link rel="import" href="indicateurs-all.html">
 
-<dom-module id="resume-patient" >
+<dom-module id="resume-patient">
   <template>
   	<style>
 
@@ -38,23 +38,10 @@
       margin-left: 5px;
     }
 
-    .label {
-      text-align: center;
-      background-color: var(--color-nutricloud-background);
-      @apply(--layout-flex);
-    }
     .component {
       padding:1%;
       background-color: var(--color-nutricloud-white);
     }
-
-    /*
-    .indicateur {
-      max-width: 25%;
-      background-color: var(--color-nutricloud-white);
-      @apply(--layout-center);
-      @apply(--layout-center-center);
-    }*/
 
     paper-toolbar {
       --paper-toolbar-background: var(--color-nutricloud-green);
@@ -69,6 +56,19 @@
       left: 0;
       right: 0;
     }
+
+    /*
+    .label {
+      text-align: center;
+      background-color: var(--color-nutricloud-background);
+      @apply(--layout-flex);
+    }
+    .indicateur {
+      max-width: 25%;
+      background-color: var(--color-nutricloud-white);
+      @apply(--layout-center);
+      @apply(--layout-center-center);
+    }*/
 
     /* Small */
     @media (max-width: 600px) {
@@ -113,15 +113,21 @@
       </div>
     </div>
 
-<!--
-  VOIR pour rajouter une courbe de taille plus indicateur a gauche sur toute la longueur ! UNIQUEMENT pour les enfants !
-    <div id="courbe" class="element">
-      <paper-toolbar> <span class="title">Courbe du poids</span></paper-toolbar>
-      <div>
-        <courbe-poid data="[[notes]]"></courbe-poid>
+    <div id="comment" class="element">
+      <paper-toolbar> <span class="title">Dernier commentaire</span></paper-toolbar>
+      <div class="component">
+        <lastnote-element data="[[notes]]"></lastnote-element>
       </div>
     </div>
--->
+
+<!--
+    <div id="autre" class="element">
+      <paper-toolbar> <span class="title">Dernier commentaire</span></paper-toolbar>
+      <div class="component">
+        <lastnote-element data="[[notes]]"></lastnote-element>
+      </div>
+    </div>
+  -->
 
     <div id="list" class="element">
       <paper-toolbar> <span class="title">Prochain rendez-vous avec ce patient</span></paper-toolbar>
@@ -130,17 +136,13 @@
       </div>
     </div>
 
-    <div id="autre" class="element">
-      <paper-toolbar> <span class="title">Dernier commentaire</span></paper-toolbar>
-      <div class="component">
-        <lastnote-element data="[[notes]]"></lastnote-element>
-      </div>
-    </div>
 	</div>
   </template>
 
+
   <script>
-  	Polymer({ is:'resume-patient',
+    Polymer({
+      is: 'resume-patient',
       properties: {
         notes: Array,
         appointments: Array,
@@ -150,9 +152,8 @@
       refresh: function() {
         this.$.resumeService.getNotes(app.patientId);
         this.$.resumeService.getAppointments(app.patientId);
-//        this.$.resumeService.getPoids(app.patientId);
-
-//        this.$.suiviService.getSuivi(app.patientId);
+        //        this.$.resumeService.getPoids(app.patientId);
+        //        this.$.suiviService.getSuivi(app.patientId);
       },
       suiviSaved: function() {
         this.$.suivi.suiviSaved();

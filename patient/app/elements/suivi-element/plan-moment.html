@@ -90,7 +90,7 @@
  	    <paper-fab on-click="prev" id="prev" class="nav" icon="arrow-back" role="button"></paper-fab>
   		<div id="plan">
     		<h2>[[moment]]</h2>
-	  		<template is="dom-repeat" items="[[suivi]]" index-as="modelIdx">
+	  		<template is="dom-repeat" items="[[suivi]]">
 	  		  <div id="item">
 	  			    <template is="dom-if" if="[[_isCurrentMoment(item.hour)]]">
                 <div id="item-input" class$="[[_isModel(item.is_model, 'class')]]">

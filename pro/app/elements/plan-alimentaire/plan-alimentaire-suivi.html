@@ -1,0 +1,165 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../../bower_components/moment-element/moment-with-locales-import.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+
+<!-- service (data provider) -->
+<link rel="import" href="../services/plan-suivi-service.html">
+
+<dom-module id="plan-alimentaire-suivi">
+	<template>
+		<style>
+		#header {
+				@apply(--layout-horizontal);
+				@apply(--layout-flex);
+				@apply(--layout-center);
+				@apply(--layout-center-center);
+		}
+		#header .nav {
+				background-color: var(--color-nutricloud-black);
+		}
+		#dateButton {
+			width: 25%;
+		}
+		paper-button {
+			margin-top:1%;
+			margin-bottom:1%;
+			margin-left:2%;
+			margin-right:2%;
+			height: 100%;
+			color: white;
+			background-color: var(--color-nutricloud-grey);
+		}
+		.legend {
+			@apply(--layout-vertical);
+		}
+		.row {
+			@apply(--layout-horizontal);
+		}
+		.check {
+			margin-left: 5px;
+		}
+		.model {
+			color: var(--color-nutricloud-blue);
+			border-radius: 5px;
+			margin-right: 5px;
+			padding: 0px 5px 0px 5px;
+		}
+		.notModel {
+			color: var(--color-nutricloud-red);
+			border-radius: 5px;
+			padding: 0px 5px 0px 5px;
+		}
+		.legendModel {
+			margin-top: 5px;
+		}
+		</style>
+
+		<plan-suivi-service id="planService" plan="{{dataBrut}}"></plan-suivi-service>
+
+		<div id="header">
+			<!-- arrow left -->
+			<paper-fab on-click="prevDate" id="prev" class="nav" icon="arrow-back" role="button"></paper-fab>
+			<!-- button toggle date picker -->
+			<paper-button on-click="togglePicker" id="dateButton"></paper-button>
+			<!-- arrow right -->
+			<paper-fab on-click="nextDate" id="next" class="nav" icon="arrow-forward" role="button"></paper-fab>
+			<!-- date picker -->
+			<paper-dialog id="dialogPicker" role="dialog" class="paper-date-picker-dialog" on-iron-overlay-closed="setDatePick">
+				<paper-date-picker id="datePicker" locale="fr"></paper-date-picker>
+			</paper-dialog>
+
+		</div>
+
+		<div class="legend">
+			<div class="row">
+				<div class="row">
+					<div>Mangé</div>
+					<paper-checkbox class="check" checked disabled></paper-checkbox>
+				</div>
+				<div class="row">
+					<div>Non mangé</div>
+					<paper-checkbox class="check" disabled></paper-checkbox>
+				</div>
+			</div>
+			<div class="row legendModel">
+				<div class="model">Aliment model</div>
+				<div class="notModel">Extra aliment</div>
+			</div>
+		</div>
+
+		<plan-alimentaire-view data=[[data]]></plan-alimentaire-view>
+
+	</template>
+	<script>
+		Polymer({
+			is: 'plan-alimentaire-suivi',
+			properties: {
+				currentDate: Date,
+				dataBrut: {
+					type: Object,
+					observer: 'parseData'
+				},
+				data: {
+					type: Object,
+					value: function() {
+						return {
+							'Monday': [],
+							'Tuesday': [],
+							'Wednesday': [],
+							'Thursday': [],
+							'Friday': [],
+							'Saturday': [],
+							'Sunday': []
+						}
+					}
+				}
+			},
+			ready: function() {
+				this.currentDate = moment();
+			},
+			refresh: function() {
+				var monday = moment(this.currentDate).startOf('week');
+				var sunday = moment(this.currentDate).endOf('week');
+				this.$.dateButton.set('textContent', monday.format("DD/MM/YYYY") + ' -- ' + sunday.format("DD/MM/YYYY"));
+				//				this.$.dateButton.set('textContent', 'Semaine ' + this.currentDate.week()); //display: Semaine xx
+				//TODO get Data
+				this.$.planService.getPlanSuivi(app.patientId, monday.format('YYYY-MM-DD'), sunday.format('YYYY-MM-DD'));
+			},
+			getDay: function(date) {
+				//return day in english corresponding to the date parameter
+				var d = moment(date).locale('en').format('dddd');
+				return (d[0].toUpperCase() + d.slice(1));
+			},
+			parseData: function(dataBrut) {
+				//restore data to init value
+				this.set('data', this.properties.data.value());
+				for (var date in dataBrut) {
+						this.dataBrut[date].aliments.forEach(function(d) {
+							d.is_eaten = d.is_eaten == "true" ? true : false;
+							d.is_model = d.is_model == "true" ? true : false;
+						});
+						this.set('data.' + this.getDay(date), this.dataBrut[date].aliments);
+				}
+			},
+			togglePicker: function() {
+				this.$.dialogPicker.toggle();
+			},
+			setDatePick: function() {
+				this.currentDate = moment(this.$.datePicker.date);
+				this.refresh();
+			},
+			prevDate: function() {
+				this.currentDate.subtract(1, 'week');
+				this.refresh();
+			},
+			nextDate: function() {
+				this.currentDate.add(1, 'week');
+				this.refresh();
+			}
+		});
+	</script>
+</dom-module>

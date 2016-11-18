@@ -1,0 +1,43 @@
+## DELETE
+nc_weight_deleteWeight_pro:
+    path:     /pro/weight/delete/{id}
+    defaults: { _controller: NCPatientBundle:Weight:deleteWeight}
+    methods:  [DELETE]
+
+nc_weight_deleteWeight_patient:
+    path:     /patient/weight/delete/{id}
+    defaults: { _controller: NCPatientBundle:Weight:deleteWeight}
+    methods:  [DELETE]
+
+## UPDATE
+nc_weight_updateWeight_pro:
+    path:     /pro/weight/update/{id}
+    defaults: { _controller: NCPatientBundle:Weight:updateWeight}
+    methods:  [PUT]
+
+nc_weight_updateWeight_patient:
+    path:     /patient/weight/update/{id}
+    defaults: { _controller: NCPatientBundle:Weight:updateWeight}
+    methods:  [PUT]
+
+## CREATE
+nc_weight_createWeight_pro:
+    path:	/pro/weight/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Weight:createWeight }
+    methods:  [POST]
+
+nc_weight_createWeight_patient:
+    path:	/patient/weight/create/{patientId}
+    defaults: { _controller: NCPatientBundle:Weight:createWeight }
+    methods:  [POST]
+
+## GET
+nc_weight_getWeight_pro:
+    path:     /pro/weight/{patientId}
+    defaults: { _controller: NCPatientBundle:Weight:getWeights }
+    methods:  [GET]
+
+nc_weight_getweight_patient:
+    path:     /patient/weight/{patientId}
+    defaults: { _controller: NCPatientBundle:Weight:getWeights }
+    methods:  [GET]

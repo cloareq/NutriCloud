@@ -126,6 +126,24 @@ class Patient implements UserInterface
     private $goals;
 
     /**
+     * @ORM\OneToMany(targetEntity="NC\PatientBundle\Entity\Weight", mappedBy="Patient", cascade={"remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $weight;
+
+    /**
+     * @ORM\OneToMany(targetEntity="NC\NoteBundle\Entity\NotePatient", mappedBy="Patient", cascade={"remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $note_patient;
+
+    /**
+     * @ORM\OneToMany(targetEntity="NC\PatientBundle\Entity\Height", mappedBy="Patient", cascade={"remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $height;
+
+    /**
      * @ORM\OneToMany(targetEntity="NC\PatientBundle\Entity\Calorie", mappedBy="Patient", cascade={"remove"})
      * @ORM\JoinColumn(nullable=false)
      */
@@ -179,6 +197,9 @@ class Patient implements UserInterface
         $this->appointment = null;
         $this->Message = null;
         $this->calorie = null;
+        $this->weight = null;
+        $this->note_patient = null;
+        $this->height = null;
         $this->allergy = null;
         $this->plans = new ArrayCollection();
         $this->addPlans(new PlanDay("Monday", $this));
@@ -613,4 +634,53 @@ class Patient implements UserInterface
     {
         $this->allergy = $allergy;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * @param mixed $weight
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+    /**
+     * @param mixed $height
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotePatient()
+    {
+        return $this->note_patient;
+    }
+
+    /**
+     * @param mixed $note_patient
+     */
+    public function setNotePatient($note_patient)
+    {
+        $this->note_patient = $note_patient;
+    }
+
 }

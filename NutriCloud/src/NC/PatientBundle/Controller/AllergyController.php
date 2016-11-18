@@ -18,7 +18,7 @@ class AllergyController extends Controller
     /**
      * Cette méthode permet d'obtenir les allergies.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#000066"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
      *  resource=true,
      *  description="/pro/allergy/{patientId} -- /patient/allergy/{patientId}",
      *  statusCodes={
@@ -52,7 +52,7 @@ class AllergyController extends Controller
     /**
      * Cette méthode permet d'ajouter des allergys.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#000066"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
      *  resource=true,
      *  description="/pro/allergy/create/{patientId} -- /patient/allergy/create/{patientId}",
      *  statusCodes={
@@ -101,7 +101,7 @@ class AllergyController extends Controller
     /**
      * Cette méthode permet de modifier une allergy.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#000066"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
      *  resource=true,
      *  description="/pro/allergy/update/{id} -- /patient/allergy/update/{id}",
      *  statusCodes={
@@ -152,7 +152,7 @@ class AllergyController extends Controller
     /**
      * Cette méthode permet de supprimer une allergy.
      * @ApiDoc(
-     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#000066"},
+     *  tags={"Pro"="#FF0000", "Patient" = "#0000FF", "Allergy"="#66FFFF"},
      *  resource=true,
      *  description="/pro/allergy/delete/{id} -- /delete/allergy/delete/{id}",
      *  statusCodes={

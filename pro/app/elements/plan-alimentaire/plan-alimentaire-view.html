@@ -13,7 +13,7 @@
 <link rel="import" href="add-aliment.html">
 <link rel="import" href="alim-element.html">
 
-<dom-module id="plan-alimentaire-semaine">
+<dom-module id="plan-alimentaire-view">
 	<template>
   	<style>
 		table {
@@ -41,8 +41,9 @@
       font-weight: 200;
 		}
 		td {
+			font-size:20px;
 			padding: 5px;
-			text-align: right;
+			text-align: center;
 			font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 			color: #696969;
 			border-top: none;
@@ -75,20 +76,34 @@
 */
 	</style>
 
+	<template is='dom-if' if="[[modelView]]">
     <aliments-service id="alimentService" aliments="{{datalist}}"></aliments-service>
     <plan-alimentaire-service id="planService" plan="{{data}}"></plan-alimentaire-service>
+	</template>
 
 	<div id="content">
 	<table>
 		<tr id="head">
-			<th></th>
-			<th>Lundi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Monday"></add-aliment></th>
-			<th>Mardi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Tuesday"></add-aliment></th>
-			<th>Mercredi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Wednesday"></add-aliment></th>
-			<th>Jeudi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Thursday"></add-aliment></th>
-			<th>Vendredi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Friday"></add-aliment></th>
-			<th>Samedi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Saturday"></add-aliment></th>
-			<th>Dimanche<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Sunday"></add-aliment></th>
+			<template is='dom-if' if="[[modelView]]">
+				<th></th>
+				<th>Lundi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Monday"></add-aliment></th>
+				<th>Mardi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Tuesday"></add-aliment></th>
+				<th>Mercredi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Wednesday"></add-aliment></th>
+				<th>Jeudi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Thursday"></add-aliment></th>
+				<th>Vendredi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Friday"></add-aliment></th>
+				<th>Samedi<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Saturday"></add-aliment></th>
+				<th>Dimanche<br/><add-aliment on-add-aliment="addAliment" datalist="[[datalist]]" jour="Sunday"></add-aliment></th>
+			</template>
+			<template is='dom-if' if="[[!modelView]]">
+				<th></th>
+				<th>Lundi</th>
+				<th>Mardi</th>
+				<th>Mercredi</th>
+				<th>Jeudi</th>
+				<th>Vendredi</th>
+				<th>Samedi</th>
+				<th>Dimanche</th>
+			</template>
 		</tr>
 		<tr id="matin">
 			<th class="row">Matin</th>
@@ -96,7 +111,7 @@
 	      <div class="content">
 				<template is="dom-repeat" items="{{data.Monday}}">
 					<template is="dom-if" if="{{_isMorning(item.hour)}}">
-						<alim-element jour="Monday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Monday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 				</div>
@@ -105,7 +120,7 @@
 				<div class="content">
 				<template is="dom-repeat" items="{{data.Tuesday}}">
 					<template is="dom-if" if="{{_isMorning(item.hour)}}">
-						<alim-element jour="Tuesday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Tuesday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -114,7 +129,7 @@
 		<div class="content">
 			<template is="dom-repeat" items="{{data.Wednesday}}">
 					<template is="dom-if" if="{{_isMorning(item.hour)}}">
-						<alim-element jour="Wednesday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Wednesday" data="{{item}}"></alim-element>
 					</template>
 			</template>
 		</div>
@@ -123,7 +138,7 @@
 		<div class="content">
 			<template is="dom-repeat" items="{{data.Thursday}}">
 					<template is="dom-if" if="{{_isMorning(item.hour)}}">
-						<alim-element jour="Thursday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Thursday" data="{{item}}"></alim-element>
 					</template>
 			</template>
 		</div>
@@ -132,7 +147,7 @@
 		<div class="content">
 			<template is="dom-repeat" items="{{data.Friday}}">
 					<template is="dom-if" if="{{_isMorning(item.hour)}}">
-						<alim-element jour="Friday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Friday" data="{{item}}"></alim-element>
 					</template>
 			</template>
 		</div>
@@ -141,7 +156,7 @@
 		<div class="content">
 			<template is="dom-repeat" items="{{data.Saturday}}">
 					<template is="dom-if" if="{{_isMorning(item.hour)}}">
-						<alim-element jour="Saturday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Saturday" data="{{item}}"></alim-element>
 					</template>
 			</template>
 		</div>
@@ -150,7 +165,7 @@
 		<div class="content">
 			<template is="dom-repeat" items="{{data.Sunday}}">
 					<template is="dom-if" if="{{_isMorning(item.hour)}}">
-						<alim-element jour="Sunday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Sunday" data="{{item}}"></alim-element>
 					</template>
 			</template>
 		</div>
@@ -162,7 +177,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Monday}}">
 					<template is="dom-if" if="{{_isLunch(item.hour)}}">
-						<alim-element jour="Monday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Monday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -171,7 +186,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Tuesday}}">
 					<template is="dom-if" if="{{_isLunch(item.hour)}}">
-						<alim-element jour="Tuesday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Tuesday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -180,7 +195,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Wednesday}}">
 					<template is="dom-if" if="{{_isLunch(item.hour)}}">
-						<alim-element jour="Wednesday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Wednesday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -189,7 +204,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Thursday}}">
 					<template is="dom-if" if="{{_isLunch(item.hour)}}">
-						<alim-element jour="Thursday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Thursday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -198,7 +213,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Friday}}">
 					<template is="dom-if" if="{{_isLunch(item.hour)}}">
-						<alim-element jour="Friday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Friday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -207,7 +222,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Saturday}}">
 					<template is="dom-if" if="{{_isLunch(item.hour)}}">
-						<alim-element jour="Saturday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Saturday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -216,7 +231,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Sunday}}">
 					<template is="dom-if" if="{{_isLunch(item.hour)}}">
-						<alim-element jour="Sunday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Sunday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -228,7 +243,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Monday}}">
 					<template is="dom-if" if="{{_isEvening(item.hour)}}">
-						<alim-element jour="Monday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Monday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -237,7 +252,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Tuesday}}">
 					<template is="dom-if" if="{{_isEvening(item.hour)}}">
-						<alim-element jour="Tuesday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Tuesday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -246,7 +261,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Wednesday}}">
 					<template is="dom-if" if="{{_isEvening(item.hour)}}">
-						<alim-element jour="Wednesday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Wednesday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -255,7 +270,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Thursday}}">
 					<template is="dom-if" if="{{_isEvening(item.hour)}}">
-						<alim-element jour="Thursday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Thursday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -264,7 +279,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Friday}}">
 					<template is="dom-if" if="{{_isEvening(item.hour)}}">
-						<alim-element jour="Friday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Friday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -273,7 +288,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Saturday}}">
 					<template is="dom-if" if="{{_isEvening(item.hour)}}">
-						<alim-element jour="Saturday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Saturday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -282,7 +297,7 @@
 			<div class="content">
 				<template is="dom-repeat" items="{{data.Sunday}}">
 					<template is="dom-if" if="{{_isEvening(item.hour)}}">
-						<alim-element jour="Sunday" data="{{item}}"></alim-element>
+						<alim-element model-view$=[[modelView]]  jour="Sunday" data="{{item}}"></alim-element>
 					</template>
 				</template>
 			</div>
@@ -290,14 +305,20 @@
 	</tr>
 	</table>
 
-	<paper-button id="saveButton" on-click="save">Sauvegarder</paper-button>
+	<template is='dom-if' if="[[modelView]]">
+		<paper-button id="saveButton" on-click="save">Sauvegarder</paper-button>
+	</template>
 	</div>
 	</template>
 
 	<script>
 		Polymer({
-			is: 'plan-alimentaire-semaine',
+			is: 'plan-alimentaire-view',
 			properties: {
+				modelView: {
+					type: Boolean,
+					value: false
+				},
 				/**
 				 *	Plan alimentaire in JSON
 				 *  example of aliment :
@@ -326,7 +347,7 @@
 			_dataChanged: function() {
 				//if this.data is empty = {}
 				if (Object.getOwnPropertyNames(this.data).length === 0)
-					this.data = {
+					this.set('data', {
 						'Monday': [],
 						'Tuesday': [],
 						'Wednesday': [],
@@ -334,7 +355,7 @@
 						'Friday': [],
 						'Saturday': [],
 						'Sunday': []
-					};
+					});
 			},
 			getHour: function(hour) {
 				return parseInt(hour.substr(0, hour.length - 1));
@@ -358,26 +379,26 @@
 				return false;
 			},
 			ready: function() {
-				this.addEventListener('push-aliment', this.pushAliment);
-				this.addEventListener('remove-aliment', this.removeAliment);
+				if (this.modelView) {
+					this.addEventListener('push-aliment', this.pushAliment);
+					this.addEventListener('remove-aliment', this.removeAliment);
+				}
 			},
 			pushAliment: function(event) {
 				this.push('data.' + event.detail.jour, event.detail.alim);
-				//  		this.save();
 			},
 			removeAliment: function(event) {
 				this.splice('data.' + event.detail.jour, this.data[event.detail.jour].indexOf(event.detail.alim), 1);
-				//  		this.save();
 			},
 			refresh: function() {
-				this.$.planService.getPlan(app.patientId);
-				this.$.alimentService.getAliments();
+				document.querySelector("#planService").getPlan(app.patientId);
+				document.querySelector("#alimentService").getAliments();
 			},
 			addAliment: function(event) {
-				this.$.alimentService.addAliment(event.detail.aliment);
+				document.querySelector("#alimentService").addAliment(event.detail.aliment);
 			},
 			save: function() {
-				this.$.planService.savePlan(app.patientId, this.data);
+				document.querySelector("#planService").savePlan(app.patientId, this.data);
 			}
 		});
 	</script>

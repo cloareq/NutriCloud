@@ -68,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       go: function(spinner) {
-        if (spinner == false)
+        if (spinner != false)
           app.activateSpinner();
         this.$.ajax.generateRequest();
       },
