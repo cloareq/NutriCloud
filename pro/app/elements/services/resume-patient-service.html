@@ -162,7 +162,7 @@
       addGoal: function(patientId, name, percentage, date) {
         this.lastGoalRequest = "addGoal";
         this.$.ajaxGoal.method = 'POST';
-        this.$.ajaxGoal.setBody({text: name, percent: percentage, date: date});
+        this.$.ajaxGoal.setBody({text: name, percentage: percentage, date: date});
         this.$.ajaxGoal.headers = {"Content-Type": "application/x-www-form-urlencoded"};
         this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/create/" + patientId;
         this.$.ajaxGoal.go();
@@ -170,7 +170,7 @@
       updateGoal: function(id, name, percentage, date) {
         this.lastGoalRequest = "updateGoal";
         this.$.ajaxGoal.method = 'PUT';
-        this.$.ajaxGoal.setBody({text: name, percent: percentage, date: date});
+        this.$.ajaxGoal.setBody({text: name, percentage: percentage, date: date});
         this.$.ajaxGoal.headers = {"Content-Type": "application/x-www-form-urlencoded"};
         this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/update/" + id;
         this.$.ajaxGoal.go();
