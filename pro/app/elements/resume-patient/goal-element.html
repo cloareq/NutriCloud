@@ -21,7 +21,7 @@
       #content {
         text-align: center;
         overflow: auto;
-        max-height: 200px;
+        max-height: 150px;
       }
       .add {
        --paper-fab-background: var(--color-nutricloud-green);
@@ -141,7 +141,7 @@
         this.currentUpdateId = event.model.__data__.item.id;
         this.updateName = event.model.__data__.item.goal;
         this.updatePercentage = event.model.__data__.item.percentage;
-        this.$.dateUpdate.set('textContent', this.date);
+        this.$.dateUpdate.set('textContent', moment(this.date).format('DD MMMM YYYY'));
         this.$.updateModal.toggle();
       },
       toggleDatePicker: function() {
