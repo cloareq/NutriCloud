@@ -5,6 +5,7 @@ namespace NC\PatientBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use NC\PatientBundle\Entity\Goal;
 
 class GoalController extends Controller
 {
