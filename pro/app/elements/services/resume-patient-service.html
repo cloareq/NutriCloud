@@ -172,7 +172,7 @@
         this.$.ajaxGoal.method = 'PUT';
         this.$.ajaxGoal.setBody();
         this.$.ajaxGoal.headers = {};
-        this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/delete/" + id;
+        this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/update/" + id;
         this.$.ajaxGoal.go();
       },
       removeGoal: function(id) {
@@ -221,7 +221,7 @@
         this.$.ajaxAllergy.method = 'DELETE';
         this.$.ajaxAllergy.setBody();
         this.$.ajaxAllergy.headers = {};
-        this.$.ajaxAllergy.url = "/NutriCloud/web/app_dev.php/pro/allergy/create/" + id;
+        this.$.ajaxAllergy.url = "/NutriCloud/web/app_dev.php/pro/allergy/delete/" + id;
         this.$.ajaxAllergy.go();
       },
       allergyResponse: function() {
