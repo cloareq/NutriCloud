@@ -13,31 +13,31 @@
       handleAs="json">
     </my-ajax>
     <my-ajax id="ajaxAppointment"
-      on-response="appointment"
+      on-response="appointmentResponse"
       handleAs="json">
     </my-ajax>
     <my-ajax id="ajaxWeight"
-      on-response="weight"
+      on-response="weightResponse"
       handleAs="json">
     </my-ajax>
     <my-ajax id="ajaxHeight"
-      on-response="height"
+      on-response="heightResponse"
       handleAs="json">
     </my-ajax>
     <my-ajax id="ajaxMedication"
-      on-response="medication"
+      on-response="medicationResponse"
       handleAs="json">
     </my-ajax>
     <my-ajax id="ajaxAllergy"
-      on-response="allergy"
+      on-response="allergyResponse"
       handleAs="json">
     </my-ajax>
     <my-ajax id="ajaxGoal"
-      on-response="goal"
+      on-response="goalResponse"
       handleAs="json">
     </my-ajax>
     <my-ajax id="ajaxNotePatient"
-      on-response="notepatient"
+      on-response="notepatientResponse"
       handleAs="json">
     </template>
   </my-ajax>
@@ -100,7 +100,7 @@
         this.$.ajaxHeight.url = "/NutriCloud/web/app_dev.php/pro/height/create/" + patientId;
         this.$.ajaxHeight.go();
       },
-      height: function() {
+      heightResponse: function() {
         if (this.lastHeightRequest == "getHeight")
           this._setHeight(this.$.ajaxHeight.data);
       },
@@ -137,7 +137,7 @@
         this.$.ajaxMedication.url = "/NutriCloud/web/app_dev.php/pro/medication/delete/" + id;
         this.$.ajaxMedication.go();
       },
-      medication: function() {
+      medicationResponse: function() {
         if (this.lastMedicationRequest == "getMedication")
           this._setMedication(this.$.ajaxMedication.data);
         else
@@ -183,7 +183,7 @@
         this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/delete/" + id;
         this.$.ajaxGoal.go();
       },
-      goal: function() {
+      goalResponse: function() {
         if (this.lastGoalRequest == "getGoal")
           this._setGoal(this.$.ajaxGoal.data);
         else
@@ -224,7 +224,7 @@
         this.$.ajaxAllergy.url = "/NutriCloud/web/app_dev.php/pro/allergy/create/" + id;
         this.$.ajaxAllergy.go();
       },
-      allergy: function() {
+      allergyResponse: function() {
         if (this.lastAllergyRequest == "getAllergy")
           this._setAllergy(this.$.ajaxAllergy.data);
         else
@@ -270,7 +270,7 @@
         this.$.ajaxWeight.url = "/NutriCloud/web/app_dev.php/pro/weight/create/" + patientId;
         this.$.ajaxWeight.go();
       },
-      weight: function() {
+      weightResponse: function() {
         if (this.lastWeightRequest == "getWeight")
           this._setWeight(this.$.ajaxWeight.data);
       },
@@ -283,7 +283,7 @@
         this.$.ajaxAppointment.url = "/NutriCloud/web/app_dev.php/pro/appointment/get/patient/" + patientId;
         this.$.ajaxAppointment.go();
       },
-      appointment: function() {
+      appointmentResponse: function() {
         var dataToSort = this.$.ajaxAppointment.data || [];
         var data = [];
         var n = Date.now();
