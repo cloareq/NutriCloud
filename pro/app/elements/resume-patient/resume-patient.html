@@ -197,10 +197,10 @@
         this.$.suiviService.saveSuivi(event.detail.patientId, event.detail.poids, event.detail.taille, event.detail.note);
       },
       addGoal: function(event) {
-        this.$.resumeService.addGoal(app.patientId, event.detail.name, event.detail.percentage);
+        this.$.resumeService.addGoal(app.patientId, event.detail.name, event.detail.percentage, event.detail.date);
       },
       updateGoal: function() {
-        this.$.resumeService.updateGoal(event.detail.id, event.detail.name, event.detail.percentage);
+        this.$.resumeService.updateGoal(event.detail.id, event.detail.name, event.detail.percentage, event.detail.date);
       },
       removeGoal: function() {
         this.$.resumeService.removeGoal(event.detail.id);

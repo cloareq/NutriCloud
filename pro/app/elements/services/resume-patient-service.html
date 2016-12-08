@@ -124,7 +124,7 @@
       addMedication: function(patientId, name, note) {
         this.lastMedicationRequest = "addMedication";
         this.$.ajaxMedication.method = 'POST';
-        this.$.ajaxMedication.setBody({name: name, note: note});
+        this.$.ajaxMedication.setBody({name: name, note: note, is_active: true});
         this.$.ajaxMedication.headers = {"Content-Type": "application/x-www-form-urlencoded"};
         this.$.ajaxMedication.url = "/NutriCloud/web/app_dev.php/pro/medication/create/" + patientId;
         this.$.ajaxMedication.go();
@@ -159,19 +159,19 @@
         this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/" + patientId;
         this.$.ajaxGoal.go();
       },
-      addGoal: function(patientId, name, percentage) {
+      addGoal: function(patientId, name, percentage, date) {
         this.lastGoalRequest = "addGoal";
         this.$.ajaxGoal.method = 'POST';
-        this.$.ajaxGoal.setBody({name: name, percent: percentage});
+        this.$.ajaxGoal.setBody({text: name, percent: percentage, date: date});
         this.$.ajaxGoal.headers = {"Content-Type": "application/x-www-form-urlencoded"};
         this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/create/" + patientId;
         this.$.ajaxGoal.go();
       },
-      updateGoal: function(id, name, percentage) {
+      updateGoal: function(id, name, percentage, date) {
         this.lastGoalRequest = "updateGoal";
         this.$.ajaxGoal.method = 'PUT';
-        this.$.ajaxGoal.setBody();
-        this.$.ajaxGoal.headers = {};
+        this.$.ajaxGoal.setBody({text: name, percent: percentage, date: date});
+        this.$.ajaxGoal.headers = {"Content-Type": "application/x-www-form-urlencoded"};
         this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/update/" + id;
         this.$.ajaxGoal.go();
       },

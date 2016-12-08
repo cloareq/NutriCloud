@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-date-picker/paper-date-picker.html">
 
 <link rel="import" href="progress-bar.html">
 
@@ -49,16 +50,21 @@
         <h2>Ajouter un objectif</h2>
         <paper-input value="{{name}}" label="Objectif" floatingLabel></paper-input>
         <paper-input type="number" value="{{percentage}}" label="Pourcentage" floatingLabel></paper-input>
+        <paper-button on-click="toggleDatePicker" id="dateCreate" floatingLabel></paper-button>
         <button class="no-style" type="submit"><paper-button>Ajouter</paper-button></button>
       </form>
     </paper-dialog>
 
+    <paper-dialog id="datePickerDialog" role="dialog" class="dialog paper-date-picker-dialog" on-iron-overlay-closed="setDatePick">
+        <paper-date-picker id="datePicker" locale="fr"></paper-date-picker>
+      </paper-dialog>
 
     <paper-dialog class="dialog" id="updateModal">
       <form is="iron-form" on-submit="addGoal">
         <h2>Ajouter un objectif</h2>
         <paper-input value="{{updateName}}" label="Objectif" floatingLabel></paper-input>
         <paper-input type="number" value="{{updatePercentage}}" label="Pourcentage" floatingLabel></paper-input>
+        <paper-button on-click="toggleDatePicker" id="dateUpdate" floatingLabel></paper-button>
         <button class="no-style" type="submit"><paper-button>Ajouter</paper-button></button>
       </form>
     </paper-dialog>
@@ -84,11 +90,20 @@
         percentage: String,
         date: String
       },
+      ready: function() {
+        this.date = moment();
+        this.$.dateCreate.set('textContent', this.date.format('DD MMMM YYYY'));
+      },
+      setDatePick: function() {
+        this.date = moment(this.$.datePicker.date);
+        this.$['date'+this.currentModal].set('textContent', this.date.format('DD MMMM YYYY'));
+      },
       addGoal: function() {
         if (this.name != '' && this.percentage != '') {
           this.fire('add-goal', {
             name: this.name,
-            percentage: this.percentage
+            percentage: this.percentage,
+            date: new Date(this.date).toISOString()
           });
           this.toggleAddModal();
         } else
@@ -99,7 +114,8 @@
           this.fire('update-goal', {
             id: this.currentUpdateId,
             name: this.updateName,
-            percentage: this.updatePercentage
+            percentage: this.updatePercentage,
+            date: new Date(this.date).toISOString()
           });
           this.toggleAddModal();
         } else
@@ -111,15 +127,25 @@
         });
       },
       toggleAddModal: function() {
+        if (this.$.updateModal.opened)
+          this.toggleUpdateModal();
+        this.currentModal = 'Create';
         this.name = '';
         this.percentage = '';
         this.$.addModal.toggle();
       },
       toggleUpdateModal: function() {
+        if (this.$.addModal.opened)
+          this.toggleAddModal();
+        this.currentModal = 'Update';
         this.currentUpdateId = event.model.__data__.item.id;
         this.updateName = event.model.__data__.item.text;
         this.updatePercentage = event.model.__data__.item.percentage;
+        this.$.dateUpdate.set('textContent', this.date);
         this.$.updateModal.toggle();
+      },
+      toggleDatePicker: function() {
+        this.$.datePickerDialog.toggle();
       }
     });
   </script>
