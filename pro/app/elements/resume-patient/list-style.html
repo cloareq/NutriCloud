@@ -1,0 +1,37 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../styles/color-nutricloud.html">
+
+<!-- shared styles for list component -->
+<dom-module id="list-style">
+  <template>
+    <style>
+
+    .add {
+     --paper-fab-background: var(--color-nutricloud-green);
+     z-index: 1;
+     position: absolute;
+   }
+   .scroll {
+     overflow-y: auto;
+     max-height: 150px;
+   }
+   .content {
+     text-align: center;
+     box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+     padding: 5px;
+     margin: 8px;
+     border-radius: 5px;
+     background-color: #fff;
+   }
+   .content h2 {
+     margin-top: 5px;
+     margin-bottom: 0px;
+   }
+   .remove {
+     --paper-fab-background: var(--color-nutricloud-red);
+     float:right;
+     padding:2px;
+   }
+    </style>
+  </template>
+</dom-module>

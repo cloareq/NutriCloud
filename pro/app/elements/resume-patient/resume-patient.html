@@ -14,6 +14,9 @@
 <link rel="import" href="courbe-poid.html">
 <link rel="import" href="suivi-element.html">
 <link rel="import" href="indicateurs-all.html">
+<link rel="import" href="medication-element.html">
+<link rel="import" href="allergy-element.html">
+<link rel="import" href="goal-element.html">
 
 <dom-module id="resume-patient">
   <template>
@@ -43,6 +46,10 @@
       background-color: var(--color-nutricloud-white);
     }
 
+    .component.scrollable {
+      max-height: 150px;
+      min-height: 50px;
+    }
     paper-toolbar {
       --paper-toolbar-background: var(--color-nutricloud-green);
       --paper-toolbar-color: var(--color-nutricloud-white);
@@ -91,7 +98,15 @@
 
   	</style>
 
-  <resume-patient-service id="resumeService" last-note="{{lastNote}}" appointments="{{appointments}}" notes="{{notes}}" poids="{{poids}}"></resume-patient-service>
+  <resume-patient-service id="resumeService"
+    last-note="{{lastNote}}"
+    appointments="{{appointments}}"
+    notes="{{notes}}"
+    poids="{{poids}}"
+    medication="{{medication}}"
+    allergy="{{allergy}}"
+    goal="{{goal}}">
+  </resume-patient-service>
   <suivi-service on-suivi-saved="suiviSaved" id="suiviService"></suivi-service>
 
   <!-- Element permettant de rentrer les données pour le suivi -->
@@ -120,19 +135,31 @@
       </div>
     </div>
 
-<!--
-    <div id="autre" class="element">
-      <paper-toolbar> <span class="title">Dernier commentaire</span></paper-toolbar>
-      <div class="component">
-        <lastnote-element data="[[notes]]"></lastnote-element>
-      </div>
-    </div>
-  -->
-
     <div id="list" class="element">
       <paper-toolbar> <span class="title">Prochain rendez-vous avec ce patient</span></paper-toolbar>
       <div class="component">
         <list-appointment-patient data="[[appointments]]"></list-appointment-patient>
+      </div>
+    </div>
+
+    <div id="autre" class="element">
+      <paper-toolbar> <span class="title">Médicaments</span></paper-toolbar>
+      <div class="component scrollable">
+        <medication-element on-add-medication="addMedication" on-remove-medication="removeMedication" data="[[medication]]"></medication-element>
+      </div>
+    </div>
+
+    <div id="autre" class="element">
+      <paper-toolbar> <span class="title">Allergies</span></paper-toolbar>
+      <div class="component scrollable">
+        <allergy-element on-add-allergy="addAllergy" on-remove-allergy="removeAllergy" data="[[allergy]]"></allergy-element>
+      </div>
+    </div>
+
+    <div id="autre" class="element">
+      <paper-toolbar> <span class="title">Objectif</span></paper-toolbar>
+      <div class="component scrollable">
+        <goal-element on-add-goal="addGoal" on-update-goal="updateGoal" on-remove-goal="removeGoal" data="[[goal]]"></goal-element>
       </div>
     </div>
 
@@ -147,9 +174,15 @@
         notes: Array,
         appointments: Array,
         poids: Array,
+        medication: Array,
+        allergy: Array,
+        goal: Array,
         lastNote: Object
       },
       refresh: function() {
+        this.$.resumeService.getGoal(app.patientId);
+        this.$.resumeService.getAllergy(app.patientId);
+        this.$.resumeService.getMedication(app.patientId);
         this.$.resumeService.getNotes(app.patientId);
         this.$.resumeService.getAppointments(app.patientId);
         //        this.$.resumeService.getPoids(app.patientId);
@@ -162,6 +195,34 @@
       //hook for event save-suivi of suivi-element
       saveSuivi: function(event) {
         this.$.suiviService.saveSuivi(event.detail.patientId, event.detail.poids, event.detail.taille, event.detail.note);
+      },
+      addGoal: function(event) {
+        console.log("addGoal");
+        this.$.resumeService.addGoal(app.patientId, event.detail.name, event.detail.percentage);
+      },
+      updateGoal: function() {
+        console.log("updateGoal");
+        this.$.resumeService.updateGoal(event.detail.id, event.detail.name, event.detail.percentage);
+      },
+      removeGoal: function() {
+        console.log("removeGoal");
+        this.$.resumeService.removeGoal(event.detail.id);
+      },
+      addMedication: function(event) {
+        console.log("addMedication");
+        this.$.resumeService.addMedication(app.patientId, event.detail.name, event.detail.note);
+      },
+      removeMedication: function() {
+        console.log("removeMedication");
+        this.$.resumeService.removeMedication(event.detail.id);
+      },
+      addAllergy: function(event) {
+        console.log("addAllergy");
+        this.$.resumeService.addAllergy(app.patientId, event.detail.name);
+      },
+      removeAllergy: function() {
+        console.log("removeAllergy");
+        this.$.resumeService.removeAllergy(event.detail.id);
       }
     });
   </script>

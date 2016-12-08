@@ -66,6 +66,21 @@
           type: Array,
           notify: true,
           readOnly: true
+        },
+        medication: {
+          type: Array,
+          notify: true,
+          readOnly: true
+        },
+        allergy: {
+          type: Array,
+          notify: true,
+          readOnly: true
+        },
+        goal: {
+          type: Array,
+          notify: true,
+          readOnly: true
         }
       },
 
@@ -91,6 +106,14 @@
       },
 
       getMedication: function(patientId) {
+        /*
+          this._setMedication([
+            {name: "xanax", note: "150gr a chaque repas"},
+            {name: "efferalgan", note: "150gr le soir"},
+            {name: "proteine", note: "au ptit dej'"},
+            {name: "vitamine c", note: "pour la peche"}
+          ]);
+          */
         this.lastMedicationRequest = "getMedication";
         this.$.ajaxMedication.method = 'GET';
         this.$.ajaxMedication.setBody({});
@@ -98,20 +121,37 @@
         this.$.ajaxMedication.url = "/NutriCloud/web/app_dev.php/pro/medication/" + patientId;
         this.$.ajaxMedication.go();
       },
-      addMedication: function(patientId, number) {
+      addMedication: function(patientId, name, note) {
         this.lastMedicationRequest = "addMedication";
         this.$.ajaxMedication.method = 'POST';
-        this.$.ajaxMedication.setBody({medication: number});
+        this.$.ajaxMedication.setBody({name: name, note: note});
         this.$.ajaxMedication.headers = {"Content-Type": "application/x-www-form-urlencoded"};
         this.$.ajaxMedication.url = "/NutriCloud/web/app_dev.php/pro/medication/create/" + patientId;
+        this.$.ajaxMedication.go();
+      },
+      removeMedication: function(id) {
+        this.lastMedicationRequest = "removeMedication";
+        this.$.ajaxMedication.method = 'DELETE';
+        this.$.ajaxMedication.setBody();
+        this.$.ajaxMedication.headers = {};
+        this.$.ajaxMedication.url = "/NutriCloud/web/app_dev.php/pro/medication/delete/" + id;
         this.$.ajaxMedication.go();
       },
       medication: function() {
         if (this.lastMedicationRequest == "getMedication")
           this._setMedication(this.$.ajaxMedication.data);
+        else
+          this.getMedication(app.patientId);
       },
 
       getGoal: function(patientId) {
+        /*
+        this._setGoal([
+          {text: "Arriver à 80kg", percentage: "50", date: "20-12-2016"},
+          {text: "manger moins de sucre", percentage: "70", date: "20-12-2016"},
+          {text: "faire plus de sport", percentage: "30", date: "20-12-2016"}
+        ])
+        */
         this.lastGoalRequest = "getGoal";
         this.$.ajaxGoal.method = 'GET';
         this.$.ajaxGoal.setBody({});
@@ -119,20 +159,48 @@
         this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/" + patientId;
         this.$.ajaxGoal.go();
       },
-      addGoal: function(patientId, a) {
+      addGoal: function(patientId, name, percentage) {
         this.lastGoalRequest = "addGoal";
         this.$.ajaxGoal.method = 'POST';
-        this.$.ajaxGoal.setBody({name: a});
+        this.$.ajaxGoal.setBody({name: name, percent: percentage});
         this.$.ajaxGoal.headers = {"Content-Type": "application/x-www-form-urlencoded"};
         this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/create/" + patientId;
+        this.$.ajaxGoal.go();
+      },
+      updateGoal: function(id, name, percentage) {
+        this.lastGoalRequest = "updateGoal";
+        this.$.ajaxGoal.method = 'PUT';
+        this.$.ajaxGoal.setBody();
+        this.$.ajaxGoal.headers = {};
+        this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/delete/" + id;
+        this.$.ajaxGoal.go();
+      },
+      removeGoal: function(id) {
+        this.lastGoalRequest = "removeGoal";
+        this.$.ajaxGoal.method = 'DELETE';
+        this.$.ajaxGoal.setBody();
+        this.$.ajaxGoal.headers = {};
+        this.$.ajaxGoal.url = "/NutriCloud/web/app_dev.php/pro/goal/delete/" + id;
         this.$.ajaxGoal.go();
       },
       goal: function() {
         if (this.lastGoalRequest == "getGoal")
           this._setGoal(this.$.ajaxGoal.data);
+        else
+          this.getGoal(app.patientId);
       },
 
       getAllergy: function(patientId) {
+        /*
+        this._setAllergy([
+          {name: "soleil"},
+          {name: "nuit"},
+          {name: "moustique"},
+          {name: "abeille"},
+          {name: "chocolat"},
+          {name: "farine"}
+        ]);
+        */
         this.lastAllergyRequest = "getAllergy";
         this.$.ajaxAllergy.method = 'GET';
         this.$.ajaxAllergy.setBody({});
@@ -140,17 +208,27 @@
         this.$.ajaxAllergy.url = "/NutriCloud/web/app_dev.php/pro/allergy/" + patientId;
         this.$.ajaxAllergy.go();
       },
-      addAllergy: function(patientId, a) {
+      addAllergy: function(patientId, name) {
         this.lastAllergyRequest = "addAllergy";
         this.$.ajaxAllergy.method = 'POST';
-        this.$.ajaxAllergy.setBody({name: a});
+        this.$.ajaxAllergy.setBody({name: name});
         this.$.ajaxAllergy.headers = {"Content-Type": "application/x-www-form-urlencoded"};
         this.$.ajaxAllergy.url = "/NutriCloud/web/app_dev.php/pro/allergy/create/" + patientId;
+        this.$.ajaxAllergy.go();
+      },
+      removeAllergy: function(id) {
+        this.lastAllergyRequest = "removeAllergy";
+        this.$.ajaxAllergy.method = 'DELETE';
+        this.$.ajaxAllergy.setBody();
+        this.$.ajaxAllergy.headers = {};
+        this.$.ajaxAllergy.url = "/NutriCloud/web/app_dev.php/pro/allergy/create/" + id;
         this.$.ajaxAllergy.go();
       },
       allergy: function() {
         if (this.lastAllergyRequest == "getAllergy")
           this._setAllergy(this.$.ajaxAllergy.data);
+        else
+          this.getAllergy(app.patientId);
       },
 
       getNotePatient: function(patientId) {
@@ -206,7 +284,7 @@
         this.$.ajaxAppointment.go();
       },
       appointment: function() {
-        var dataToSort = this.$.ajaxAppointment.data;
+        var dataToSort = this.$.ajaxAppointment.data || [];
         var data = [];
         var n = Date.now();
         dataToSort.forEach(function(d) {
@@ -225,7 +303,8 @@
         this.$.ajaxNotes.go();
       },
       notesResponse: function() {
-        this._setNotes(this.$.ajaxNotes.data.reverse());
+        var d = this.$.ajaxNotes.data || [];
+        this._setNotes(d.reverse());
       },
       //set last note when notes changed
       notesChanged: function() {
