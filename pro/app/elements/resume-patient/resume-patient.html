@@ -197,31 +197,24 @@
         this.$.suiviService.saveSuivi(event.detail.patientId, event.detail.poids, event.detail.taille, event.detail.note);
       },
       addGoal: function(event) {
-        console.log("addGoal");
         this.$.resumeService.addGoal(app.patientId, event.detail.name, event.detail.percentage);
       },
       updateGoal: function() {
-        console.log("updateGoal");
         this.$.resumeService.updateGoal(event.detail.id, event.detail.name, event.detail.percentage);
       },
       removeGoal: function() {
-        console.log("removeGoal");
         this.$.resumeService.removeGoal(event.detail.id);
       },
       addMedication: function(event) {
-        console.log("addMedication");
         this.$.resumeService.addMedication(app.patientId, event.detail.name, event.detail.note);
       },
       removeMedication: function() {
-        console.log("removeMedication");
         this.$.resumeService.removeMedication(event.detail.id);
       },
       addAllergy: function(event) {
-        console.log("addAllergy");
         this.$.resumeService.addAllergy(app.patientId, event.detail.name);
       },
       removeAllergy: function() {
-        console.log("removeAllergy");
         this.$.resumeService.removeAllergy(event.detail.id);
       }
     });
