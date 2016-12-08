@@ -86,7 +86,7 @@
       is: 'goal-element',
       properties: {
         data: Array,
-        text: String,
+        name: String,
         percentage: String,
         date: String
       },
@@ -139,7 +139,7 @@
           this.toggleAddModal();
         this.currentModal = 'Update';
         this.currentUpdateId = event.model.__data__.item.id;
-        this.updateName = event.model.__data__.item.text;
+        this.updateName = event.model.__data__.item.goal;
         this.updatePercentage = event.model.__data__.item.percentage;
         this.$.dateUpdate.set('textContent', this.date);
         this.$.updateModal.toggle();
