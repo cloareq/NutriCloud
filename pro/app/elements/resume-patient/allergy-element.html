@@ -26,7 +26,7 @@
     <paper-fab mini class="add" icon="add" on-click="toggleModal"></paper-fab>
     <paper-dialog id="dialog" class="dialog">
       <form is="iron-form" on-submit="addAllergy">
-        <h2>Ajouter une allergie</h2>
+        <h2>Ajouter une allergie/intolérance</h2>
         <paper-input value="{{name}}" label="Allergie" floatingLabel></paper-input>
         <button class="no-style" type="submit"><paper-button>Ajouter</paper-button></button>
       </form>
@@ -56,9 +56,7 @@
           });
           this.toggleModal();
         } else
-          app.writeError('Veuillez remplir un nom et un pourcentage');
-//        if (this.$.dialog.opened)
-//          this.toggleModal();
+          app.writeError('Veuillez remplir un nom');
       },
       removeAllergy: function() {
         this.fire('remove-allergy', {

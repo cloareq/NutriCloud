@@ -65,7 +65,7 @@
         <paper-input value="{{updateName}}" label="Objectif" floatingLabel></paper-input>
         <paper-input type="number" value="{{updatePercentage}}" label="Pourcentage" floatingLabel></paper-input>
         <paper-button on-click="toggleDatePicker" id="dateUpdate" floatingLabel></paper-button>
-        <button class="no-style" type="submit"><paper-button>Ajouter</paper-button></button>
+        <button class="no-style" type="submit"><paper-button>Modifier</paper-button></button>
       </form>
     </paper-dialog>
 
@@ -117,7 +117,7 @@
             percentage: this.updatePercentage,
             date: new Date(this.date).toISOString()
           });
-          this.toggleAddModal();
+          this.toggleUpdateModal();
         } else
           app.writeError('Veuillez remplir un nom et un pourcentage');
       },
