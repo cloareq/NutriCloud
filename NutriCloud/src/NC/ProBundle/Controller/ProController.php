@@ -273,8 +273,8 @@ class ProController extends Controller
             return (new Response(json_encode(array('desc' => "L'utilisateur n'existe pas.")), 404, $this->header));
         $user->setPasswordRecoveryHash(str_replace('.', "", uniqid('', true). uniqid('', true). uniqid('', true)));
         $message = \Swift_Message::newInstance()
-            ->setSubject('Nutricloud password recovery')
-            ->setFrom('jeremy.maignan@gmail.com')
+            ->setSubject('Nutricloud Reccupération de mot de passe')
+            ->setFrom('contact.nutricloud@gmail.com')
             ->setTo($user->getMail())
             ->setBody($this->renderView('NCProBundle:Html:passwordrecovery.html.twig', array('hashcode' => $user->getPasswordRecoveryHash())), 'text/html');
         $this->get('mailer')->send($message);
