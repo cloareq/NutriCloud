@@ -170,6 +170,17 @@ class ProController extends Controller
             return (new Response(json_encode(array('desc' => 'Le nom d\'utilisateur doit contenir au moins 6 caractères.')), 400, $this->header));
         else if (($this->get('validator')->validate($request->request->get('mail'),$emailConstraint)) != "")
             return (new Response(json_encode(array('desc' => 'Adresse Email invalide.')), 400, $this->header));
+
+        $tmp_user = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('NCProBundle:Pro')->findOneByUsername(array('username' => $request->request->get('username', null)));
+        if ($tmp_user != null)
+            return (new Response(json_encode(array('desc' => 'Username déjà utilisé.')), 400, $this->header));
+        $tmp_user = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('NCPatientBundle:Patient')->findOneByUsername(array('username' => $request->request->get('username', null)));
+        if ($tmp_user != null)
+            return (new Response(json_encode(array('desc' => 'Username déjà utilisé.')), 400, $this->header));
         $pro = new Pro();
         $pro->setUsername($request->request->get('username', null));
         $pro->setFirstname($request->request->get('firstname', null));
