@@ -8,19 +8,19 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 class ProControllerTest extends WebTestCase
 {
-    // LOGIN
+    //echo $client->getResponse()->getStatusCode() . $client->getResponse()->getContent() ;
+   
+
+    //// LOGIN
     public function testLogin()
     {
-        echo 'Pro';
         $this->loadFixtures(array("NC\\ProBundle\\Tests\\LoadFixture"));
         // success
         $client = static::createClient();
         $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
-        #$this->assertTrue($client->getResponse()->getContent() == '{"state":"success","desc":"Vous \u00eates maintenant connect\u00e9 en tant que professionnel."}9');
-        echo $client->getResponse()->getContent();
-        $this->assertTrue(1==1);
+        $this->assertTrue($client->getResponse()->getContent() == '{"state":"success","desc":"Vous \u00eates maintenant connect\u00e9 en tant que professionnel."}');
     }
-/*
+
     public function testLogin2()
     {
         // failure
@@ -29,40 +29,27 @@ class ProControllerTest extends WebTestCase
         $this->assertTrue($client->getResponse()->getContent() == '{"state":"failure","desc":"Erreur lors dans la connexion, mauvais identifiant ou mot de passe."}');
     }
 
-    // GET INFORMATION
+    //// GET INFORMATION
     public function testInfo()
     {
 
         $client = static::createClient();
         $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
         $client->request('Get', '/pro/info', array());
-        $this->assertTrue($client->getResponse()->getContent() == '{"id": "1","firstName": "test_pro_1","lastName": "test_pro_1",
-        "userName": "test_pro_1","phone": "test_pro_1","city": "","postcode": "","address": "","mail": "test_pro_1"}');
+        $this->assertTrue($client->getResponse()->getContent() == '{"id": "1","firstName": "test_pro_1","lastName": "test_pro_1","userName": "test_pro_1","phone": "test_pro_1","city": "","postcode": "","address": "","mail": "test_pro_1"}');
+             
     }
 
-    // UPDATE
-
+    //// UPDATE
     public function testUpdate1()
     {
         // username
+        // Wrong username
         $client = static::createClient();
         $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
         $client->request('Post', '/pro/update', array('firstname' => 'test', 'lastname' => 'test', 'username' => 'test', 'password' => 'testtest', 'mail' => 'test@test.com', 'phone' => '0102030405'));
         $this->assertTrue($client->getResponse()->getStatusCode() == 400);
-        //$this->assertTrue($client->getResponse()->getContent() == '{"desc":"Le nom d\'utilisateur doit contenir au moins 6 caract\u00e8res."}');
     }
-
-    public function testUpdate2()
-    {
-        //password
-        $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
-        $client->request('Post', '/pro/update', array('firstname' => 'test', 'lastname' => 'test', 'username' => 'testtest', 'password' => 'tes', 'mail' => 'test@test.com', 'phone' => '0102030405'));
-        $this->assertTrue($client->getResponse()->getStatusCode() == 400);
-        // echo $client->getResponse()->getContent();
-        //$this->assertTrue($client->getResponse()->getContent() == '{"desc":"Le mot de passe doit contenir au moins 6 caract\u00e8res."}');
-    }
-
 
     public function testUpdate5()
     {
@@ -71,10 +58,8 @@ class ProControllerTest extends WebTestCase
         $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
         $client->request('Post', '/pro/update', array('firstname' => 'test', 'lastname' => 'test', 'username' => 'testtest', 'password' => 'testtest', 'mail' => 'testtest.com', 'phone' => '0102030405'));
         $this->assertTrue($client->getResponse()->getStatusCode() == 400);
-        //echo $client->getResponse()->getContent();
         //$this->assertTrue($client->getResponse()->getContent() == '{"desc":"Adresse Email invalide."}');
     }
-
 
     public function testUpdate3()
     {
@@ -83,23 +68,19 @@ class ProControllerTest extends WebTestCase
         $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
         $client->request('Post', '/pro/update', array('firstname' => 'test', 'lastname' => 'test', 'username' => 'testtest', 'password' => 'testtest', 'mail' => 'test@test.com', 'phone' => '0102030405'));
         $this->assertTrue($client->getResponse()->getStatusCode() == 200);
-        //echo $client->getResponse()->getContent();
         //$this->assertTrue($client->getResponse()->getContent() == '{}');
     }
 
-*/
     /* REGISTER*/
-    /*
+    
     public function testRegister()
     {
-        echo '     Pro';
-        // Post request
+        // FAIL Post request
         $client = static::createClient();
         $client->request('Get', '/register');
         $this->assertTrue($client->getResponse()->getStatusCode() == 405);
         //$this->assertTrue($client->getResponse()->getContent() == '{"state":"failure","desc":"La requ\u00eate doit \u00eatre de type POST."}');
     }
-
     public function testRegister2()
     {
         // email address
@@ -129,20 +110,29 @@ class ProControllerTest extends WebTestCase
 
     public function testRegister5()
     {
-        // success
+        // FAIL username not available
         $client = static::createClient();
-        $client->request('Post', '/register', array('firstname' => 'test', 'lastname' => 'test', 'username' => 'testtest', 'password' => 'testtest', 'mail' => 'test@test.com', 'phone' => '0102030405'));
-        $this->assertTrue($client->getResponse()->getStatusCode() == 201);
+        $client->request('Post', '/register', array('firstname' => 'test', 'lastname' => 'test', 'username' => 'testtest', 'password' => 'testtest', 'mail' => 'test@test.com', 'phone' => '0102030405'));   
+        $this->assertTrue($client->getResponse()->getStatusCode() == 400);
         //$this->assertTrue($client->getResponse()->getContent() == '{"state":"success","desc":"Compte cr\u00e9\u00e9 avec succ\u00e8s."}');
     }
 
     public function testRegister6()
     {
-        // error
+        // SUCCESS
         $client = static::createClient();
-        $client->request('Post', '/register', array('firstname' => 'test', 'lastname' => 'test', 'username' => 'testtest', 'password' => 'testtest', 'mail' => 'test@test.com', 'phone' => '0102030405'));
-        $this->assertTrue($client->getResponse()->getStatusCode() == 500);
-        //$this->assertTrue($client->getResponse()->getContent() == '{"state":"failure","desc":"Erreur login ou adresse mail d\u00e9j\u00e0 utilis\u00e9."}');
+        $client->request('Post', '/register', array('firstname' => 'test', 'lastname' => 'test', 'username' => 'patienttest', 'password' => 'testtest', 'mail' => 'test@test.com', 'phone' => '0102030405'));
+        $this->assertTrue($client->getResponse()->getStatusCode() == 201);
+    }
+
+    public function testUpdate4()
+    {
+        // FAIL username not available
+        $client = static::createClient();
+        $client->request('Post', '/login_check', array('_username' => 'testtest', '_password' => 'test_pro_1'));
+        $client->request('Post', '/pro/update', array('firstname' => 'test', 'lastname' => 'test', 'username' => 'patienttest', 'password' => 'testtest', 'mail' => 'test@test.com', 'phone' => '0102030405'));
+        $this->assertTrue($client->getResponse()->getStatusCode() == 400);
+        //$this->assertTrue($client->getResponse()->getContent() == '{}');
     }
 
     // Pro Delete
@@ -150,7 +140,7 @@ class ProControllerTest extends WebTestCase
     {
         // success
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'testtest', '_password' => 'testtest'));
+        $client->request('Post', '/login_check', array('_username' => 'testtest', '_password' => 'test_pro_1'));
         $client->request('Get', '/pro/remove', array());
         $this->assertTrue($client->getResponse()->getStatusCode() == 200);
         //$this->assertTrue($client->getResponse()->getContent() == '{"state":"success","desc":"Le compte a \u00e9t\u00e9 supprim\u00e9 avec succ\u00e8s."}');
@@ -164,5 +154,4 @@ class ProControllerTest extends WebTestCase
         //echo "delete 2" + $client->getResponse()->getStatusCode();
         $this->assertTrue($client->getResponse()->getContent() == '{"state":"failure","desc":"Erreur lors dans la connexion, mauvais identifiant ou mot de passe."}');
     }
-    */
 }
