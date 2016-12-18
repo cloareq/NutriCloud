@@ -1,0 +1,1 @@
+php phpunit.phar -c app/ src/NC/ProBundle/Tests/

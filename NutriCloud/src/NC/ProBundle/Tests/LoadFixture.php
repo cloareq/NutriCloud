@@ -2,6 +2,7 @@
 
 namespace NC\ProBundle\Tests;
 
+require  __DIR__ . '/../../../../vendor/autoload.php';
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use NC\ProBundle\Entity\Pro;
@@ -17,6 +18,7 @@ class LoadFixture implements FixtureInterface
         $pro->setPassword('test_pro_1');
         $pro->setMail('test_pro_1');
         $pro->setPhone('test_pro_1');
+        $pro->setPasswordRecoveryHash("");
         $manager->persist($pro);
         $manager->flush();
 
