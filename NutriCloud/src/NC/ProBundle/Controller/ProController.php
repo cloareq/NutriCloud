@@ -70,18 +70,7 @@ class ProController extends Controller
         else
             return (new Response(json_encode(array('desc' => "Vous n'êtes pas connecté.")), 401, $this->header));
     }
-
-    public function sendMailAction()
-    {
-        $message = \Swift_Message::newInstance()
-            ->setSubject('Hello Email')
-            ->setFrom('jeremy.maignan@gmail.com')
-            ->setTo('jeremy.maignan@epitech.eu')
-            ->setBody($this->renderView('NCProBundle:Html:test.html.twig'), 'text/html');
-        $this->get('mailer')->send($message);
-        return (new Response(json_encode(array('desc' => "okok")), 200, $this->header));
-    }
-
+    
     /**
      * Cette méthode permet de supprimer un compte pro.
      * @ApiDoc(
@@ -356,17 +345,10 @@ class ProController extends Controller
         try {
             $em->persist($user);
             $em->flush();
-            return (new Response('Mot de passe modifié;', 200, $this->header));
+            return (new Response('Mot de passe modifié.', 200, $this->header));
         }
         catch(\Exception $e) {
             return (new Response($e->getMessage(), 500, $this->header));
         }
-    }
-    public function socketAction(){
-        $websocket = $this->get("nc.topic_service");
-        //        $tmp->sendMessage("usertest", "coucouc");
-        $pusher = $this->container->get('gos_web_socket.zmq.pusher');
-        $pusher->push(['my_data' => 'data'], 'NC_web_socket.topic', ['username' => 'usertest', "channel" => "lol"]);
-        return $this->render('NCProBundle:Html:socket.html.twig');
     }
 }
