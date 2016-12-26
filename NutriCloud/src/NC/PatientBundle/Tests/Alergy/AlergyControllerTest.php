@@ -125,7 +125,7 @@ class AlergyControllerTest extends WebTestCase
         // pro delete alergy
         $client = static::createClient();
         $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
-        $client->request('Delete', '/pro/allergy/delete/1', array('name' => 'chien'));
+        $client->request('Delete', '/pro/allergy/delete/1');
         $this->assertTrue($client->getResponse()->getStatusCode() == 200);
     }
 
@@ -133,7 +133,7 @@ class AlergyControllerTest extends WebTestCase
         // patient delete alergy
         $client = static::createClient();
         $client->request('Post', '/login_check', array('_username' => 'test_patient_1', '_password' => 'test_patient_1'));
-        $client->request('Delete', '/patient/allergy/delete/2', array('name' => 'chien'));
+        $client->request('Delete', '/patient/allergy/delete/2');
 		//echo $client->getResponse()->getContent() . $client->getResponse()->getStatusCode();
         $this->assertTrue($client->getResponse()->getStatusCode() == 200);
     }
