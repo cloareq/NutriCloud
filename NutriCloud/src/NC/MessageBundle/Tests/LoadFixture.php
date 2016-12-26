@@ -1,6 +1,6 @@
 <?php
 
-namespace NC\PatientBundle\Tests;
+namespace NC\MessageBundle\Tests;
 
 require  __DIR__ . '/../../../../vendor/autoload.php';
 use Doctrine\Common\DataFixtures\FixtureInterface;
