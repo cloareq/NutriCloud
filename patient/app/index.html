@@ -56,7 +56,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="elements/elements.html">
 
   <!-- For shared styles, shared-styles.html import in elements.html -->
-  <style is="custom-style" include="shared-styles"></style>
+  <style is="custom-style" include="shared-styles">
+    .logo {
+      height: 80%;
+      width: auto;
+    }
+  </style>
 </head>
 
 <body unresolved>
@@ -68,7 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <id-service id="idService" on-response="ajaxIdGet" userId="{{userId}}"></id-service>
     <resize-notifier on-resize="setTabSize"></resize-notifier>
     <logout-service id="logoutService" on-disconnect="disconnected"></logout-service>
-    
+
       <!-- Main Area -->
       <paper-header-panel main id="headerPanelMain" condenses keep-condensed-header>
         <!-- Main Toolbar -->
@@ -92,7 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <paper-tab on-click="updateContent" data-route="discussion" link>
               <a href='{{baseUrl}}discussion'>
-                <iron-icon icon="account-circle"></iron-icon>
+                <iron-icon icon="question-answer"></iron-icon>
                 <span>Discussion</span>
               </a>
             </paper-tab>
