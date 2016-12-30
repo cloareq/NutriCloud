@@ -46,7 +46,7 @@
       is: 'resume-patient-service',
       properties: {
         lastRequest: String,
-        notes: {
+        notepatient: {
           type: Array,
           notify: true,
           readOnly: true
@@ -229,7 +229,7 @@
       },
       notepatientResponse: function() {
         if (this.lastNotePatientRequest == "getNotePatient")
-          this._setNotePatient(this.$.ajaxNotePatient.data.reverse());
+          this._setNotepatient(this.$.ajaxNotePatient.data.reverse());
       },
 
       getWeight: function(patientId) {

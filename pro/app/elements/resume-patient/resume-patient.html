@@ -100,7 +100,7 @@
 
   <resume-patient-service id="resumeService"
     appointments="{{appointments}}"
-    notes="{{notes}}"
+    notepatient="{{notes}}"
     height="{{height}}"
     medication="{{medication}}"
     allergy="{{allergy}}"
@@ -108,7 +108,6 @@
     weight="{{weight}}"
     on-weight-added="suiviSaved">
   </resume-patient-service>
-<!--  <suivi-service on-suivi-saved="suiviSaved" id="suiviService"></suivi-service>-->
 
   <!-- Element permettant de rentrer les données pour le suivi -->
   <suivi-element lweight="[[lweight]]" lheight="[[lheight]]" lnote="[[lnote]]" on-save-suivi="saveSuivi" id="suivi"></suivi-element>
