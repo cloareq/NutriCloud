@@ -49,8 +49,7 @@
         notes: {
           type: Array,
           notify: true,
-          readOnly: true,
-          observer: "notesChanged"
+          readOnly: true
         },
         lastNote: {
           type: Object,
@@ -63,6 +62,11 @@
           readOnly: true
         },
         weight: {
+          type: Array,
+          notify: true,
+          readOnly: true
+        },
+        height: {
           type: Array,
           notify: true,
           readOnly: true
@@ -85,6 +89,15 @@
       },
 
       getHeight: function(patientId) {
+        /*
+        this._setHeight([
+          ["2016-04-10" , 180],
+          ["2016-04-15" , 180],
+          ["2016-04-20" , 180],
+          ["2016-04-25" , 180]
+        ]);
+        */
+
         this.lastHeightRequest = "getHeight";
         this.$.ajaxHeight.method = 'GET';
         this.$.ajaxHeight.setBody({});
@@ -106,14 +119,6 @@
       },
 
       getMedication: function(patientId) {
-        /*
-          this._setMedication([
-            {name: "xanax", note: "150gr a chaque repas"},
-            {name: "efferalgan", note: "150gr le soir"},
-            {name: "proteine", note: "au ptit dej'"},
-            {name: "vitamine c", note: "pour la peche"}
-          ]);
-          */
         this.lastMedicationRequest = "getMedication";
         this.$.ajaxMedication.method = 'GET';
         this.$.ajaxMedication.setBody({});
@@ -145,13 +150,6 @@
       },
 
       getGoal: function(patientId) {
-        /*
-        this._setGoal([
-          {goal: "Arriver à 80kg", percentage: "50", date: "20-12-2016"},
-          {goal: "manger moins de sucre", percentage: "70", date: "20-12-2016"},
-          {goal: "faire plus de sport", percentage: "30", date: "20-12-2016"}
-        ])
-        */
         this.lastGoalRequest = "getGoal";
         this.$.ajaxGoal.method = 'GET';
         this.$.ajaxGoal.setBody({});
@@ -191,16 +189,6 @@
       },
 
       getAllergy: function(patientId) {
-        /*
-        this._setAllergy([
-          {name: "soleil"},
-          {name: "nuit"},
-          {name: "moustique"},
-          {name: "abeille"},
-          {name: "chocolat"},
-          {name: "farine"}
-        ]);
-        */
         this.lastAllergyRequest = "getAllergy";
         this.$.ajaxAllergy.method = 'GET';
         this.$.ajaxAllergy.setBody({});
@@ -255,6 +243,14 @@
 
       getWeight: function(patientId) {
         // example data receive =>  [ ["2016-04-10" , 100] , ["2016-04-10" , 100] , ["2016-04-25" , 130] , ["2016-04-25" , 130] ]
+        /*
+        this._setWeight([
+          ["2016-04-10" , 150],
+          ["2016-04-15" , 100],
+          ["2016-04-20" , 90],
+          ["2016-04-25" , 110]
+        ]);
+        */
         this.lastWeightRequest = "getWeight";
         this.$.ajaxWeight.method = 'GET';
         this.$.ajaxWeight.setBody({});
@@ -273,6 +269,8 @@
       weightResponse: function() {
         if (this.lastWeightRequest == "getWeight")
           this._setWeight(this.$.ajaxWeight.data);
+        else if (this.lastWeightRequest == "addWeight")
+          this.fire("weight-added");
       },
 
       getAppointments: function(patientId) {
@@ -305,11 +303,6 @@
       notesResponse: function() {
         var d = this.$.ajaxNotes.data || [];
         this._setNotes(d.reverse());
-      },
-      //set last note when notes changed
-      notesChanged: function() {
-        var val = (this.notes && this.notes[0]) ? this.notes[0] : {};
-        this._setLastNote(val);
       }
 
     });

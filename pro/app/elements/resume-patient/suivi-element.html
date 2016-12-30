@@ -78,30 +78,30 @@
 				<div id="info">
 					<div class="container">
 						<div class="flex5child">
-							<paper-input class="paperi" id="poids" type="number" label="Poids" error="Uniquement des chiffres" floatingLabel><div suffix>kg</div></paper-input>
+							<paper-input class="paperi" id="poids" type="number" label="Poids" error="Uniquement des chiffres" value="{{weight}}" floatingLabel><div suffix>kg</div></paper-input>
 							<p id="perr" class="msgError" hidden>poids requis</p>
 						</div>
 						<div class="flex2child"></div>
 						<div class="flex5child">
-							<paper-input class="paperi" id="taille" type="number" label="Taille" error="Uniquement des chiffres" floatingLabel><div suffix>cm</div></paper-input>
+							<paper-input class="paperi" id="taille" type="number" label="Taille" error="Uniquement des chiffres" value="{{height}}" floatingLabel><div suffix>cm</div></paper-input>
 							<p id="terr" class="msgError" hidden>taille requise</p>
 						</div>
 					</div>
 					<div class="container">
 						<div class="flex12child">
-							<paper-input class="paperi" id="note" label="Commentaire" floatingLabel></paper-input>
+							<paper-input class="paperi" id="note" label="Commentaire" value="{{note}}" floatingLabel></paper-input>
 							<p id="nerr" class="msgError" hidden>note requise</p>
 						</div>
 					</div>
 					<div id="lastinfo">
 						<div class="container">
-							<paper-item class="paper" id="lastpoids" class="flex5child">Poids lors du dernier suivi : <span>{{lastNote.weight}}</span></paper-item>
+							<paper-item class="paper" id="lastpoids" class="flex5child">Poids lors du dernier suivi : <span>{{lweight}}</span></paper-item>
 							<div class="flex2child"></div>
-							<paper-item class="paper" id="lasttaille" class="flex5child">Taille lors du dernier suivi : <span>{{lastNote.height}}</span></paper-item>
+							<paper-item class="paper" id="lasttaille" class="flex5child">Taille lors du dernier suivi : <span>{{lheight}}</span></paper-item>
 						</div>
 						<div class="container">
 							<paper-textarea id="textcontent">
-						    <textarea id="lastnote" style="text-align:center;overflow-x: hidden;" on-click="fullScreen" readonly>{{lastNote.note}}</textarea>
+						    <textarea id="lastnote" style="text-align:center;overflow-x: hidden;" on-click="fullScreen" readonly>{{lnote}}</textarea>
 							</paper-textarea>
 						</div>
 					</div>
@@ -117,23 +117,45 @@
     <script>
 		Polymer({ is:'suivi-element',
 			properties: {
-				lastNote: Object
+				lweight: Number,
+				lheight: {
+					type: Number,
+					observer: "lheightChanged"
+				},
+				lnote: String
+			},
+			lheightChanged: function() {
+				this.set('height', this.lheight);
 			},
 			ready: function() {
 				this.$.content.addEventListener('keypress', function(e) {
-    				if (e.keyCode == 13)
-    					this.save();
-	  			}.bind(this));
-  			},
+    			if (e.keyCode == 13)
+    				this.save();
+	  		}.bind(this));
+  		},
 			toggleSuivi: function() {
 				this.$.suivi.toggle();
 			},
 			clearInput: function() {
-				this.$.poids.value = "";
-				this.$.taille.value = "";
-				this.$.note.value = "";
+				this.weight = "";
+				this.height = "";
+				this.note = "";
 			},
-			firstSave: function() {
+			save: function() {
+				if (this.weight == "")
+					return app.writeError("Veuillez indiquer un poid");
+				if (this.height == "")
+					return app.writeError("Veuillez indiquer une taille");
+				if (this.note == "")
+						return app.writeError("Veuillez indiquer une note");
+				this.fire("save-suivi", {
+					"patientId": app.patientId,
+					"poids": this.weight,
+					"taille": this.height,
+					"note": this.note
+				});
+			},
+/*			firstSave: function() {
 				var a = 0;
 				if (this.$.poids.value == "") {
 					this.$.perr.hidden = false;
@@ -173,6 +195,7 @@
 					});
 				}
 			},
+*/
 			suiviSaved: function() {
 				app.writeToast("Suivi sauvegardé");
 				this.toggleSuivi();

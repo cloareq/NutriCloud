@@ -99,32 +99,33 @@
   	</style>
 
   <resume-patient-service id="resumeService"
-    last-note="{{lastNote}}"
     appointments="{{appointments}}"
     notes="{{notes}}"
-    poids="{{poids}}"
+    height="{{height}}"
     medication="{{medication}}"
     allergy="{{allergy}}"
-    goal="{{goal}}">
+    goal="{{goal}}"
+    weight="{{weight}}"
+    on-weight-added="suiviSaved">
   </resume-patient-service>
-  <suivi-service on-suivi-saved="suiviSaved" id="suiviService"></suivi-service>
+<!--  <suivi-service on-suivi-saved="suiviSaved" id="suiviService"></suivi-service>-->
 
   <!-- Element permettant de rentrer les données pour le suivi -->
-  <suivi-element last-note="[[lastNote]]" on-save-suivi="saveSuivi" id="suivi"></suivi-element>
+  <suivi-element lweight="[[lweight]]" lheight="[[lheight]]" lnote="[[lnote]]" on-save-suivi="saveSuivi" id="suivi"></suivi-element>
 
 	<div id="homeContent">
 
     <div id="indicateurs" class="element">
       <paper-toolbar> <span class="title">Dernière mesure</span></paper-toolbar>
       <div>
-        <indicateurs-all last-note="[[lastNote]]"></indicateurs-all>
+        <indicateurs-all lheight="[[lheight]]" lweight="[[lweight]]"></indicateurs-all>
       </div>
     </div>
 
     <div id="courbe" class="element">
       <paper-toolbar> <span class="title">Courbe du poids</span></paper-toolbar>
       <div>
-        <courbe-poid data="[[notes]]"></courbe-poid>
+        <courbe-poid weight="[[weight]]" data="[[notes]]"></courbe-poid>
       </div>
     </div>
 
@@ -171,22 +172,46 @@
     Polymer({
       is: 'resume-patient',
       properties: {
-        notes: Array,
+        notes: {
+          type: Array,
+          observer: "notesChanged"
+        },
+        weight: {
+            type: Array,
+            observer: "weightChanged"
+        },
+        height: {
+          type: Array,
+          observer: "heightChanged"
+        },
         appointments: Array,
-        poids: Array,
         medication: Array,
         allergy: Array,
         goal: Array,
-        lastNote: Object
+        lastnote: {
+          type: Object,
+          value: {}
+        }
       },
       refresh: function() {
+        this.$.resumeService.getWeight(app.patientId);
+        this.$.resumeService.getHeight(app.patientId);
+        this.$.resumeService.getNotes(app.patientId);
         this.$.resumeService.getGoal(app.patientId);
         this.$.resumeService.getAllergy(app.patientId);
         this.$.resumeService.getMedication(app.patientId);
         this.$.resumeService.getNotes(app.patientId);
         this.$.resumeService.getAppointments(app.patientId);
-        //        this.$.resumeService.getPoids(app.patientId);
-        //        this.$.suiviService.getSuivi(app.patientId);
+      },
+      heightChanged: function() {
+        this.set('lheight', this.height[0][1]);
+      },
+      weightChanged: function() {
+        this.set('lweight', this.weight[0][1]);
+      },
+      notesChanged: function() {
+        this.set('lnote', this.notes[0][1]);
+//        this.lastnote.notes = this.notes[0][1];
       },
       suiviSaved: function() {
         this.$.suivi.suiviSaved();
@@ -194,7 +219,10 @@
       },
       //hook for event save-suivi of suivi-element
       saveSuivi: function(event) {
-        this.$.suiviService.saveSuivi(event.detail.patientId, event.detail.poids, event.detail.taille, event.detail.note);
+        this.$.suiviService.addWeight(event.detail.patientId, event.detail.poids);
+        this.$.suiviService.addHeight(event.detail.patientId, event.detail.taille);
+        this.$.suiviService.addNote(event.detail.patientId, event.detail.note);
+//        this.$.suiviService.saveSuivi(event.detail.patientId, event.detail.poids, event.detail.taille, event.detail.note);
       },
       addGoal: function(event) {
         this.$.resumeService.addGoal(app.patientId, event.detail.name, event.detail.percentage, event.detail.date);

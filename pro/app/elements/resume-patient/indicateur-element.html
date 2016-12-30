@@ -43,12 +43,6 @@
         }
   		},
   		refresh: function(value) {
-        this.value = value;
-        if (this.value.toFixed)
-          this.dataChart = [['Label', 'Value'], [this.label, parseFloat(this.value.toFixed(1))]];
-        else
-          this.dataChart = [['Label', 'Value'], [this.label, parseInt(this.value)]];
-
         var opt = {};
   			opt.greenFrom = this.greenBegin;
   			opt.greenTo = this.greenEnd;
@@ -63,15 +57,21 @@
         this.max = parseInt(this.max);
 
   			opt.yellowFrom = this.min;
-  			opt.yellowTo = this.greenBegin;
-
-  			opt.redFrom = this.greenEnd;
+  			opt.yellowTo = (this.greenBegin < this.min) ? this.min + 1 : this.greenBegin;
+  			opt.redFrom = (this.greenEnd > this.max) ? this.max - 1 : this.greenEnd;
   			opt.redTo = this.max;
 
   			opt.min = this.min;
   			opt.max = this.max;
 
         this.options = opt;
+        console.log(opt);
+
+        this.value = value;
+        if (this.value.toFixed)
+          this.dataChart = [['Label', 'Value'], [this.label, parseFloat(this.value.toFixed(1))]];
+        else
+          this.dataChart = [['Label', 'Value'], [this.label, parseInt(this.value)]];
 //  			opt.minorTicks = (this.max - this.min) / 20;
   		}
   	});

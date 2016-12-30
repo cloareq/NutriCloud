@@ -19,7 +19,7 @@
       hidden
       id="chart"
       type="line"
-      data="[[dataChart]]"
+      data="[[weightChart]]"
       options="[[options]]"
       on-google-chart-select="selectEvent"
      >
@@ -37,24 +37,30 @@
       },
 */
     	properties: {
-        dataChart: Array,
+        weight: {
+          type: Array,
+          observer: "weightChanged"
+        },
+        weightChart: Array,
+        /*        dataChart: Array,
         data: {
           type: Array,
           observer: '_dataChanged'
         },
+        */
         options: {
           type: Object,
           value: {
             title:"Courbe du poids",
             series: {
               // Gives each series an axis name that matches the Y-axis below.
-              0: {targetAxisIndex: 0},
-              1: {targetAxisIndex: 1}
+              0: {targetAxisIndex: 0}
+//              1: {targetAxisIndex: 1}
             },
 
             vAxes: {
-              0: {title: "Poids", logScale: false, maxValue: 1},
-              1: {title: "IMC", logScale: false, maxValue: 1}
+              0: {title: "Poids", logScale: false, maxValue: 1}
+//              1: {title: "IMC", logScale: false, maxValue: 1}
             }
 
           }
@@ -70,9 +76,15 @@
       hideEmptyData: function() {
         this.$.chart.removeAttribute("hidden");
         this.$.errorData.setAttribute("hidden", true);
-
       },
-  		_dataChanged: function() {
+      weightChanged: function() {
+        if (this.weight.length > 0) {
+          this.hideEmptyData();
+          this.weightChart = [["Date", "Poids"]].concat(this.weight);
+        } else
+          this.showEmptyData();
+      },
+/*  		_dataChanged: function() {
         var d = [];
         this.showEmptyData();
   			if (this.data[0] && this.data[0][0] != "Date") {
@@ -102,6 +114,7 @@
         console.log("select event gogole-chart");
 //        console.log(event);
       },
+      */
   		_convertDate: function(d) {
   			moment.locale('fr');
   			return moment(d).format("Do MMMM YYYY");
