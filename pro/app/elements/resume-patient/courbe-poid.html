@@ -21,7 +21,6 @@
       type="line"
       data="[[weightChart]]"
       options="[[options]]"
-      on-google-chart-select="selectEvent"
      >
     </google-chart>
     <p id="errorData">Aucune donnée</p>
@@ -86,7 +85,7 @@
         function parseData(data) {
           var result = [["Date", "Poids"]];
           for (var i=0; i<data.length; i++)
-            result.push([data[i].date, data[i].weight]);
+            result.push([data[i].date, +data[i].weight]);
           return result;
         }
       },
