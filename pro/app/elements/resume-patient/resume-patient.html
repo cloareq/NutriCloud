@@ -200,7 +200,7 @@
         this.$.resumeService.getGoal(app.patientId);
         this.$.resumeService.getAllergy(app.patientId);
         this.$.resumeService.getMedication(app.patientId);
-        this.$.resumeService.getNotes(app.patientId);
+        this.$.resumeService.getNotePatient(app.patientId);
         this.$.resumeService.getAppointments(app.patientId);
       },
       heightChanged: function() {
@@ -223,7 +223,7 @@
       saveSuivi: function(event) {
         this.$.resumeService.addWeight(event.detail.patientId, event.detail.poids);
         this.$.resumeService.addHeight(event.detail.patientId, event.detail.taille);
-        this.$.resumeService.addNote(event.detail.patientId, event.detail.note);
+        this.$.resumeService.addNotePatient(event.detail.patientId, event.detail.note);
 //        this.$.suiviService.saveSuivi(event.detail.patientId, event.detail.poids, event.detail.taille, event.detail.note);
       },
       addGoal: function(event) {
