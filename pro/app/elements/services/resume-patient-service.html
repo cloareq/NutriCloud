@@ -89,15 +89,6 @@
       },
 
       getHeight: function(patientId) {
-        /*
-        this._setHeight([
-          ["2016-04-10" , 180],
-          ["2016-04-15" , 180],
-          ["2016-04-20" , 180],
-          ["2016-04-25" , 180]
-        ]);
-        */
-
         this.lastHeightRequest = "getHeight";
         this.$.ajaxHeight.method = 'GET';
         this.$.ajaxHeight.setBody({});
@@ -236,21 +227,12 @@
         this.$.ajaxNotePatient.url = "/NutriCloud/web/app_dev.php/pro/notepatient/create/" + patientId;
         this.$.ajaxNotePatient.go();
       },
-      notepatient: function() {
+      notepatientResponse: function() {
         if (this.lastNotePatientRequest == "getNotePatient")
-          this._setNotePatient(this.$.ajaxNotePatient.data);
+          this._setNotePatient(this.$.ajaxNotePatient.data.reverse());
       },
 
       getWeight: function(patientId) {
-        // example data receive =>  [ ["2016-04-10" , 100] , ["2016-04-10" , 100] , ["2016-04-25" , 130] , ["2016-04-25" , 130] ]
-        /*
-        this._setWeight([
-          ["2016-04-10" , 150],
-          ["2016-04-15" , 100],
-          ["2016-04-20" , 90],
-          ["2016-04-25" , 110]
-        ]);
-        */
         this.lastWeightRequest = "getWeight";
         this.$.ajaxWeight.method = 'GET';
         this.$.ajaxWeight.setBody({});
@@ -268,7 +250,7 @@
       },
       weightResponse: function() {
         if (this.lastWeightRequest == "getWeight")
-          this._setWeight(this.$.ajaxWeight.data);
+          this._setWeight(this.$.ajaxWeight.data.reverse());
         else if (this.lastWeightRequest == "addWeight")
           this.fire("weight-added");
       },
@@ -290,21 +272,7 @@
             data.push(d);
         });
         this._setAppointments(data);
-      },
-
-      getNotes: function(patientId) {
-        this.lastNotesRequest = "getNotes";
-        this.$.ajaxNotes.method = 'GET';
-        this.$.ajaxNotes.setBody({});
-        this.$.ajaxNotes.headers = {};
-        this.$.ajaxNotes.url = "/NutriCloud/web/app_dev.php/pro/note/" + patientId;
-        this.$.ajaxNotes.go();
-      },
-      notesResponse: function() {
-        var d = this.$.ajaxNotes.data || [];
-        this._setNotes(d.reverse());
       }
-
     });
   </script>
 </dom-module>
