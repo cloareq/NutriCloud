@@ -204,14 +204,20 @@
       heightChanged: function() {
         if (this.height.length > 0)
           this.set('lheight', this.height[0].height);
+        else
+          this.set('lheight', null);
       },
       weightChanged: function() {
         if (this.weight.length > 0)
           this.set('lweight', this.weight[0].weight);
+        else
+          this.set('lweight', null);
       },
       notesChanged: function() {
         if (this.notes.length > 0)
           this.set('lnote', this.notes[0].note);
+        else
+          this.set('lnote', null);
       },
       suiviSaved: function() {
         this.$.suivi.suiviSaved();
