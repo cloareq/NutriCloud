@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 
 <dom-module id="suivi-element">
 	<template>
@@ -48,15 +49,21 @@
 			#content {
 				background-color: white;
 				padding: 2%;
+				margin-bottom:0px;
 			}
 			.centered {
 				text-align: center;
 			}
-			#lastinfo {
-				margin-top:5%;
+			#textcontent {
+			  --paper-input-container-disabled: {
+			    opacity: 1;
+			  };
+				--paper-input-container-underline-disabled: {
+					display: none;
+				}
 			}
 			#textcontent {
-				width: 100%;
+				width: 80%;
 			}
 			.container {
 				@apply(--layout-horizontal);
@@ -79,18 +86,15 @@
 					<div class="container">
 						<div class="flex5child">
 							<paper-input class="paperi" id="poids" type="number" label="Poids" error="Uniquement des chiffres" value="{{weight}}" floatingLabel><div suffix>kg</div></paper-input>
-							<p id="perr" class="msgError" hidden>poids requis</p>
 						</div>
 						<div class="flex2child"></div>
 						<div class="flex5child">
 							<paper-input class="paperi" id="taille" type="number" label="Taille" error="Uniquement des chiffres" value="{{height}}" floatingLabel><div suffix>cm</div></paper-input>
-							<p id="terr" class="msgError" hidden>taille requise</p>
 						</div>
 					</div>
 					<div class="container">
 						<div class="flex12child">
-							<paper-input class="paperi" id="note" label="Commentaire" value="{{note}}" floatingLabel></paper-input>
-							<p id="nerr" class="msgError" hidden>note requise</p>
+							<paper-textarea class="paperi" id="note" label="Commentaire" value={{note}} floatingLabel></paper-textarea>
 						</div>
 					</div>
 					<div id="lastinfo">
@@ -99,13 +103,12 @@
 							<div class="flex2child"></div>
 							<paper-item class="paper" id="lasttaille" class="flex5child">Taille lors du dernier suivi : <span>{{lheight}}</span></paper-item>
 						</div>
-						<div class="container">
-							<paper-textarea id="textcontent">
-						    <textarea id="lastnote" style="text-align:center;overflow-x: hidden;" on-click="fullScreen" readonly>{{lnote}}</textarea>
-							</paper-textarea>
+						<div class="container" style="text-align: center">
+							<paper-item class="paper" id="lasttaille">Dernier commentaire :</paper-item>
+							<paper-textarea style="text-align: left" disabled id="textcontent" value=[[lnote]]></paper-textarea>
 						</div>
 					</div>
-					<div class="container centered">
+					<div class="container centered" style="margin-top: 24px">
 						<paper-button id="sendSuivi" class="suiviButton" on-click="save">Sauvegarder</paper-button>
 					</div>
 				</div>
@@ -132,6 +135,7 @@
     			if (e.keyCode == 13)
     				this.save();
 	  		}.bind(this));
+				this.clearInput();
   		},
 			toggleSuivi: function() {
 				this.$.suivi.toggle();
@@ -142,10 +146,10 @@
 				this.note = "";
 			},
 			save: function() {
-				if (this.weight == "")
-					return app.writeError("Veuillez indiquer un poid");
-				if (this.height == "")
-					return app.writeError("Veuillez indiquer une taille");
+				if (this.weight == "" || +this.weight <= 0)
+					return app.writeError("Veuillez indiquer un poid" + ((this.weight=="") ? "" : " supérieur à 0"));
+				if (this.height == "" || this.height <= 0)
+					return app.writeError("Veuillez indiquer une taille" + ((this.height=="") ? "" : " supérieur à 0"));
 				if (this.note == "")
 					return app.writeError("Veuillez indiquer une note");
 				this.fire("save-suivi", {
@@ -154,48 +158,8 @@
 					"taille": this.height,
 					"note": this.note
 				});
+				this.clearInput();
 			},
-/*			firstSave: function() {
-				var a = 0;
-				if (this.$.poids.value == "") {
-					this.$.perr.hidden = false;
-					a++
-				}
-				if (this.$.taille.value == "") {
-					this.$.terr.hidden = false;
-					a++
-				}
-				if (this.$.note.value == "") {
-					this.$.nerr.hidden = false;
-					a++
-				}
-				if (a == 0)
-					this.fire("save-suivi", {
-						"patientId": app.patientId,
-						"poids": this.$.poids.value,
-						"taille": this.$.taille.value,
-						"note": this.$.note.value
-					});
-			},
-			save: function() {
-				this.$.perr.hidden = true;
-				this.$.terr.hidden = true;
-				this.$.nerr.hidden = true;
-				if (this.$.poids.value == "" || +this.$.poids.value < 0)
-					this.$.perr.hidden = false;
-				else if (!this.lastNote)
-					this.firstSave();
-				else {
-					var taille = this.$.taille.value || this.lastNote.height;
-					this.fire("save-suivi", {
-						"patientId": app.patientId,
-						"poids": this.$.poids.value,
-						"taille": taille,
-						"note": this.$.note.value
-					});
-				}
-			},
-*/
 			suiviSaved: function() {
 				app.writeToast("Suivi sauvegardé");
 				this.toggleSuivi();
