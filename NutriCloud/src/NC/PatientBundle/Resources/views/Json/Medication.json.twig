@@ -1,14 +1,1 @@
-[
-    {% for medication in medications %}
-    {
-        "id": "{{ medication.id }}",
-        "name": "{{ medication.name }}",
-        "note": "{{ medication.note }}",
-        "is_active": "{{ medication.isActive }}",
-        "created_at": "{{ medication.createdAt|date("Y/m/d.h:m") }}"
-    }
-    {% if loop.last == false %}
-,
-    {% endif %}
-    {% endfor %}
-]
+[{% for medication in medications %}{"id": "{{ medication.id }}","name": "{{ medication.name }}","note": "{{ medication.note }}","is_active": "{{ medication.isActive }}","created_at": "{{ medication.createdAt|date("Y/m/d.h:m") }}"}{% if loop.last == false %},{% endif %}{% endfor %}]

@@ -1,113 +1,107 @@
 <?php
 
-namespace NC\FaqBundle\Tests;
+namespace NC\FaqBundle\Tests\Controller;
 
+require  __DIR__ . '/../../../../vendor/autoload.php';
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 class FaqControllerTest extends WebTestCase{
 
     public function testFaq()
     {
-        $this->assertTrue(1 == 1);
-    }
-
-        /*TO DO coté patient */
-/*
-    public function testFaq()
-    {
-        $this->loadFixtures(array("NC\\ProBundle\\Tests\\LoadFixture"));
-        echo '     Faq';
-        // new faq elem success
+        $this->loadFixtures(array("NC\\FaqBundle\\Tests\\LoadFixture"));
+        // pro get FAQ
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'username', '_password' => 'password'));
-        $client->request('Post', '/pro/faq/new', array('question' => 'question ?', 'response' => 'reponse !', 'category' => 'category'));
-        //echo $client->getResponse()->getContent();
-        $this->assertTrue($client->getResponse()->getContent() == '{"state":"success","desc":"Nouvel \u00e9l\u00e9ment ajout\u00e9 avec succ\u00e8s \u00e0 la FAQ."}');
+        $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
+        $client->request('Get', '/pro/faq/');
+        $this->assertTrue($client->getResponse()->getContent() == '[]');
     }
 
     public function testFaq2()
     {
-        // Post request failed
+        // patient get FAQ
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'username', '_password' => 'password'));
-        $client->request('Get', '/pro/faq/new', array('question' => 'question ?', 'response' => 'reponse !', 'category' => 'category'));
-        //echo $client->getResponse()->getContent();
-        $this->assertTrue($client->getResponse()->getContent() == '{"state":"failure","desc":"La requ\u00eate doit \u00eatre de type POST."}');
+        $client->request('Post', '/login_check', array('_username' => 'test_patient_1', '_password' => 'test_patient_1'));
+        $client->request('Get', '/patient/faq/');
+        $this->assertTrue($client->getResponse()->getContent() == '[]');
     }
 
     public function testFaq3()
     {
-        // update info success
+        // new faq elem success
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'username', '_password' => 'password'));
-        $client->request('Post', '/pro/faq/update/1', array('question' => 'question updated', 'response' => 'reponse updated', 'category' => 'category'));
-        //echo $client->getResponse()->getContent();
-        $this->assertTrue($client->getResponse()->getContent() == '{"state":"success","desc":"L\'\u00e9l\u00e9ment \u00e0 \u00e9t\u00e9 mis \u00e0 jour avec succ\u00e8s."}');
+        $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
+        $client->request('Post', '/pro/faq/new', array('question' => 'question ?', 'response' => 'reponse !', 'category' => 'category'));
+        //echo $client->getResponse()->getContent()  . $client->getResponse()->getStatusCode();
+        $this->assertTrue($client->getResponse()->getStatusCode() == 201);
     }
 
     public function testFaq4()
     {
-        // update faq with bad id
+        // update info success
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'username', '_password' => 'password'));
-        $client->request('Post', '/pro/faq/update/4', array('question' => 'question updated', 'response' => 'reponse updated', 'category' => 'category'));
-        //echo $client->getResponse()->getContent();
-        $this->assertTrue($client->getResponse()->getContent() == '{"state":"failure","desc":"L\'\u00e9l\u00e9ment que vous cherchez \u00e0 modifier n\'existe pas."}');
+        $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
+        $client->request('Post', '/pro/faq/update/1', array('question' => 'question updated', 'response' => 'reponse updated', 'category' => 'category'));
+        //echo $client->getResponse()->getContent()  . $client->getResponse()->getStatusCode();
+        $this->assertTrue($client->getResponse()->getStatusCode() == 200);
     }
 
     public function testFaq5()
     {
-        // update fas of an other pro
+        // update info  fail
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'jeremy', '_password' => 'jeremy'));
-        $client->request('Post', '/pro/faq/new', array('question' => 'question ?', 'response' => 'reponse !', 'category' => 'category'));
-        // echo $client->getResponse()->getContent();
-        $client->request('Post', '/login_check', array('_username' => 'username', '_password' => 'password'));
-        $client->request('Post', '/pro/faq/update/2', array('question' => 'question updated', 'response' => 'reponse updated', 'category' => 'category'));
-         //   echo $client->getResponse()->getContent();
-        $this->assertTrue($client->getResponse()->getContent() == '{"state":"failure","desc":"Vous n\'\u00eates pas le propri\u00e9taire de cet \u00e9l\u00e9ment."}');
+        $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
+        $client->request('Post', '/pro/faq/update/100', array('question' => 'question updated', 'response' => 'reponse updated', 'category' => 'category'));
+        //echo $client->getResponse()->getContent()  . $client->getResponse()->getStatusCode();
+        $this->assertTrue($client->getResponse()->getContent() == '{"desc":"L\'\u00e9l\u00e9ment que vous cherchez \u00e0 modifier n\'existe pas."}');
     }
+
     public function testFaq6()
     {
-        // get FAQ
+        // pro get FAQ
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'username', '_password' => 'password'));
+        $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
         $client->request('Get', '/pro/faq/');
-        //echo $client->getResponse()->getContent();
+        //echo $client->getResponse()->getContent()  . $client->getResponse()->getStatusCode();
         $this->assertTrue($client->getResponse()->getContent() == '[{"id": "1", "category": "category", "question": "question updated","response": "reponse updated"}]');
     }
 
     public function testFaq7()
     {
-        // delete faq success
+        // patient get FAQ
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'username', '_password' => 'password'));
-        $client->request('Get', '/pro/faq/remove/1');
-        //echo $client->getResponse()->getContent();
-        $this->assertTrue($client->getResponse()->getContent() == '{"state":"success","desc":"L\'\u00e9l\u00e9ment \u00e0 \u00e9t\u00e9 supprim\u00e9 avec succ\u00e8s de la FAQ."}');
+        $client->request('Post', '/login_check', array('_username' => 'test_patient_1', '_password' => 'test_patient_1'));
+        $client->request('Get', '/patient/faq/');
+        //echo $client->getResponse()->getContent()  . $client->getResponse()->getStatusCode();
+        $this->assertTrue($client->getResponse()->getContent() == '[{"id": "1", "category": "category", "question": "question updated","response": "reponse updated"}]');
     }
 
     public function testFaq8()
     {
-        // delete faq failed
+        // delete faq success
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'username', '_password' => 'password'));
-        $client->request('Get', '/pro/faq/remove/4');
-        //echo $client->getResponse()->getContent();
-        $this->assertTrue($client->getResponse()->getContent() == '{"state":"failure","desc":"L\'\u00e9l\u00e9ment que vous cherchez \u00e0 supprimer n\'existe pas."}');
+        $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
+        $client->request('Get', '/pro/faq/remove/1');
+        //echo $client->getResponse()->getContent() . 
+        $this->assertTrue($client->getResponse()->getStatusCode() == 200);
     }
 
     public function testFaq9()
     {
-        // delete faq of an other pro
+        // delete faq success
         $client = static::createClient();
-        $client->request('Post', '/login_check', array('_username' => 'jeremy', '_password' => 'jeremy'));
-        $client->request('Post', '/pro/faq/new', array('question' => 'question ?', 'response' => 'reponse !'));
-        // echo $client->getResponse()->getContent();
-        $client->request('Post', '/login_check', array('_username' => 'username', '_password' => 'password'));
-        $client->request('Get', '/pro/faq/remove/2');
-        //   echo $client->getResponse()->getContent();
-        $this->assertTrue($client->getResponse()->getContent() == '{"state":"failure","desc":"Vous n\'\u00eates pas le propri\u00e9taire de cet \u00e9l\u00e9ment."}');
+        $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
+        $client->request('Get', '/pro/faq/remove/10');
+        //echo $client->getResponse()->getContent() . 
+        $this->assertTrue($client->getResponse()->getStatusCode() == 404);
     }
-    */
+
+    public function testFaq10()
+    {
+        // pro get FAQ
+        $client = static::createClient();
+        $client->request('Post', '/login_check', array('_username' => 'test_pro_1', '_password' => 'test_pro_1'));
+        $client->request('Get', '/pro/faq/');
+        $this->assertTrue($client->getResponse()->getContent() == '[]');
+    }
 }

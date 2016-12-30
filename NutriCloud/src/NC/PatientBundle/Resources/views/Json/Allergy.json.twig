@@ -1,11 +1,1 @@
-[
-    {% for allergy in allergys %}
-    {
-        "id": "{{ allergy.id }}",
-        "name": "{{ allergy.name }}"
-    }
-    {% if loop.last == false %}
-,
-    {% endif %}
-    {% endfor %}
-]
+[{% for allergy in allergys %}{"id": "{{ allergy.id }}","name": "{{ allergy.name }}"}{% if loop.last == false %},{% endif %}{% endfor %}]

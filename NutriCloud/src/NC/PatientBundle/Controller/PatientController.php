@@ -68,13 +68,13 @@ class PatientController extends Controller
                 try {
                     $em->remove($Patient);
                     $em->flush();
-                    return $this->render(new Response("", 200, $this->header));
+                    return (new Response(json_encode(array('desc' => "Compte supprimé")), 200, $this->header));
                 } catch (\Exception $e) {
-                    return $this->render(new Response($e->getMessage(), 500, $this->header));
+                    return (new Response(json_encode(array('desc' => "Internal error.")), 500, $this->header));
                 }
             }
         }
-        return $this->render(new Response("Vous n'êtes pas connecté en tant que patient.", 401, $this->header));
+        return (new Response(json_encode(array('desc' => "Vous n'êtes pas connecté en tant que patient.")), 401, $this->header));
     }
 
     /**
@@ -151,6 +151,7 @@ class PatientController extends Controller
         $newPatient->setPassword($request->request->get('password', null));
         $newPatient->setMail($request->request->get('mail', null));
         $newPatient->setPhone($request->request->get('phone', null));
+        $newPatient->setPasswordRecoveryHash("");
         $user = $this->getUser();
         $user->addPatient($newPatient);
         $newPatient->setPro($user);
