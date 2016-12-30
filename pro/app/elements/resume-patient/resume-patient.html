@@ -204,14 +204,16 @@
         this.$.resumeService.getAppointments(app.patientId);
       },
       heightChanged: function() {
-        this.set('lheight', this.height[0][1]);
+        if (this.height)
+          this.set('lheight', this.height[0][1]);
       },
       weightChanged: function() {
-        this.set('lweight', this.weight[0][1]);
+        if (this.weight)
+          this.set('lweight', this.weight[0][1]);
       },
       notesChanged: function() {
-        this.set('lnote', this.notes[0][1]);
-//        this.lastnote.notes = this.notes[0][1];
+        if (this.notes)
+          this.set('lnote', this.notes[0][1]);
       },
       suiviSaved: function() {
         this.$.suivi.suiviSaved();
@@ -219,9 +221,9 @@
       },
       //hook for event save-suivi of suivi-element
       saveSuivi: function(event) {
-        this.$.suiviService.addWeight(event.detail.patientId, event.detail.poids);
-        this.$.suiviService.addHeight(event.detail.patientId, event.detail.taille);
-        this.$.suiviService.addNote(event.detail.patientId, event.detail.note);
+        this.$.resumeService.addWeight(event.detail.patientId, event.detail.poids);
+        this.$.resumeService.addHeight(event.detail.patientId, event.detail.taille);
+        this.$.resumeService.addNote(event.detail.patientId, event.detail.note);
 //        this.$.suiviService.saveSuivi(event.detail.patientId, event.detail.poids, event.detail.taille, event.detail.note);
       },
       addGoal: function(event) {
