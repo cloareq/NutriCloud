@@ -77,6 +77,9 @@
 			.flex12child {
 				@apply(--layout-flex-12);
 			}
+			paper-item span {
+				margin-left: 5px;
+			}
 		</style>
 
 		<paper-button class="suiviButton" on-click="toggleSuivi">Remplir le suivi</paper-button>
@@ -104,8 +107,7 @@
 							<paper-item class="paper" id="lasttaille" class="flex5child">Taille lors du dernier suivi : <span>{{lheight}}</span></paper-item>
 						</div>
 						<div class="container" style="text-align: center">
-							<paper-item class="paper" id="lasttaille">Dernier commentaire :</paper-item>
-							<paper-textarea style="text-align: left" disabled id="textcontent" value=[[lnote]]></paper-textarea>
+							<paper-item class="paper" id="lasttaille">Dernier commentaire :<span>[[lnote]]</span></paper-item>
 						</div>
 					</div>
 					<div class="container centered" style="margin-top: 24px">
@@ -158,7 +160,7 @@
 					"taille": this.height,
 					"note": this.note
 				});
-				this.clearInput();
+				this.clearInput()
 			},
 			suiviSaved: function() {
 				app.writeToast("Suivi sauvegardé");
