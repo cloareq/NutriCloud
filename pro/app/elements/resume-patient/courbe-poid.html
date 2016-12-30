@@ -80,9 +80,15 @@
       weightChanged: function() {
         if (this.weight.length > 0) {
           this.hideEmptyData();
-          this.weightChart = [["Date", "Poids"]].concat(this.weight);
+          this.weightChart = parseData(this.weight);
         } else
           this.showEmptyData();
+        function parseData(data) {
+          var result = [["Date", "Poids"]];
+          for (var i=0; i<data.length; i++)
+            result.push([data[i].date, data[i].weight]);
+          return result;
+        }
       },
 /*  		_dataChanged: function() {
         var d = [];

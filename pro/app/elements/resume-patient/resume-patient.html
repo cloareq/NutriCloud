@@ -125,7 +125,7 @@
     <div id="courbe" class="element">
       <paper-toolbar> <span class="title">Courbe du poids</span></paper-toolbar>
       <div>
-        <courbe-poid weight="[[weight]]" data="[[notes]]"></courbe-poid>
+        <courbe-poid weight="[[weight]]"></courbe-poid>
       </div>
     </div>
 
@@ -204,16 +204,16 @@
         this.$.resumeService.getAppointments(app.patientId);
       },
       heightChanged: function() {
-        if (this.height)
-          this.set('lheight', this.height[0][1]);
+        if (this.height.length > 0)
+          this.set('lheight', this.height[0].height);
       },
       weightChanged: function() {
-        if (this.weight)
-          this.set('lweight', this.weight[0][1]);
+        if (this.weight.length > 0)
+          this.set('lweight', this.weight[0].weight);
       },
       notesChanged: function() {
-        if (this.notes)
-          this.set('lnote', this.notes[0][1]);
+        if (this.notes.length > 0)
+          this.set('lnote', this.notes[0].note);
       },
       suiviSaved: function() {
         this.$.suivi.suiviSaved();

@@ -147,7 +147,7 @@
 				if (this.height == "")
 					return app.writeError("Veuillez indiquer une taille");
 				if (this.note == "")
-						return app.writeError("Veuillez indiquer une note");
+					return app.writeError("Veuillez indiquer une note");
 				this.fire("save-suivi", {
 					"patientId": app.patientId,
 					"poids": this.weight,
