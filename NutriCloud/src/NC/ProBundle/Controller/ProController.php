@@ -228,7 +228,7 @@ class ProController extends Controller
         $tmp_user = $this->getDoctrine()
             ->getManager()
             ->getRepository('NCProBundle:Pro')->findOneByUsername(array('username' => $request->request->get('username', null)));
-        if ($tmp_user != null)
+        if ($tmp_user != null && $tmp_user->getId() != $this->getUser()->getId())
             return (new Response(json_encode(array('desc' => 'Username déjà utilisé.')), 400, $this->header));
         $tmp_user = $this->getDoctrine()
             ->getManager()
