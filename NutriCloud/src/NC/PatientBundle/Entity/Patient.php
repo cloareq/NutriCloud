@@ -180,7 +180,7 @@ class Patient implements UserInterface
     private $alert;
 
     /**
-     * @ORM\OneToMany(targetEntity="NC\PlanBundle\Entity\PlanDay", mappedBy="patient", cascade={"remove"}, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="NC\PlanBundle\Entity\PlanDay", mappedBy="patient", cascade={"persist"})
      */
     private $plans;
 
