@@ -43,7 +43,7 @@ class PlanDay
     private $aliments;
 
     /**
-     * @ORM\ManyToOne(targetEntity="NC\PatientBundle\Entity\Patient", inversedBy="plans")
+     * @ORM\ManyToOne(targetEntity="NC\PatientBundle\Entity\Patient", inversedBy="plans", cascade={"remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $patient;
