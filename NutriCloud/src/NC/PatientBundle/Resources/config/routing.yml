@@ -1,3 +1,8 @@
+nc_patient_proDeletePatient:
+    path:     /pro/patient/delete/{patientId}
+    defaults: { _controller: NCPatientBundle:Patient:proRemovePatient }
+    methods:  [GET]
+
 nc_patient_getPatientList:
     path:     /pro/patient/list
     defaults: { _controller: NCPatientBundle:Patient:listPatient }

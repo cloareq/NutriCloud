@@ -78,6 +78,46 @@ class PatientController extends Controller
     }
 
     /**
+     * Cette méthode permet à un pro de supprimer un de ses patients
+     * @ApiDoc(
+     * tags={"Pro"="#FF0000", "Patient"="#0000FF"},
+     *  resource=true,
+     *  description="/pro/patient/delete/{patientId}",
+     *  statusCodes={
+     *         200="OK",
+     *         401="Unauthorized: You are not connected",
+     *         500= "Internal Error (BDD error)"
+     *  },
+     * views = {"default", "pro", "patient"})
+     */
+    public function proRemovePatientAction(patientId)
+    {
+        if ($this->get('security.context')->isGranted('ROLE_PRO')) {
+            $Pro = $this->getUser();
+            $repository = $this
+                ->getDoctrine()
+                ->getManager()
+                ->getRepository('NCPatientBundle:Patient');
+            $Patient = $repository->findOneById($patientId);
+            if ($Patient == NULL)
+                return (new Response(json_encode(array('desc' => "Le patient recherché n'existe pas.")), 404, $this->header));
+            else if ($Patient->getPro()->getId() != $Pro->getId())
+                return (new Response(json_encode(array('desc' => "Le patient recherché ne fait pas partie de votre liste de patient.")), 403, $this->header));
+            $em = $this->getDoctrine()->getManager();
+            try {
+                $em->remove($Patient);
+                $em->flush();
+                return (new Response('', 200, $this->header));
+            }
+            catch(\Exception $e) {
+                return (new Response($e->getMessage(), 500, $this->header));
+            }
+        }
+        else
+            return (new Response(json_encode(array('desc' => "Vous n'êtes pas connecté en tant que pro.")), 401, $this->header));
+      }
+
+    /**
      * Cette méthode renvoie la list des patients du pro actuellement connecté.
      * @ApiDoc(
      * tags={"Pro"="#FF0000", "Patient"="#0000FF"},
