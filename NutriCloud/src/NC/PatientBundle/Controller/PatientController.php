@@ -90,7 +90,7 @@ class PatientController extends Controller
      *  },
      * views = {"default", "pro", "patient"})
      */
-    public function proRemovePatientAction(patientId)
+    public function proRemovePatientAction($patientId)
     {
         if ($this->get('security.context')->isGranted('ROLE_PRO')) {
             $Pro = $this->getUser();
