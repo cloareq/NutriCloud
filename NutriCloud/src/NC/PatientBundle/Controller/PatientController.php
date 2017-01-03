@@ -66,6 +66,9 @@ class PatientController extends Controller
             else {
                 $em = $this->getDoctrine()->getManager();
                 try {
+                    $Patient->getPro()->removePatient($Patient);
+                    foreach ($Patient->getPlans() as $tmp_plan)
+                        $em->remove($tmp_plan);
                     $em->remove($Patient);
                     $em->flush();
                     return (new Response(json_encode(array('desc' => "Compte supprimé")), 200, $this->header));
@@ -110,7 +113,7 @@ class PatientController extends Controller
                     $em->remove($tmp_plan);
                 $em->remove($Patient);
                 $em->flush();
-                return (new Response('', 200, $this->header));
+                return (new Response('Compte supprimé', 200, $this->header));
             }
             catch(\Exception $e) {
                 return (new Response($e->getMessage(), 500, $this->header));
