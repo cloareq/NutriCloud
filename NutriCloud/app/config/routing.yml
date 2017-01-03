@@ -54,6 +54,10 @@ nc_patient_height:
      resource: "@NCPatientBundle/Resources/config/height_routing.yml"
      prefix:   /
 
-nc_note_patient_height:
+nc_note_patient:
      resource: "@NCNoteBundle/Resources/config/note_patient_routing.yml"
+     prefix:   /
+
+nc_patient-calorie:
+     resource: "@NCPatientBundle/Resources/config/calorie_routing.yml"
      prefix:   /
