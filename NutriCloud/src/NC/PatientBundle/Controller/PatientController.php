@@ -105,7 +105,7 @@ class PatientController extends Controller
                 return (new Response(json_encode(array('desc' => "Le patient recherché ne fait pas partie de votre liste de patient.")), 403, $this->header));
             $em = $this->getDoctrine()->getManager();
             try {
-                foreach ($patient->getPlans() as $tmp_plan)
+                foreach ($Patient->getPlans() as $tmp_plan)
                     $em->remove($tmp_plan);
                 $em->remove($Patient);
                 $em->flush();
