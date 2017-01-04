@@ -65,15 +65,12 @@
       this.$.ajax.go();
     },
     remove: function(patientId) {
-      console.log("remove patient [TODO] attente de la création de la route sur l'api !")
-/*
       this.lastRequest = "remove";
       this.$.ajax.headers = {};
       this.$.ajax.setBody({});
       this.$.ajax.method = 'GET';
-      this.$.ajax.url="/NutriCloud/web/app_dev.php/pro/patient/remove" + patientId
+      this.$.ajax.url="/NutriCloud/web/app_dev.php/pro/patient/delete/" + patientId
       this.$.ajax.go();
-      */
     },
     ajaxSuccess: function() {
       if (this.lastRequest == "getInfo") {

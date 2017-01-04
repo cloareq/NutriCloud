@@ -36,14 +36,16 @@
     },
     patientsLoaded: function(event) {
       var list = this.$.ajax.data;
-      for (var i=0; i<list.length; i++)
-        list[i].fullName = list[i].lastName + " " + list[i].firstName;
+      for (var i=0; i<list.length; i++) {
+        var a = list[i].lastName.toLowerCase();
+        var b = list[i].firstName.toLowerCase()
+        list[i].fullName = a.substring(0,1).toUpperCase()+a.substring(1) + " " + b.substring(0,1).toUpperCase()+b.substring(1);
+      }
       //trie la liste dans par ordre alphabetique
       list = list.sort(function(a, b) {
         var x = a.fullName.toLowerCase();
         var y = b.fullName.toLowerCase();
         return x < y ? -1 : x > y ? 1 : 0;
-        //return (a.fullName.toLowerCase() > b.fullName.toLowerCase());
       });
       //Setter d'une propertie 'readOnly' => _setPropertyName(value)
       this._setPatients(list);

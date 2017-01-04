@@ -15,11 +15,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
   var app = document.querySelector('#app');
 
-/*  //Set patientId if interface patient loaded
-  if (document.location.href.match('patient'))
-    app.patientId = document.location.hash.slice(1);
-*/
-
   // Sets app default base URL
   app.baseUrl = '/';
   app.IHM = 'PRO';
