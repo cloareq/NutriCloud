@@ -55,6 +55,13 @@
         background: transparent;
       }
 		</style>
+		<iron-ajax id="ajaxlogin"
+			on-response="checkLogin"
+			url="/NutriCloud/web/app_dev.php/login_check"
+			headers='{"Content-Type": "application/x-www-form-urlencoded"}'
+			handleAs="json"
+			method="POST">
+		</iron-ajax>
 		<iron-ajax id="ajax"
 			url="/NutriCloud/web/app_dev.php/register"
 			on-response="checkSignin"
@@ -93,8 +100,14 @@
 						app.$.toast.text = "Votre compte a été créé";
 						app.$.toast.style.backgroundColor = "";
     				app.$.toast.show();
+						this.$.ajaxlogin.body = {"_username":this.$.username.value, "_password":this.$.password.value};
+						this.fire('show-spinner');
+						this.$.ajaxlogin.generateRequest();
 					}
 				},
+				checkLogin: function() {
+					document.location.href = "/pro/app/#!/home";
+				};
 				errorAjax: function() {
 					this.$.errorCreation.hidden = false;
 					app.$.toast.text = "Erreur lors de la création du compte";
