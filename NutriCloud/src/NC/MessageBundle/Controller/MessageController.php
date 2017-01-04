@@ -101,7 +101,7 @@ class MessageController extends Controller
     }
 
     private function buildUrl($sender, $receiver, $notif_type, $content){
-        return "http://beta.nutricloud.eu:3001/websocket?sender=".$sender."&receiver=".$receiver."&notiftype=".$notif_type."&content=".urlencode($content);
+        return "http://nutricloud.eu:3001/websocket?sender=".$sender."&receiver=".$receiver."&notiftype=".$notif_type."&content=".urlencode($content);
     }
 
     /**
