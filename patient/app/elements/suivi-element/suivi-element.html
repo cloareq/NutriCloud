@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-date-picker/paper-date-picker.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
@@ -8,6 +9,7 @@
 
 <!-- data provider -->
 <link rel="import" href="../services/suivi-service.html">
+<link rel="import" href="../services/planning-service.html">
 
 <!-- constant colors -->
 <link rel="import" href="../../styles/color-nutricloud.html">
@@ -48,8 +50,12 @@
       }
   		</style>
   		<suivi-service id="suiviService" suivi="{{suivi}}"></suivi-service>
+      <planning-service id="planningService" nordv="{{nordv}}" daterdv={{daterdv}}></planning-service>
 
   		<div id="content">
+        <div id="planning">
+          <p>Prochain rendez-vous :<span style="margin-left: 5px;">[[format(daterdv)]]</span></p>
+        </div>
   		  <div id="header">
     	    <!-- arrow left -->
     	    <paper-fab on-click="prevDate" id="prev" class="nav" icon="arrow-back" role="button"></paper-fab>
@@ -96,40 +102,18 @@
           suivi: {
             type: Object,
             observer: 'suiviChanged'
-          }
+          },
+          nordv : ""
+        },
+        format: function(date) {
+          if (this.nordv != "")
+            return this.nordv;
+          moment.locale("fr");
+          return moment(date).format("dddd DD MMMM YYYY");
         },
         ready: function() {
           moment.locale("fr");
           this._setCurrentMoment();
-          /*
-                    this.suivi = {
-                      "2016-10-06": [{
-                        "hour": "09:00",
-                        "aliment": "Kiwi",
-                        "quantity": "1",
-                        "is_eaten": "true",
-                        "is_model": "false"
-                      }, {
-                        "hour": "12:00",
-                        "aliment": "Pain",
-                        "quantity": "100gr",
-                        "is_eaten": "false",
-                        "is_model": "true"
-                      }, {
-                        "hour": "12:00",
-                        "aliment": "Pomme",
-                        "quantity": "1",
-                        "is_eaten": "true",
-                        "is_model": "false"
-                      }, {
-                        "hour": "19:00",
-                        "aliment": "Soupe",
-                        "quantity": "1",
-                        "is_eaten": "false",
-                        "is_model": "true"
-                      }]
-                    };
-          */
         },
         _setCurrentMoment: function() {
           this.currentDate = this.currentDate || moment();
@@ -157,6 +141,7 @@
           this.$.dialogPicker.toggle();
         },
         refresh: function() {
+          this.$.planningService.getPlanning();
           this.$.suiviService.getSuiviDate(app.userId, this.currentDate.format('YYYY-MM-DD'))
           this.$.datePicker.set('date', this.currentDate.toDate());
           this.setDatePick()

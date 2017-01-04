@@ -1,0 +1,51 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../my-ajax/my-ajax.html">
+
+<dom-module id="discussion-service">
+  <template>
+    <my-ajax id="ajax"
+          handleAs="json"
+          on-response="ajaxSuccess"
+          >
+      </my-ajax>
+  </template>
+  <script>
+  	Polymer({
+  		is: "planning-service",
+		properties: {
+			lastRequest: String,
+      daterdv: {
+				type: Array,
+				notify: true,
+				readOnly: true
+			},
+      nordv: {
+				type: String,
+				notify: true,
+				readOnly: true
+			}
+		},
+		ready: function() {
+//      this._setNordv("Aucun");
+//      this._setDaterdv("");
+		},
+		getPlanning: function() {
+			this.lastRequest = "getPlanning";
+    	this.$.ajax.url = '/NutriCloud/web/app_dev.php/patient/appointment/get/';
+      this.$.ajax.headers = {};
+    	this.$.ajax.setBody ({});
+			this.$.ajax.method = 'GET';
+    	this.$.ajax.go();
+		},
+		ajaxSuccess: function(data) {
+			if (this.lastRequest == "getPlanning" && this.$.ajax.data.length > 0)
+				this._setDaterdv(this.$.ajax.data[0]);
+      else {
+        this._setNordv("Aucun");
+        this._setDaterdv("");
+      }
+		}
+  	});
+  </script>
+</dom-module>

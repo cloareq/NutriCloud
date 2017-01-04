@@ -87,19 +87,20 @@
 						this.$.errorCreation.hidden = false;
 						app.$.toast.text = "Erreur lors de la création du compte";
 						app.$.toast.style.backgroundColor = "red";
-	      				app.$.toast.show();
+    				app.$.toast.show();
 						this.clearInput();
 					} else {
 						app.$.toast.text = "Votre compte a été créé";
 						app.$.toast.style.backgroundColor = "";
-	      				app.$.toast.show();
+    				app.$.toast.show();
 					}
 				},
 				errorAjax: function() {
+					this.$.errorCreation.hidden = false;
 					app.$.toast.text = "Erreur lors de la création du compte";
 					app.$.toast.style.backgroundColor = "red";
-	      			app.$.toast.show();
-	      		},
+    			app.$.toast.show();
+    		},
 				clearInput: function() {
 					this.$.username.value = "";
 					this.$.firstname.value = "";
