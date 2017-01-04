@@ -106,7 +106,7 @@
           nordv : ""
         },
         format: function(date) {
-          if (this.nordv != "")
+          if (this.nordv && this.nordv != "")
             return this.nordv;
           moment.locale("fr");
           return moment(date).format("dddd DD MMMM YYYY");
