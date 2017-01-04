@@ -217,6 +217,7 @@ NOTE: use percentage font sizes or else old IE chokes
 .fc-state-disabled {
 	color: #FFF;
 	background-color: #0AC45E;
+  opacity: 1 !important;
 }
 
 .fc-state-hover {
