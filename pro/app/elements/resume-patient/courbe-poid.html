@@ -84,6 +84,7 @@
           this.showEmptyData();
         function parseData(data) {
           var result = [["Date", "Poids"]];
+          data = data.reverse();
           for (var i=0; i<data.length; i++)
             result.push([data[i].date, +data[i].weight]);
           return result;
