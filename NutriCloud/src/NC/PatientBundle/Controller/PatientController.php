@@ -71,6 +71,11 @@ class PatientController extends Controller
                         $em->remove($tmp_plan);
                     foreach ($Patient->getAppointment() as $appointment)
                         $em->remove($appointment);
+                    foreach ($Patient->getAlert() as $alert)
+                        $em->remove($alert);
+                    foreach ($Patient->getMessage() as $message)
+                        $em->remove($message);
+
                     $em->remove($Patient);
                     $em->flush();
                     return (new Response(json_encode(array('desc' => "Compte supprimé")), 200, $this->header));
@@ -115,6 +120,10 @@ class PatientController extends Controller
                     $em->remove($tmp_plan);
                 foreach ($Patient->getAppointment() as $appointment)
                     $em->remove($appointment);
+                foreach ($Patient->getAlert() as $alert)
+                    $em->remove($alert);
+                foreach ($Patient->getMessage() as $message)
+                    $em->remove($message);
 
                 $em->remove($Patient);
                 $em->flush();
