@@ -27,7 +27,7 @@
     	    @apply(--layout-flex-2);
 	      }
     	  .flexchild {
-	        @apply(--layout-flex-5);
+	        @apply(--layout-flex-12);
     	  }
 	      .flex7child {
         	@apply(--layout-flex-7);
@@ -85,7 +85,7 @@
         			<paper-input floatingLabel class="inputForm flexchild" id="cpassword" type="password" label="Confirmer mot de passe" value="{{cpassword::input}}"></paper-input>
 		      	</div>
 		     	<div class="horizontal center">
-	      			<button class="no-style" type="submit"><paper-button id="valid">Valider</paper-button></button>
+	      			<button class="no-style" type="submit"><paper-button id="valid" theme="core-light-theme" >Valider</paper-button></button>
 		      	</div>
 		    </form>
 
@@ -127,9 +127,9 @@
 				else if (this.password != this.cpassword)
 					this.error = "Erreur dans la confirmation du mot de passe";
 				else if (this.password && this.password.length < 6)
-					this.error = "Votre mot de passe doit contenir au moins 6 charactères";
+					this.error = "Votre mot de passe doit contenir au moins 6 caractères";
 				else if (this.username && this.username.length < 6)
-					this.error = "Votre nom d'utilisateur doit contenir au moins 6 charactères";
+					this.error = "Votre nom d'utilisateur doit contenir au moins 6 caractères";
 				else {
 					this.error = "";
 					this.$.patientService.createPatient(this.username, this.firstName, this.lastName, this.mail, this.password, this.phone);
