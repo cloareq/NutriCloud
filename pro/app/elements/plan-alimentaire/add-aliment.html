@@ -57,7 +57,7 @@
 						hour: this.$.alim_hour.value
 					}
 				});
-				if (this.datalist.indexOf(name) === -1)
+				if (this.datalist.indexOf(this.name) === -1)
 					this.addAlimentData(this.name);
 			} else
 				app.writeError("Veuillez indiquer un aliment et sa quantité");
