@@ -134,8 +134,15 @@
         this.toggleField();
       },
       removePatient: function() {
-        if (confirm("Etes-vous sur de vouloir supprimer le compte de ce patient ?"))
+        if (confirm("Etes-vous sur de vouloir supprimer le compte de ce patient ?")) {
           this.$.patientService.remove(app.patientId);
+          if (app.patients.length > 1) {
+            app.patientId = (app.patientId != app.patients[0].id) ? app.patients[0].id : app.patients[1].id;
+            page.redirect("/patient/"+app.patientId);
+          } else {
+            page.redirect("/home");
+          }
+        }
       },
       refresh: function() {
         this.$.patientService.getInfo(app.patientId);
