@@ -39,7 +39,7 @@
     	this.$.ajax.go();
 		},
 		ajaxSuccess: function(data) {
-			if (this.lastRequest == "getPlanning" && this.$.ajax.data.length > 0)
+			if (this.lastRequest == "getPlanning" && this.$.ajax.data && this.$.ajax.data.length > 0)
 				this._setDaterdv(this.$.ajax.data[0]);
       else {
         this._setNordv("Aucun");
