@@ -89,7 +89,7 @@
   	<div id="content">
  	    <paper-fab on-click="prev" id="prev" class="nav" icon="arrow-back" role="button"></paper-fab>
   		<div id="plan">
-    		<h2>[[moment]]</h2>
+    		<h2>[[format(moment)]]</h2>
 	  		<template is="dom-repeat" items="[[suivi]]">
 	  		  <div id="item">
 	  			    <template is="dom-if" if="[[_isCurrentMoment(item.hour)]]">
@@ -127,6 +127,14 @@
             type: Boolean,
             value: true
           }
+        },
+        format: function(m) {
+          var d = {
+            "morning" : "Petit-déjeuner",
+            "lunch" : "Déjeuner",
+            "diner": "Diner"
+          };
+          return d[m];
         },
         _isModel: function(model, mode) {
           if (mode == "boolean")
