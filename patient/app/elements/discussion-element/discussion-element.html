@@ -173,7 +173,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.push('messages', obj);
       app.$.notifieur.notifier("Nouveau message", obj.text, function() {
         var url = "http://" + document.location.host +  "/patient/app/#!/discussion";
-        console.log(url);
         window.open(url, "_blank").focus();
       });
     }
